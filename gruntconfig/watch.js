@@ -17,7 +17,7 @@ var watch = {
     files: [config.src + '/htdocs/**/*.js'],
     tasks: ['concurrent:scripts', 'mocha_phantomjs'],
     options: {
-      livereload: true
+      livereload: config.liveReloadPort
     }
   },
   scss: {
