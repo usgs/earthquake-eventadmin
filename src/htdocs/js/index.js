@@ -1,3 +1,6 @@
 'use strict';
 
-console.log('loaded index.js');
+var ChooseEventView = require('./ChooseEventView');
+
+
+ChooseEventView({el: document.querySelector('.eventadmin')});
