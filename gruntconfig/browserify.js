@@ -23,6 +23,11 @@ var browserify = {
     dest: config.build + '/' + config.src + '/htdocs/js/index.js'
   },
 
+  event: {
+    src: [config.src + '/htdocs/js/event.js'],
+    dest: config.build + '/' + config.src + '/htdocs/js/event.js'
+  },
+
   // test bundle
   test: {
     src: config.test + '/test.js',
