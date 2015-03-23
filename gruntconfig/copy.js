@@ -35,6 +35,37 @@ var copy = {
       '!**/*.css'
     ],
     filter: 'isFile'
+  },
+
+  leaflet: {
+    expand: true,
+    cwd: 'node_modules/leaflet/dist',
+    dest: config.build + '/' + config.src + '/htdocs/lib/leaflet',
+    src: [
+      'leaflet.css',
+      'images/**'
+    ]
+  },
+  locationview_images: {
+    expand: true,
+    cwd: 'node_modules/hazdev-location-view/src/locationview/images',
+    dest: config.build + '/' + config.src + '/htdocs/modules/impact/images',
+    src: [
+      '*.png',
+      '*.cur'
+    ]
+  },
+  eventpages: {
+    expand: true,
+    cwd: 'node_modules/earthquake-eventpages/src/htdocs',
+    dest: config.build + '/' + config.src + '/htdocs',
+    src: [
+      '**/*',
+      '!**/*.js',
+      '!**/*.scss',
+      '!**/*.orig'
+    ],
+    filter: 'isFile'
   }
 };
 

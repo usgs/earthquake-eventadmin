@@ -72,13 +72,13 @@ $prompts = array(
 
   'DETAILS_STUB' => array(
     'prompt' => 'Site-relative path stub for GeoJSON detail content',
-    'default' => '/earthquakes/feed/v1.0/detail/%s.geojson',
+    'default' => '/fdsnws/event/1/query?format=geojson&includesuperseded=true&eventid=%s',
     'secure' => false
   ),
 
   'OFFSITE_HOST' => array(
     'prompt' => 'Offsite host where content exists',
-    'default' => '',
+    'default' => 'earthquake.usgs.gov',
     'secure' => false
   )
 );
