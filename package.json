@@ -16,6 +16,7 @@
   "devDependencies": {
     "chai": "~1.7.0",
     "compression": "^1.4.1",
+    "earthquake-eventpages": "usgs/earthquake-eventpages",
     "gateway": "~1.0.0",
     "grunt": "~0.4.1",
     "grunt-browserify": "^3.3.0",
@@ -31,10 +32,17 @@
     "grunt-contrib-uglify": "~0.7.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-mocha-phantomjs": "~0.5.0",
+    "hazdev-accordion": "usgs/hazdev-accordion",
+    "hazdev-location-view": "usgs/hazdev-location-view",
+    "hazdev-question-view": "usgs/hazdev-question-view",
+    "hazdev-svgimagemap": "usgs/hazdev-svgimagemap",
+    "hazdev-tablist": "usgs/hazdev-tablist",
     "hazdev-template": "usgs/hazdev-template",
     "hazdev-webutils": "usgs/hazdev-webutils",
     "ini": "^1.2.1",
+    "leaflet": "^0.7.3",
     "mocha": "~1.13.0",
+    "quakeml-parser-js": "usgs/quakeml-parser-js",
     "sinon": "~1.12.2"
   },
   "engines": {

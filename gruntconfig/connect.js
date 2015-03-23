@@ -41,6 +41,18 @@ var connect = {
       rewrite: {
         '^/theme': ''
       }
+    },
+    {
+      context: '/realtime/',
+      host: OFFSITE_HOST,
+      port: 80,
+      changeOrigin: true
+    },
+    {
+      context: '/archive/',
+      host: OFFSITE_HOST,
+      port: 80,
+      changeOrigin: true
     }
   ],
 
