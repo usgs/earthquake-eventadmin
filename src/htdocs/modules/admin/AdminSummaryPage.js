@@ -1,6 +1,7 @@
 'use strict';
 
-var EventModulePage = require('base/EventModulePage'),
+var AssociatedEventView = require('AssociatedEventView'),
+    EventModulePage = require('base/EventModulePage'),
     Util = require('util/Util');
 
 
@@ -13,9 +14,13 @@ AdminSummaryPage.prototype = Object.create(EventModulePage.prototype);
 
 
 AdminSummaryPage.prototype._setContentMarkup = function () {
-  var products = this._event.properties.products;
 
-  this._content.innerHTML = JSON.stringify(products);
+  AssociatedEventView({
+    el: this._content,
+    eventDetails: this._event
+  });
+
+  //this._content.innerHTML = JSON.stringify(products);
 };
 
 

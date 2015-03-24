@@ -2,6 +2,8 @@
 
 
 var CatalogEvent = require('./CatalogEvent'),
+    Collection = require('mvc/Collection'),
+    EventComparisonView = require('./EventComparisonView'),
     Util = require('util/Util'),
     View = require('mvc/View'),
     Xhr = require('util/Xhr');
@@ -20,7 +22,9 @@ var EventAdminView = function (options) {
       _initialize,
       // variables
       _config,
+      _el,
       _event,
+      _subEvents,
       // methods
       _getEventUrl,
       _loadEvent;
@@ -30,6 +34,7 @@ var EventAdminView = function (options) {
   _initialize = function () {
     options = Util.extend({}, DEFAULTS, options);
     _config = options.config;
+    _el = options.el || document.createElement('div');
     _event = null;
     _loadEvent();
     options = null;
@@ -48,6 +53,7 @@ var EventAdminView = function (options) {
         var products = data.properties.products;
         data.properties.products = null;
         _event = CatalogEvent(products, data.properties);
+        _subEvents = _event.getSubEvents();
         _this.render();
       },
       error: function () {
@@ -57,11 +63,23 @@ var EventAdminView = function (options) {
   };
 
   _this.render = function () {
+    var subEvents = [],
+        subEvent;
+
+    for (subEvent in _subEvents) {
+      subEvents.push(_subEvents[subEvent].getSummary());
+    }
+
     if (_event === null) {
       return;
     }
 
-    _this.el.innerHTML = JSON.stringify(_event.getSummary());
+    EventComparisonView({
+      el: _el,
+      collection: Collection(subEvents)
+    });
+
+    //_this.el.innerHTML = JSON.stringify(_event.getSummary());
   };
 
 
