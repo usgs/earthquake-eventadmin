@@ -36,28 +36,28 @@ var EventComparisonView = function (options) {
             className: 'magnitude',
             title: 'Magnitude',
             format: function (data) {
-              return data.magnitude + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.magnitude, data.magnitude) + ')</small>' : '');
+              return formatter.round(data.magnitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.magnitude, data.magnitude) + ')</small>' : '');
             }
           },
           {
             className: 'latitude',
             title: 'Latitude',
             format: function (data) {
-              return data.latitude + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.latitude, data.latitude) + ')</small>' : '');
+              return formatter.round(data.latitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.latitude, data.latitude) + ')</small>' : '');
             }
           },
           {
             className: 'longitude',
             title: 'Longitude',
             format: function (data) {
-              return data.longitude + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.longitude, data.longitude) + ')</small>' : '');
+              return formatter.round(data.longitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.longitude, data.longitude) + ')</small>' : '');
             }
           },
           {
             className: 'depth',
             title: 'Depth',
             format: function (data) {
-              return data.depth + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.depth, data.depth) + ')</small>' : '');
+              return formatter.round(data.depth) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.depth, data.depth) + ')</small>' : '');
             }
           },
           {

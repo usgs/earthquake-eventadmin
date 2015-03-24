@@ -38,9 +38,6 @@ var AssociatedEventView = function (options) {
         subEvents = _event.getSubEvents(),
         products = [];
 
-    // TODO parse products into 
-    console.log(_event.getSubEvents());
-
     for (key in subEvents) {
       products.push(subEvents[key].getSummary());
     }
@@ -55,7 +52,7 @@ var AssociatedEventView = function (options) {
   };
 
   _callback = function () {
-    console.log(event.target.getAttribute('data-id'));
+    console.log('disassociate: ' + event.target.getAttribute('data-id'));
   };
 
   _initialize();
