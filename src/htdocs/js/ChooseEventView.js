@@ -16,8 +16,10 @@ var ChooseEventView = function (options) {
       // variables
       _url,
       // methods
+      _createEventSearch,
       _createForm,
-      _createList;
+      _createList,
+      _errorMessage;
 
   _this = View(options);
 
@@ -32,6 +34,8 @@ var ChooseEventView = function (options) {
         '<section class="one-of-two column">' +
           '<header><h2>Significant Earthquakes</h2></header>' +
           '<div class="eqlist"></div>' +
+          '<header><h2>Event Time</h2></header>' +
+          '<div class="eventTime"></div>' +
         '</section>' +
         '<section class="one-of-two column">' +
           '<header><h2>Event Lookup</h2></header>' +
@@ -39,10 +43,59 @@ var ChooseEventView = function (options) {
         '</section>' +
       '</section>';
 
+    _createEventSearch(el.querySelector('.eventTime'));
     _createForm(el.querySelector('.form'));
-    _createList(el.querySelector('.eqlist'));
+    _createList(el.querySelector('.eqlist'), _url);
 
     options = null;
+  };
+
+  _createEventSearch = function (el) {
+    el.innerHTML = '<form class="vertical">' +
+        '<label for="eventTime">' +
+          'Time (UTC) ' +
+        '<br/>' +
+        '<small>Search 15 minutes around entered time.</small>' +
+        '</label>' +
+        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
+        '<br/>' +
+        '<button type="submit">Search</button>' +
+        '</form>' +
+        '<div class="searchList"></div>';
+
+    el.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var endtime,
+          starttime,
+          searchList,
+          time,
+          url;
+
+      searchList = '.searchList';
+      // get search time
+      time = el.querySelector('#eventTime').value;
+      time = new Date(time);
+
+      try {
+        // build search url
+        starttime = new Date(time.getTime() - 900000);
+        endtime = new Date(time.getTime() + 900000);
+
+        url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+            '&starttime=' + starttime.toISOString() +
+            '&endtime=' + endtime.toISOString();
+
+        // load search results
+        _createList(el.querySelector(searchList), url);
+      } catch (ex) {
+        _errorMessage(el.querySelector(searchList));
+      }
+    });
+  };
+
+  _errorMessage = function (el) {
+    el.innerHTML = '<p class="alert">Error! Must use valid time.</p>';
   };
 
   _createForm = function (el) {
@@ -74,9 +127,9 @@ var ChooseEventView = function (options) {
         '</ol>';
   };
 
-  _createList = function (el) {
+  _createList = function (el, url) {
     Xhr.ajax({
-      url: _url,
+      url: url,
       success: function (data) {
         var buf = [];
         data.features.forEach(function (eq) {
