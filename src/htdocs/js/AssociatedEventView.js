@@ -16,7 +16,7 @@ var AssociatedEventView = function (options) {
       _event,
 
       // methods
-      _callbackExample,
+      _associatedEventCallback,
       _createView;
 
   options = Util.extend({}, options);
@@ -50,15 +50,17 @@ var AssociatedEventView = function (options) {
       buttons: [
         {
           title: 'Disassociate',
-          className: 'disassociate',
-          callback: _callbackExample
+          className: 'disassociate'
         }
-      ]
+      ],
+      callback: _associatedEventCallback
     });
   };
 
-  _callbackExample = function (e) {
-    console.log('disassociate: ' + e.target.getAttribute('data-id'));
+  _associatedEventCallback = function (e) {
+    if (e.target.nodeName === 'BUTTON') {
+      console.log('disassociate: ' + e.target.getAttribute('data-id'));
+    }
   };
 
   _initialize();

@@ -102,31 +102,18 @@ var EventComparisonView = function (options) {
       // private variables
       _el = options.el,
       _buttons = options.buttons || [],
+      _callback = options.callback || null,
       _formatter = new Formatter({round: 3, empty: '&ndash;'}),
-      _referenceEvent = options.referenceEvent,
-
-      // methods
-      _registerListeners;
+      _referenceEvent = options.referenceEvent;
 
   options = Util.extend({}, DEFAULTS, options || {});
   _this = CollectionTable(options);
 
   _initialize = function () {
-    // Register listeners for all buttons in the view
-    for(var i = 0; i < _buttons.length; i++) {
-      _registerListeners(_el.querySelectorAll('.' + _buttons[i].className),
-          _buttons[i].callback);
-    }
+    // add click handler
+    _el.addEventListener('click', _callback);
   };
 
-  _registerListeners = function (elementArray, callback) {
-    var element = null;
-
-    for (var i = 0; i < elementArray.length; i++) {
-      element = elementArray[i];
-      element.addEventListener('click', callback);
-    }
-  };
 
   _initialize();
   return _this;
