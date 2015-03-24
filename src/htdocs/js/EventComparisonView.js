@@ -7,85 +7,109 @@ var CollectionTable = require('mvc/CollectionTable'),
 
 var EventComparisonView = function (options) {
 
+  var DEFAULTS = {
+      className: 'collection-table event-comparison tabular',
+      columns: [
+        {
+          className: 'eventid',
+          title: 'Event ID',
+          format: function (data) {
+            return data.id;
+          }
+        },
+        {
+          className: 'time',
+          title: 'Time',
+          format: function (data) {
+            return _formatter.time(data.time) + (_referenceEvent.id !== data.id ? ' <small>(' + _formatter.diff(_referenceEvent.time, data.time) + ')</small>' : '');
+          }
+        },
+        {
+          className: 'magnitude',
+          title: 'Magnitude',
+          format: function (data) {
+            return _formatter.round(data.magnitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.magnitude, data.magnitude) + ')</small>' : '');
+          }
+        },
+        {
+          className: 'latitude',
+          title: 'Latitude',
+          format: function (data) {
+            return _formatter.round(data.latitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.latitude, data.latitude) + ')</small>' : '');
+          }
+        },
+        {
+          className: 'longitude',
+          title: 'Longitude',
+          format: function (data) {
+            return _formatter.round(data.longitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.longitude, data.longitude) + ')</small>' : '');
+          }
+        },
+        {
+          className: 'depth',
+          title: 'Depth',
+          format: function (data) {
+            return _formatter.round(data.depth) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.depth, data.depth) + ')</small>' : '');
+          }
+        },
+        {
+          className: 'actions',
+          title: 'Actions',
+          format: function (data) {
+            var buf = [];
+
+            if (_referenceEvent.id === data.id) {
+              return '<b>This Event</b>';
+            }
+
+            if (_buttons.length !== 0) {
+              for (var i = 0; i < _buttons.length; i++) {
+                buf.push('<button class="', _buttons[i].className,
+                    '" data-id="', data.id, '">', _buttons[i].title,
+                    '</button>');
+              }
+            }
+
+            if (buf.length !== 0) {
+              return buf.join('');
+            } else {
+              return '';
+            }
+          }
+        }
+      ],
+      emptyMarkup: '&ndash;'
+    };
+
   var _this,
       _initialize,
 
+      // private variables
       _el = options.el,
-      _callback = options.callback,
+      _buttons = options.buttons || [],
+      _formatter = new Formatter({round: 3, empty: '&ndash;'}),
+      _referenceEvent = options.referenceEvent,
 
-      formatter = new Formatter({round: 3, empty: '&ndash;'}),
-      referenceEvent = options.referenceEvent,
-      DEFAULTS = {
-        className: 'collection-table event-comparison tabular',
-        columns: [
-          {
-            className: 'eventid',
-            title: 'Event ID',
-            format: function (data) {
-              return data.id;
-            }
-          },
-          {
-            className: 'time',
-            title: 'Time',
-            format: function (data) {
-              return formatter.time(data.time) + (referenceEvent.id !== data.id ? ' <small>(' + formatter.diff(referenceEvent.time, data.time) + ')</small>' : '');
-            }
-          },
-          {
-            className: 'magnitude',
-            title: 'Magnitude',
-            format: function (data) {
-              return formatter.round(data.magnitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.magnitude, data.magnitude) + ')</small>' : '');
-            }
-          },
-          {
-            className: 'latitude',
-            title: 'Latitude',
-            format: function (data) {
-              return formatter.round(data.latitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.latitude, data.latitude) + ')</small>' : '');
-            }
-          },
-          {
-            className: 'longitude',
-            title: 'Longitude',
-            format: function (data) {
-              return formatter.round(data.longitude) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.longitude, data.longitude) + ')</small>' : '');
-            }
-          },
-          {
-            className: 'depth',
-            title: 'Depth',
-            format: function (data) {
-              return formatter.round(data.depth) + (referenceEvent.id !== data.id ? ' <small>(' +formatter.diff(referenceEvent.depth, data.depth) + ')</small>' : '');
-            }
-          },
-          {
-            className: 'actions',
-            title: 'Actions',
-            format: function (data) {
-              if (referenceEvent.id === data.id) {
-                return '<b>This Event</b>';
-              } else {
-                return '<button class="disassociate" data-id="' + data.id + '">disassociate</button>';
-              }
-            }
-          }
-        ],
-        emptyMarkup: '&ndash;'
-    };
+      // methods
+      _registerListeners;
 
   options = Util.extend({}, DEFAULTS, options || {});
   _this = CollectionTable(options);
 
   _initialize = function () {
-    var buttons = _el.querySelectorAll('.disassociate');
+    // Register listeners for all buttons in the view
+    for(var i = 0; i < _buttons.length; i++) {
+      _registerListeners(_el.querySelectorAll('.' + _buttons[i].className),
+          _buttons[i].callback);
+    }
+  };
 
-    // Bind callback
-    if (_callback && buttons && buttons.length !== 0) {
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener('click', _callback);
-      }
+  _registerListeners = function (elementArray, callback) {
+    var element = null;
+
+    for (var i = 0; i < elementArray.length; i++) {
+      element = elementArray[i];
+      element.addEventListener('click', callback);
     }
   };
 

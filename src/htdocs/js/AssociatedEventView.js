@@ -16,7 +16,7 @@ var AssociatedEventView = function (options) {
       _event,
 
       // methods
-      _callback,
+      _callbackExample,
       _createView;
 
   options = Util.extend({}, options);
@@ -47,18 +47,23 @@ var AssociatedEventView = function (options) {
       el: _associatedEventsEl,
       referenceEvent: _event.getSummary(),
       collection: new Collection(products),
-      callback: _callback
+      buttons: [
+        {
+          title: 'Disassociate',
+          className: 'disassociate',
+          callback: _callbackExample
+        }
+      ]
     });
   };
 
-  _callback = function () {
-    console.log('disassociate: ' + event.target.getAttribute('data-id'));
+  _callbackExample = function (e) {
+    console.log('disassociate: ' + e.target.getAttribute('data-id'));
   };
 
   _initialize();
   return _this;
 };
-
 
 
 module.exports = AssociatedEventView;
