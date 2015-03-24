@@ -21,35 +21,50 @@ var EventComparisonView = function (options) {
           className: 'time',
           title: 'Time',
           format: function (data) {
-            return _formatter.time(data.time) + (_referenceEvent.id !== data.id ? ' <small>(' + _formatter.diff(_referenceEvent.time, data.time) + ')</small>' : '');
+            return _formatter.time(data.time) +
+                (_referenceEvent.id !== data.id? ' <small>(' +
+                _formatter.diff(_referenceEvent.time, data.time) +
+                ')</small>' : '');
           }
         },
         {
           className: 'magnitude',
           title: 'Magnitude',
           format: function (data) {
-            return _formatter.round(data.magnitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.magnitude, data.magnitude) + ')</small>' : '');
+            return _formatter.round(data.magnitude) +
+                (_referenceEvent.id !== data.id ? ' <small>(' +
+                _formatter.diff(_referenceEvent.magnitude, data.magnitude) +
+                ')</small>' : '');
           }
         },
         {
           className: 'latitude',
           title: 'Latitude',
           format: function (data) {
-            return _formatter.round(data.latitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.latitude, data.latitude) + ')</small>' : '');
+            return _formatter.round(data.latitude) +
+                (_referenceEvent.id !== data.id ? ' <small>(' +
+                _formatter.diff(_referenceEvent.latitude, data.latitude) +
+                ')</small>' : '');
           }
         },
         {
           className: 'longitude',
           title: 'Longitude',
           format: function (data) {
-            return _formatter.round(data.longitude) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.longitude, data.longitude) + ')</small>' : '');
+            return _formatter.round(data.longitude) +
+                (_referenceEvent.id !== data.id ? ' <small>(' +
+                _formatter.diff(_referenceEvent.longitude, data.longitude) +
+                ')</small>' : '');
           }
         },
         {
           className: 'depth',
           title: 'Depth',
           format: function (data) {
-            return _formatter.round(data.depth) + (_referenceEvent.id !== data.id ? ' <small>(' +_formatter.diff(_referenceEvent.depth, data.depth) + ')</small>' : '');
+            return _formatter.round(data.depth) +
+                (_referenceEvent.id !== data.id ? ' <small>(' +
+                _formatter.diff(_referenceEvent.depth, data.depth) +
+                ')</small>' : '');
           }
         },
         {
