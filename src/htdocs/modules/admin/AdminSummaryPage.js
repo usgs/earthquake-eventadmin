@@ -10,8 +10,8 @@ var AdminSummaryPage = function (options) {
 
   EventModulePage.call(this, options);
 };
-AdminSummaryPage.prototype = Object.create(EventModulePage.prototype);
 
+AdminSummaryPage.prototype = Object.create(EventModulePage.prototype);
 
 AdminSummaryPage.prototype._setContentMarkup = function () {
 
@@ -20,7 +20,6 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
     eventDetails: this._event
   });
 
-  //this._content.innerHTML = JSON.stringify(products);
 };
 
 

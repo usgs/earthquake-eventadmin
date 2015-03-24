@@ -16,14 +16,13 @@ var AssociatedEventView = function (options) {
       _event,
 
       // methods
-      createView,
-      callback;
+      _callback,
+      _createView;
 
-
+  options = Util.extend({}, options);
   _this = View(options);
 
   _initialize = function () {
-    options = Util.extend({}, options);
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
 
@@ -31,10 +30,10 @@ var AssociatedEventView = function (options) {
         '<div class="associated-events"></div>';
     _associatedEventsEl = _el.querySelector('.associated-events');
 
-    createView();
+    _createView();
   };
 
-  createView = function () {
+  _createView = function () {
     var key = null,
         subEvents = _event.getSubEvents(),
         products = [];
@@ -50,12 +49,13 @@ var AssociatedEventView = function (options) {
     EventComparisonView({
       el: _associatedEventsEl,
       referenceEvent: _event.getSummary(),
-      collection: new Collection(products)
+      collection: new Collection(products),
+      callback: _callback
     });
   };
 
-  callback = function () {
-    console.log('callback');
+  _callback = function () {
+    console.log(event.target.getAttribute('data-id'));
   };
 
   _initialize();

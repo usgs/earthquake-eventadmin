@@ -7,7 +7,13 @@ var CollectionTable = require('mvc/CollectionTable'),
 
 var EventComparisonView = function (options) {
 
-  var formatter = new Formatter({round: 3, empty: '&ndash;'}),
+  var _this,
+      _initialize,
+
+      _el = options.el,
+      _callback = options.callback,
+
+      formatter = new Formatter({round: 3, empty: '&ndash;'}),
       referenceEvent = options.referenceEvent,
       DEFAULTS = {
         className: 'collection-table event-comparison tabular',
@@ -61,7 +67,7 @@ var EventComparisonView = function (options) {
               if (referenceEvent.id === data.id) {
                 return '<b>This Event</b>';
               } else {
-                return '<button data-id="' + data.id + '">disassociate</button>';
+                return '<button class="disassociate" data-id="' + data.id + '">disassociate</button>';
               }
             }
           }
@@ -70,11 +76,22 @@ var EventComparisonView = function (options) {
     };
 
   options = Util.extend({}, DEFAULTS, options || {});
+  _this = CollectionTable(options);
 
-  CollectionTable.call(this, options);
+  _initialize = function () {
+    var buttons = _el.querySelectorAll('.disassociate');
+
+    // Bind callback
+    if (_callback && buttons && buttons.length !== 0) {
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', _callback);
+      }
+    }
+  };
+
+  _initialize();
+  return _this;
 };
-
-EventComparisonView.prototype = Object.create(CollectionTable.prototype);
 
 
 module.exports = EventComparisonView;
