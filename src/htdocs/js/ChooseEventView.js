@@ -95,7 +95,7 @@ var ChooseEventView = function (options) {
   };
 
   _errorMessage = function (el) {
-    el.innerHTML = '<p class="alert error">Error! Must use valid time.</p>';
+    el.innerHTML = '<p class="alert error">Must use valid time.</p>';
   };
 
   _createForm = function (el) {
