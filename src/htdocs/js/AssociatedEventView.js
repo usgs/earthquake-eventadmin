@@ -80,6 +80,22 @@ var AssociatedEventView = function (options) {
     console.log(eventSummary);
   };
 
+  /**
+   * Clean up private variables, methods, and remove event listeners.
+   */
+  _this.destroy = function () {
+
+    // methods
+    _disassociateCallback = null;
+    _createView = null;
+
+    // variables
+    _associatedEventsEl = null;
+    _el = null;
+    _event = null;
+    _subEvents = null;
+  };
+
   _initialize();
   return _this;
 };
