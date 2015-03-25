@@ -56,8 +56,8 @@ var EventComparisonView = function (options) {
    * Click handler that delegates the proper callback when a button is
    * clicked on in the CollectionTable.
    */
-  _onClick = function (event) {
-    var element = event.target,
+  _onClick = function (e) {
+    var element = e.target,
         eventid = null,
         title = null;
 
