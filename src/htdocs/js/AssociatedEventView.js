@@ -14,9 +14,10 @@ var AssociatedEventView = function (options) {
       _associatedEventsEl,
       _el,
       _event,
+      _subEvents,
 
       // methods
-      _associatedEventCallback,
+      _disassociateCallback,
       _createView;
 
   options = Util.extend({}, options);
@@ -34,33 +35,35 @@ var AssociatedEventView = function (options) {
   };
 
   _createView = function () {
-    var key = null,
-        subEvents = _event.getSubEvents(),
-        products = [];
+    var id = null,
+        events = [];
 
-    for (key in subEvents) {
-      products.push(subEvents[key].getSummary());
+    _subEvents = _event.getSubEvents();
+
+    for (id in _subEvents) {
+      events.push(_subEvents[id].getSummary());
     }
 
     // Collection table inserts markup via innerHTML
     EventComparisonView({
       el: _associatedEventsEl,
       referenceEvent: _event.getSummary(),
-      collection: new Collection(products),
+      collection: new Collection(events),
       buttons: [
         {
           title: 'Disassociate',
-          className: 'disassociate'
+          className: 'disassociate',
+          callback: _disassociateCallback
         }
-      ],
-      callback: _associatedEventCallback
+      ]
     });
   };
 
-  _associatedEventCallback = function (e) {
-    if (e.target.nodeName === 'BUTTON') {
-      console.log('disassociate: ' + e.target.getAttribute('data-id'));
-    }
+  _disassociateCallback = function (eventSummary) {
+    var preferredEventId = _event.getSummary().id;
+    // TODO, disassociate eventSummary.id from _event.getSummary().id (preferred)
+    console.log('preferred id: ' + preferredEventId);
+    console.log('remove id: ' + eventSummary.id);
   };
 
   _initialize();

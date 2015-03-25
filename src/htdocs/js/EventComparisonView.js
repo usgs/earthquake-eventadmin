@@ -100,20 +100,45 @@ var EventComparisonView = function (options) {
       _initialize,
 
       // private variables
-      _el = options.el,
       _buttons = options.buttons || [],
-      _callback = options.callback || null,
+      _callbackMap = {},
+      _collection = options.collection,
+      _el = options.el,
       _formatter = new Formatter({round: 3, empty: '&ndash;'}),
-      _referenceEvent = options.referenceEvent;
+      _referenceEvent = options.referenceEvent,
+
+      // private methods
+      _onClick;
 
   options = Util.extend({}, DEFAULTS, options || {});
   _this = CollectionTable(options);
 
   _initialize = function () {
+    var className =  null;
+
+    // TODO, build button map
+    for (var i = 0; i < _buttons.length; i++) {
+      className = _buttons[i].className;
+      if (!_callbackMap.hasOwnProperty(className)) {
+        _callbackMap[className] = _buttons[i].callback;
+      }
+    }
+
     // add click handler
-    _el.addEventListener('click', _callback);
+    _el.addEventListener('click', _onClick);
   };
 
+  _onClick = function () {
+    var eventid = null,
+        className = null;
+
+    if (event.target.nodeName.toUpperCase() === 'BUTTON') {
+      eventid = event.target.getAttribute('data-id');
+      className = event.target.className;
+      // execute callback for button with matching classname
+      _callbackMap[className](_collection.get(eventid));
+    }
+  };
 
   _initialize();
   return _this;
