@@ -31,7 +31,7 @@ var EventComparisonView = function (options) {
   _this = {};
 
   _initialize = function () {
-    var className =  null,
+    var title =  null,
         columns = _getColumns();
 
     options = Util.extend({}, DEFAULTS, options, columns);
@@ -39,9 +39,11 @@ var EventComparisonView = function (options) {
 
     // Build callback map, keys a button.classname with its callback parameter
     for (var i = 0; i < _buttons.length; i++) {
-      className = _buttons[i].className;
-      if (!_callbackMap.hasOwnProperty(className)) {
-        _callbackMap[className] = _buttons[i].callback;
+      title = _buttons[i].title;
+      if (_callbackMap.hasOwnProperty(title)) {
+        throw new Error('Buttons must use different title values.');
+      } else {
+        _callbackMap[title] = _buttons[i].callback;
       }
     }
 
@@ -53,15 +55,16 @@ var EventComparisonView = function (options) {
    * Click handler that delegates the proper callback when a button is
    * clicked on in the CollectionTable.
    */
-  _onClick = function () {
-    var eventid = null,
-        className = null;
+  _onClick = function (event) {
+    var element = event.target,
+        eventid = null,
+        title = null;
 
-    if (event.target.nodeName.toUpperCase() === 'BUTTON') {
-      eventid = event.target.getAttribute('data-id');
-      className = event.target.className;
+    if (element.nodeName.toUpperCase() === 'BUTTON') {
+      eventid = element.getAttribute('data-id');
+      title = element.innerHTML;
       // execute callback for the button with the matching classname
-      _callbackMap[className](_collection.get(eventid));
+      _callbackMap[title](_collection.get(eventid));
     }
   };
 
