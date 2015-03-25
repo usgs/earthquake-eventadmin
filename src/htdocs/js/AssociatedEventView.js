@@ -35,6 +35,7 @@ var AssociatedEventView = function (options) {
     _associatedEventsEl = _el.querySelector('.associated-events');
 
     _createView();
+    options = null;
   };
 
   /**

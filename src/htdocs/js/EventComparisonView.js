@@ -49,6 +49,7 @@ var EventComparisonView = function (options) {
 
     // add click handler to CollectionTable
     _collectionTable.el.addEventListener('click', _onClick);
+    options = null;
   };
 
   /**
