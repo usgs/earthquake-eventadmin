@@ -79,9 +79,10 @@ var EventComparisonView = function (options) {
         title: 'Time',
         format: function (data) {
           return _formatter.time(data.time) +
-              (_referenceEvent.id !== data.id? ' <small>(' +
-              _formatter.diff(_referenceEvent.time, data.time) +
-              ')</small>' : '');
+              (_referenceEvent.id === data.id ? '' :
+              ' <small>(' +
+                _formatter.diff(_referenceEvent.time, data.time) +
+              ')</small>');
         }
       },
       {
@@ -89,9 +90,10 @@ var EventComparisonView = function (options) {
         title: 'Magnitude',
         format: function (data) {
           return _formatter.round(data.magnitude) +
-              (_referenceEvent.id !== data.id ? ' <small>(' +
-              _formatter.diff(_referenceEvent.magnitude, data.magnitude) +
-              ')</small>' : '');
+              (_referenceEvent.id === data.id ? '' :
+              ' <small>(' +
+                _formatter.diff(_referenceEvent.magnitude, data.magnitude) +
+              ')</small>');
         }
       },
       {
@@ -99,9 +101,10 @@ var EventComparisonView = function (options) {
         title: 'Latitude',
         format: function (data) {
           return _formatter.round(data.latitude) +
-              (_referenceEvent.id !== data.id ? ' <small>(' +
-              _formatter.diff(_referenceEvent.latitude, data.latitude) +
-              ')</small>' : '');
+              (_referenceEvent.id === data.id ? '' :
+              ' <small>(' +
+                _formatter.diff(_referenceEvent.latitude, data.latitude) +
+              ')</small>');
         }
       },
       {
@@ -109,9 +112,10 @@ var EventComparisonView = function (options) {
         title: 'Longitude',
         format: function (data) {
           return _formatter.round(data.longitude) +
-              (_referenceEvent.id !== data.id ? ' <small>(' +
+              (_referenceEvent.id === data.id ? '' :
+              ' <small>(' +
               _formatter.diff(_referenceEvent.longitude, data.longitude) +
-              ')</small>' : '');
+              ')</small>');
         }
       },
       {
@@ -119,9 +123,10 @@ var EventComparisonView = function (options) {
         title: 'Depth',
         format: function (data) {
           return _formatter.round(data.depth) +
-              (_referenceEvent.id !== data.id ? ' <small>(' +
+              (_referenceEvent.id === data.id ? '' :
+              ' <small>(' +
               _formatter.diff(_referenceEvent.depth, data.depth) +
-              ')</small>' : '');
+              ')</small>');
         }
       },
       {
