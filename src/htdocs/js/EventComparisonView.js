@@ -20,7 +20,7 @@ var EventComparisonView = function (options) {
       _buttons = options.buttons || [],
       _callbackMap = {},
       _collection = options.collection,
-      //_el = options.el,
+      _collectionTable = null,
       _formatter = new Formatter({round: 3, empty: '&ndash;'}),
       _referenceEvent = options.referenceEvent,
 
@@ -32,11 +32,10 @@ var EventComparisonView = function (options) {
 
   _initialize = function () {
     var className =  null,
-        collectionTable = null,
-        columns = { 'columns': _getColumns() };
+        columns = _getColumns();
 
     options = Util.extend({}, DEFAULTS, options, columns);
-    collectionTable = new CollectionTable(options);
+    _collectionTable = new CollectionTable(options);
 
     // Build callback map, keys a button.classname with its callback parameter
     for (var i = 0; i < _buttons.length; i++) {
@@ -47,7 +46,7 @@ var EventComparisonView = function (options) {
     }
 
     // add click handler to CollectionTable
-    collectionTable.el.addEventListener('click', _onClick);
+    _collectionTable.el.addEventListener('click', _onClick);
   };
 
   /**
@@ -67,7 +66,7 @@ var EventComparisonView = function (options) {
   };
 
   _getColumns = function () {
-    return [
+    return { 'columns': [
       {
         className: 'eventid',
         title: 'Event ID',
@@ -150,7 +149,29 @@ var EventComparisonView = function (options) {
           }
         }
       }
-    ];
+    ]
+    };
+  };
+
+  /**
+   * Clean up private variables, methods, and remove event listeners.
+   */
+  _this.destroy = function () {
+
+      // Remove event listeners
+      _collectionTable.el.removeEventListener('click', _onClick);
+
+      // clean up private methods
+      _getColumns = null;
+      _onClick = null;
+
+      // clean up private variables
+      _buttons = null;
+      _callbackMap = null;
+      _collection = null;
+      _collectionTable = null;
+      _formatter = null;
+      _referenceEvent = null;
   };
 
   _initialize();
