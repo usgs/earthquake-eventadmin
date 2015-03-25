@@ -137,25 +137,21 @@ var EventComparisonView = function (options) {
         className: 'actions',
         title: 'Actions',
         format: function (data) {
-          var buf = [];
+          var buf;
 
           if (_referenceEvent.id === data.id) {
             return '<b>This Event</b>';
           }
 
-          if (_buttons.length !== 0) {
-            for (var i = 0; i < _buttons.length; i++) {
-              buf.push('<button class="', _buttons[i].className,
-                  '" data-id="', data.id, '">', _buttons[i].title,
-                  '</button>');
-            }
+          buf = [];
+
+          for (var i = 0; i < _buttons.length; i++) {
+            buf.push('<button class="' + _buttons[i].className +
+                '" data-id="' + data.id + '">' + _buttons[i].title +
+                '</button>');
           }
 
-          if (buf.length !== 0) {
-            return buf.join('');
-          } else {
-            return '';
-          }
+          return buf.join('');
         }
       }
     ]
