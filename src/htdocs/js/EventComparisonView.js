@@ -31,10 +31,10 @@ var EventComparisonView = function (options) {
   _this = {};
 
   _initialize = function () {
-    var title =  null,
-        columns = _getColumns();
+    var title =  null;
 
-    options = Util.extend({}, DEFAULTS, options, columns);
+    options = Util.extend({}, DEFAULTS, options);
+    options.columns = _getColumns();
     _collectionTable = CollectionTable(options);
 
     // Build callback map, keys a button.classname with its callback parameter
@@ -70,7 +70,7 @@ var EventComparisonView = function (options) {
   };
 
   _getColumns = function () {
-    return { 'columns': [
+    return [
       {
         className: 'eventid',
         title: 'Event ID',
@@ -154,8 +154,7 @@ var EventComparisonView = function (options) {
           return buf.join('');
         }
       }
-    ]
-    };
+    ];
   };
 
   /**
