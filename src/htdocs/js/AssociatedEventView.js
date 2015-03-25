@@ -56,7 +56,7 @@ var AssociatedEventView = function (options) {
     EventComparisonView({
       el: _associatedEventsEl,
       referenceEvent: _event.getSummary(),
-      collection: new Collection(events),
+      collection: Collection(events),
       buttons: [
         {
           title: 'Disassociate',

@@ -21,7 +21,7 @@ var EventComparisonView = function (options) {
       _callbackMap = {},
       _collection = options.collection,
       _collectionTable = null,
-      _formatter = new Formatter({round: 3, empty: '&ndash;'}),
+      _formatter = Formatter({round: 3, empty: '&ndash;'}),
       _referenceEvent = options.referenceEvent,
 
       // private methods
@@ -35,7 +35,7 @@ var EventComparisonView = function (options) {
         columns = _getColumns();
 
     options = Util.extend({}, DEFAULTS, options, columns);
-    _collectionTable = new CollectionTable(options);
+    _collectionTable = CollectionTable(options);
 
     // Build callback map, keys a button.classname with its callback parameter
     for (var i = 0; i < _buttons.length; i++) {
