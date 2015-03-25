@@ -116,7 +116,7 @@ var EventComparisonView = function (options) {
   _initialize = function () {
     var className =  null;
 
-    // TODO, build button map
+    // Build callback map, keys a button.classname with its callback parameter
     for (var i = 0; i < _buttons.length; i++) {
       className = _buttons[i].className;
       if (!_callbackMap.hasOwnProperty(className)) {
@@ -124,10 +124,14 @@ var EventComparisonView = function (options) {
       }
     }
 
-    // add click handler
+    // add click handler to CollectionTable
     _el.addEventListener('click', _onClick);
   };
 
+  /**
+   * Click handler that delegates the proper callback when a button is
+   * clicked on in the CollectionTable.
+   */
   _onClick = function () {
     var eventid = null,
         className = null;
@@ -135,7 +139,7 @@ var EventComparisonView = function (options) {
     if (event.target.nodeName.toUpperCase() === 'BUTTON') {
       eventid = event.target.getAttribute('data-id');
       className = event.target.className;
-      // execute callback for button with matching classname
+      // execute callback for the button with the matching classname
       _callbackMap[className](_collection.get(eventid));
     }
   };

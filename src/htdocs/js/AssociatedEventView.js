@@ -6,7 +6,9 @@ var EventComparisonView = require('./EventComparisonView'),
     Util = require('util/Util'),
     View = require('mvc/View');
 
+
 var AssociatedEventView = function (options) {
+
   var _this,
       _initialize,
 
@@ -23,6 +25,7 @@ var AssociatedEventView = function (options) {
   options = Util.extend({}, options);
   _this = View(options);
 
+
   _initialize = function () {
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
@@ -34,6 +37,10 @@ var AssociatedEventView = function (options) {
     _createView();
   };
 
+  /**
+   * Create the associated events table, this table contains all sub-events
+   * a disassociate button.
+   */
   _createView = function () {
     var id = null,
         events = [];
@@ -59,11 +66,18 @@ var AssociatedEventView = function (options) {
     });
   };
 
+  /**
+   * Disassociates a subevent from the event.
+   *
+   * @param  {object} eventSummary,
+   *         summary of the event to be removed
+   */
   _disassociateCallback = function (eventSummary) {
     var preferredEventId = _event.getSummary().id;
     // TODO, disassociate eventSummary.id from _event.getSummary().id (preferred)
     console.log('preferred id: ' + preferredEventId);
     console.log('remove id: ' + eventSummary.id);
+    console.log(eventSummary);
   };
 
   _initialize();
