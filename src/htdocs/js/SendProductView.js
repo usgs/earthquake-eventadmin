@@ -2,6 +2,7 @@
 
 var Util = require('util/Util'),
     View = require('mvc/View'),
+    ModalView = require('mvc/ModalView'),
 
     ProductSender = require('./ProductSender');
 
@@ -13,8 +14,11 @@ var Util = require('util/Util'),
  *        all options are passed to View.
  * @param options.product {Product}
  *        product to send.
- * @param options.formatProduct {Function(Product)}
+ * @param options.formatProduct {Function(product)}
  *        optional, override default formatting of product information.
+ *        returns html as string, or DOM element.
+ * @param options.formatResult {Function(status, xhr, data)}
+ *        optional, override default formatting of ProductSender result.
  *        returns html as string, or DOM element.
  * @param options.sender {ProductSender}
  *        optional, default ProductSender().
@@ -29,14 +33,13 @@ var SendProductView = function (options) {
   var _this,
       _initialize,
       // variables
-      _cancelButton,
+      _dialog,
       _infoEl,
       _product,
-      _resultEl,
-      _sendButton,
       _sender,
       // methods
       _formatProduct,
+      _formatResult,
       _onCancel,
       _onSend,
       _sendCallback;
@@ -49,27 +52,33 @@ var SendProductView = function (options) {
     _product = options.product;
     _sender = options.sender || ProductSender();
     _formatProduct = options.formatProduct || _formatProduct;
+    _formatResult = options.formatResult || _formatResult;
     // create elements
     el = _this.el;
-    el.innerHTML =
-        '<div class="sendproduct">' +
-          '<div class="product"></div>' +
-          '<div class="actions">' +
-            '<button class="send">Send</button>' +
-            '<button class="cancel">Cancel</button>' +
-          '</div>' +
-          '<div class="result"></div>' +
-        '</div>';
-    _infoEl = el.querySelector('.product');
-    _sendButton = el.querySelector('.send');
-    _cancelButton = el.querySelector('.cancel');
-    _resultEl = el.querySelector('.result');
-    // add event listeners
-    _sendButton.addEventListener('click', _onSend);
-    _cancelButton.addEventListener('click', _onCancel);
-    _product.on('change', _this.render);
+    el.innerHTML = '<div class="sendproduct"></div>';
+    _infoEl = el.querySelector('.sendproduct');
     // initial render
     _this.render();
+
+    // show modal dialog
+    _dialog = ModalView(el, {
+      title: 'Send Product',
+      closable: false,
+      buttons: [
+        {
+          classes: ['sendproduct-send', 'green'],
+          text: 'Send',
+          callback: _onSend
+        },
+        {
+          classes: ['sendproduct-cancel'],
+          text: 'Cancel',
+          callback: _onCancel
+        }
+      ]
+    });
+    _dialog.show();
+
     options = null;
   };
 
@@ -92,34 +101,52 @@ var SendProductView = function (options) {
     return buf.join('');
   };
 
+  _formatResult = function (status, xhr, data) {
+    data = data || xhr.responseText;
+    return '<div class="alert ' +
+                (status === 200 ? 'info' : 'error') + '">' +
+              '<h2>' + status + '</h2>' +
+              '<pre>' +
+                (typeof data === 'object' ?
+                    JSON.stringify(data, null, 2) :
+                    data) +
+              '</pre>' +
+            '</div>';
+  };
+
   _onCancel = function () {
+    _dialog.hide();
     _this.trigger('cancel');
   };
 
   _onSend = function () {
     _this.trigger('beforesend');
+    _dialog.el.querySelector('.sendproduct-send').disabled = true;
     _sender.sendProduct(_product, _sendCallback);
   };
 
   _sendCallback = function (status, xhr, data) {
-    // display results
-    data = data || xhr.responseText;
-    _resultEl.innerHTML =
-        '<div class="alert ' +
-            (status === 200 ? 'info' : 'error') + '">' +
-          '<h2>' + status + '</h2>' +
-          '<pre>' +
-            (typeof data === 'object' ?
-                JSON.stringify(data, null, 2) :
-                data) +
-          '</pre>' +
-        '</div>';
-    // trigger event
-    if (status === 200) {
-      _this.trigger('success');
+    var cancelButton,
+        sendButton,
+        formatted;
+
+    formatted = _formatResult(status, xhr, data);
+    if (typeof formatted === 'string') {
+      _infoEl.innerHTML = formatted;
     } else {
-      _this.trigger('error');
+      _infoEl.innerHTML = '';
+      _infoEl.appendChild(formatted);
     }
+
+    // hide send button
+    sendButton = _dialog.el.querySelector('.sendproduct-send');
+    sendButton.style.display = 'none';
+    // update cancel button
+    cancelButton = _dialog.el.querySelector('.sendproduct-cancel');
+    cancelButton.innerHTML = 'Done';
+    cancelButton.classList.add('green');
+    // trigger event
+    _this.trigger(status === 200 ? 'success' : 'error');
   };
 
 
@@ -128,15 +155,12 @@ var SendProductView = function (options) {
    */
   _this.destroy = Util.compose(function () {
     // remove event listeners
-    _sendButton.removeEventListener('click', _onSend);
-    _cancelButton.removeEventListener('click', _onCancel);
-    _product.off('change', _this.render);
+    _dialog.hide();
+    _dialog.destroy();
     // free references
-    _cancelButton = null;
+    _dialog = null;
     _infoEl = null;
     _product = null;
-    _resultEl = null;
-    _sendButton = null;
     _sender = null;
     _formatProduct = null;
     _onCancel = null;
