@@ -27,7 +27,21 @@ CreateProductPage.prototype._setContentMarkup = function () {
     var productSender = ProductSender();
     productSender.sendProduct(product, function (status, xhr, data) {
       var result = el.querySelector('.sendResult');
-      result.innerHTML = status + (data ? '<pre>' + data + '</pre>' : '');
+      result.classList.add('alert');
+      if (status === 200) {
+        result.classList.remove('error');
+        result.classList.add('info');
+      } else {
+        result.classList.remove('info');
+        result.classList.add('error');
+        data = xhr.responseText;
+      }
+
+      result.innerHTML = status +
+          '<pre>' +
+          (typeof data === 'string' ? data :
+              JSON.stringify(data, null, 2)) +
+          '</pre>';
     });
   });
 };
