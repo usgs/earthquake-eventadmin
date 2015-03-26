@@ -82,9 +82,9 @@ $prompts = array(
     'secure' => false
   ),
 
-  'PDL_COMMAND' => array(
-    'prompt' => 'Command to execute PDL',
-    'default' => 'java -jar lib/ProductClient.jar',
+  'PDL_JAR_FILE' => array(
+    'prompt' => 'Path to PDL jar file (will offer to download later)',
+    'default' => $LIB_DIR . '/ProductClient.jar',
     'secure' => false
   ),
 

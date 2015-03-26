@@ -7,24 +7,24 @@
  */
 class ProductSender {
 
-	public static $STATUS_UPDATE = "UPDATE";
-	public static $STATUS_DELETE = "DELETE";
+	public static $STATUS_UPDATE = 'UPDATE';
+	public static $STATUS_DELETE = 'DELETE';
 
-	public static $DEFAULT_TRACKER_URL = "http://ehppdl1.cr.usgs.gov/tracker/";
-	public static $DEFAULT_INLINE_CONTENT_TYPE = "text/plain";
+	public static $DEFAULT_TRACKER_URL = 'http://ehppdl1.cr.usgs.gov/tracker/';
+	public static $DEFAULT_INLINE_CONTENT_TYPE = 'text/plain';
 
 	public static $EXIT_CODES = array(
-		0 => "OKAY",
-		1 => "EXIT_INVALID_ARGUMENTS",
-		2 => "EXIT_UNABLE_TO_BUILD",
-		3 => "EXIT_UNABLE_TO_SEND",
-		4 => "EXIT_PARTIALLY_SENT"
+		0 => 'OKAY',
+		1 => 'EXIT_INVALID_ARGUMENTS',
+		2 => 'EXIT_UNABLE_TO_BUILD',
+		3 => 'EXIT_UNABLE_TO_SEND',
+		4 => 'EXIT_PARTIALLY_SENT'
 	);
 
 	private $command;
 	private $workingDir;
 
-	private $configFile;
+	private $servers;
 
 	private $source;
 	private $type;
@@ -54,8 +54,8 @@ class ProductSender {
 	public function getWorkingDir() { return $this->workingDir; }
 	public function setWorkingDir($working) { $this->workingDir = $working; }
 
-	public function getConfigFile() { return $this->configFile; }
-	public function setConfigFile($configFile) { $this->configFile = $configFile; }
+	public function getServers() { return $this->servers; }
+	public function setServers($servers) { $this->servers = $servers; }
 
 	public function getSource() { return $this->source; }
 	public function setSource($source) { $this->source = $source; }
@@ -106,6 +106,7 @@ class ProductSender {
 		}
 
 		$args[] = ' --send';
+		$args[] = escapeshellarg('--servers=' . $this->servers);
 		$args[] = escapeshellarg('--source=' . $this->source);
 		$args[] = escapeshellarg('--type=' . $this->type);
 		$args[] = escapeshellarg('--code=' . $this->code);
@@ -142,22 +143,21 @@ class ProductSender {
 			$args[] = escapeshellarg('--privateKey=' . $this->privateKeyFile);
 		}
 
-		$command = $command . ' ' . implode(" ", $args);
+		$command = $command . ' ' . implode(' ', $args);
 
 
 		//echo 'Using command ' . $command;
 
 
 		$descriptors = array(
-			0 => array("pipe", "r"), //stdin
-			1 => array("pipe", "w"), //stdout
-			2 => array("pipe", "w")
+			0 => array('pipe', 'r'), //stdin
+			1 => array('pipe', 'w'), //stdout
+			2 => array('pipe', 'w')
 		);
 
 		$process = proc_open($command, $descriptors, $pipes, $this->workingDir);
 		if (!is_resource($process)) {
-			trigger_error("Unable to start process using command '" . $command . "'");
-			return false;
+			throw new Exception("Unable to start process using command '" . $command . "'");
 		}
 
 		if ($this->inlineContent) {
@@ -172,11 +172,11 @@ class ProductSender {
 		$exitCode = proc_close($process);
 
 		return array(
-				"exitCode" => $exitCode,
-				"input" => $this->inlineContent,
-				"output" => $output,
-				"error" => $error,
-				"command" => $command
+				'exitCode' => $exitCode,
+				'input' => $this->inlineContent,
+				'output' => $output,
+				'error' => $error,
+				'command' => $command
 			);
 	}
 
