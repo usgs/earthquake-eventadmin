@@ -13,11 +13,12 @@ var DEFAULTS = {
 var ChooseEventView = function (options) {
   var _this,
       _initialize,
-      // variables
-      _url,
-      _searchList,
+
       _eventTime,
-      // methods
+      _searchForm,
+      _searchList,
+      _url,
+
       _createEventSearch,
       _createForm,
       _createList,
@@ -65,10 +66,11 @@ var ChooseEventView = function (options) {
         '</form>' +
         '<div class="searchList"></div>';
 
-        _searchList = el.querySelector('.searchList');
-        _eventTime = el.querySelector('#eventTime');
+    _searchList = el.querySelector('.searchList');
+    _eventTime = el.querySelector('#eventTime');
+    _searchForm = el.querySelector('form');
 
-        el.querySelector('form').addEventListener('submit', _onEventSearchSubmit);
+    _searchForm.addEventListener('submit', _onEventSearchSubmit);
   };
 
   _onEventSearchSubmit = function (e) {
@@ -88,7 +90,6 @@ var ChooseEventView = function (options) {
     }
 
     try {
-      // build search url
       startTime = new Date(searchTime.getTime() - 900000);
       endTime = new Date(searchTime.getTime() + 900000);
 
@@ -96,7 +97,6 @@ var ChooseEventView = function (options) {
           '&starttime=' + startTime.toISOString() +
           '&endtime=' + endTime.toISOString();
 
-      // load search results
       _createList(_searchList, url);
     } catch (ex) {
       _searchList.innerHTML = '<p class="alert error">Must use valid time.</p>';
@@ -160,6 +160,19 @@ var ChooseEventView = function (options) {
       }
     });
   };
+
+  _this.destroy = Util.compose(function () {
+    _searchForm.removeEventListener('submit', _onEventSearchSubmit);
+
+    _createEventSearch = null;
+    _createForm = null;
+    _createList = null;
+    _eventTime = null;
+    _onEventSearchSubmit = null;
+    _searchList = null;
+    _searchForm = null;
+    _url = null;
+  }, _this.destroy);
 
   _initialize();
   return _this;
