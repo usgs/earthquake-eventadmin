@@ -1,5 +1,8 @@
 'use strict';
 
+var Model = require('mvc/Model'),
+    Util = require('util/Util');
+
 
 var STATUS_UPDATE = 'UPDATE',
     STATUS_DELETE = 'DELETE';
@@ -21,7 +24,6 @@ var STATUS_UPDATE = 'UPDATE',
  *        product code.
  * @param options.updateTime {Number}
  *        product update time.
- *        default new Date().getTime().
  * @param options.status {String}
  *        product status.
  *        default Product.STATUS_UPDATE,
@@ -48,35 +50,22 @@ var Product = function (options) {
   var _this,
       _initialize;
 
-  _this = {
+  _this = Model(Util.extend({
+    id: null,
     source: null,
     type: null,
     code: null,
     updateTime: null,
-    status: null,
-    properties: null,
-    contents: null,
+    status: STATUS_UPDATE,
+    properties: {},
+    links: {},
+    contents: {},
     preferredWeight: null
-  };
+  }, options));
 
   _initialize = function () {
-    options = options || {};
-
-    _this.source = options.source;
-    _this.type = options.type;
-    _this.code = options.code;
-    _this.updateTime = options.updateTime ?
-        new Date(options.updateTime) :
-        new Date();
-    _this.status = options.status || STATUS_UPDATE;
-    _this.properties = options.properties || {};
-    _this.links = options.links || {};
-    _this.contents = options.contents || {};
-    _this.preferredWeight = options.preferredWeight || null;
-
     options = null;
   };
-
 
   _initialize();
   return _this;
