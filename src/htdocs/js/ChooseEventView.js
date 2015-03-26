@@ -57,7 +57,7 @@ var ChooseEventView = function (options) {
         '<br/>' +
         '<small>Search 15 minutes around entered time.</small>' +
         '</label>' +
-        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
+        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-ddThh:mm:ssZ"/>' +
         '<br/>' +
         '<button type="submit">Search</button>' +
         '</form>' +
