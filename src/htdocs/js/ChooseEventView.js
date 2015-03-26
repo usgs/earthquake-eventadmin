@@ -72,25 +72,29 @@ var ChooseEventView = function (options) {
   };
 
   _onEventSearchSubmit = function (e) {
-    e.preventDefault();
-
-    var endtime,
+    var endTime,
         searchTime,
-        starttime,
+        startTime,
         url;
 
-    // get search time
+    e.preventDefault();
 
-    searchTime = new Date(_eventTime.value);
+    searchTime = _eventTime.value.toUpperCase();
+
+    if (searchTime.indexOf('Z') === -1) {
+      searchTime = new Date(searchTime.concat('Z'));
+    } else {
+      searchTime = new Date(searchTime);
+    }
 
     try {
       // build search url
-      starttime = new Date(searchTime.getTime() - 900000);
-      endtime = new Date(searchTime.getTime() + 900000);
+      startTime = new Date(searchTime.getTime() - 900000);
+      endTime = new Date(searchTime.getTime() + 900000);
 
       url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
-          '&starttime=' + starttime.toISOString() +
-          '&endtime=' + endtime.toISOString();
+          '&starttime=' + startTime.toISOString() +
+          '&endtime=' + endTime.toISOString();
 
       // load search results
       _createList(_searchList, url);
