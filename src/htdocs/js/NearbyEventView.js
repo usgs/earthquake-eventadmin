@@ -30,16 +30,22 @@ var NearbyEventView = function (options) {
   _this = View(options);
 
   _initialize = function () {
-    _el = options.el;
+    var sectionEl = document.createElement('section');
+
+    _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
     _url = _getSearchUrl();
 
-    _el.innerHTML = '<h3>Nearby Events</h3>' +
+    sectionEl.classname = 'nearby-event-view';
+    sectionEl.innerHTML = '<h3>Nearby Events</h3>' +
         '<div class="nearby-events"></div>';
-    _nearbyEventsEl = _el.querySelector('.nearby-events');
+    _nearbyEventsEl = sectionEl.querySelector('.nearby-events');
 
-    // TODO, get nearby events
     _createView();
+
+    // Append to AdminSummaryPage
+    _el.appendChild(sectionEl);
+    options = null;
   };
 
   /**
