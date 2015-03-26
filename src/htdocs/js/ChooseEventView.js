@@ -15,11 +15,13 @@ var ChooseEventView = function (options) {
       _initialize,
       // variables
       _url,
+      _searchList,
+      _eventTime,
       // methods
       _createEventSearch,
       _createForm,
       _createList,
-      _errorMessage;
+      _onEventSearchSubmit;
 
   _this = View(options);
 
@@ -57,45 +59,44 @@ var ChooseEventView = function (options) {
         '<br/>' +
         '<small>Search 15 minutes around entered time.</small>' +
         '</label>' +
-        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-ddThh:mm:ssZ"/>' +
+        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
         '<br/>' +
         '<button type="submit">Search</button>' +
         '</form>' +
         '<div class="searchList"></div>';
 
-    el.querySelector('form').addEventListener('submit', function(e) {
-      e.preventDefault();
+        _searchList = el.querySelector('.searchList');
+        _eventTime = el.querySelector('#eventTime');
 
-      var endtime,
-          starttime,
-          searchList,
-          time,
-          url;
-
-      searchList = '.searchList';
-      // get search time
-      time = el.querySelector('#eventTime').value;
-      time = new Date(time);
-
-      try {
-        // build search url
-        starttime = new Date(time.getTime() - 900000);
-        endtime = new Date(time.getTime() + 900000);
-
-        url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
-            '&starttime=' + starttime.toISOString() +
-            '&endtime=' + endtime.toISOString();
-
-        // load search results
-        _createList(el.querySelector(searchList), url);
-      } catch (ex) {
-        _errorMessage(el.querySelector(searchList));
-      }
-    });
+        el.querySelector('form').addEventListener('submit', _onEventSearchSubmit);
   };
 
-  _errorMessage = function (el) {
-    el.innerHTML = '<p class="alert error">Must use valid time.</p>';
+  _onEventSearchSubmit = function (e) {
+    e.preventDefault();
+
+    var endtime,
+        searchTime,
+        starttime,
+        url;
+
+    // get search time
+
+    searchTime = new Date(_eventTime.value);
+
+    try {
+      // build search url
+      starttime = new Date(searchTime.getTime() - 900000);
+      endtime = new Date(searchTime.getTime() + 900000);
+
+      url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+          '&starttime=' + starttime.toISOString() +
+          '&endtime=' + endtime.toISOString();
+
+      // load search results
+      _createList(_searchList, url);
+    } catch (ex) {
+      _searchList.innerHTML = '<p class="alert error">Must use valid time.</p>';
+    }
   };
 
   _createForm = function (el) {
