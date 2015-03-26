@@ -80,7 +80,26 @@ $prompts = array(
     'prompt' => 'Offsite host where content exists',
     'default' => 'earthquake.usgs.gov',
     'secure' => false
+  ),
+
+  'PDL_JAR_FILE' => array(
+    'prompt' => 'Path to PDL jar file (will offer to download later)',
+    'default' => $LIB_DIR . '/ProductClient.jar',
+    'secure' => false
+  ),
+
+  'PDL_SERVERS' => array(
+    'prompt' => 'Server(s) where products are sent ( HOST:PORT[,HOST:PORT] )',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'PDL_PRIVATE_KEY' => array(
+    'prompt' => 'Private key used to sign products',
+    'default' => '',
+    'secure' => false
   )
+
 );
 
 foreach ($prompts as $key => $item) {

@@ -48,11 +48,7 @@ if (!isset($TEMPLATE)) {
     exit(-1);
   }
 
-  $replaceWith = 'url":"';
-  $searchFor = $replaceWith . $OFFSITE_HOST;
-
-  $EVENT = json_decode(str_replace(
-      $searchFor, $replaceWith, $EVENT_FEED), true);
+  $EVENT = json_decode($EVENT_FEED, true);
 
   $PROPERTIES = $EVENT['properties'];
   $GEOMETRY = $EVENT['geometry'];
