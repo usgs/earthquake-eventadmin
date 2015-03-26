@@ -53,3 +53,13 @@ file_put_contents($HTTPD_CONF, '
     ExpiresDefault "access plus 1 days"
   </Location>
 ');
+
+
+include_once './functions.inc.php';
+if (!file_exists($CONFIG['PDL_JAR_FILE'])) {
+  if (promptYesNo('Download PDL Jar File?')) {
+    downloadURL(
+        'http://ehppdl1.cr.usgs.gov/ProductClient/ProductClient.jar',
+        $CONFIG['PDL_JAR_FILE']);
+  }
+}
