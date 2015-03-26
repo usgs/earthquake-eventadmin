@@ -1,2 +1,23 @@
 // this is from earthquake-eventpages
-@import 'css/index.scss'
+@import 'css/index';
+@import 'mvc/ModalView';
+
+/* this supports both location view and dyfi-form */
+.modal-dialog {
+
+  > .modal-content {
+    padding-bottom: 25px;
+  }
+
+  > .modal-footer {
+    line-height: 40px;
+    padding: 0.5em 1em;
+    background: #fff;
+    height: inherit;
+
+    button {
+      vertical-align:middle;
+      margin: 0 8px 0 0;
+    }
+  }
+}
