@@ -1,5 +1,6 @@
 'use strict';
 
+var Util = require('util/Util');
 
 /**
  * Convert a product map to an array.
@@ -176,7 +177,7 @@ var getProductWithEventIdProperties = function (list) {
 /**
  * An event is a collection of products.
  */
-var CatalogEvent = function (products, properties) {
+var CatalogEvent = function (eventDetails) {
   var _this,
       _initialize,
       _products,
@@ -186,12 +187,15 @@ var CatalogEvent = function (products, properties) {
   _this = Object.create({});
 
   _initialize = function () {
-    _products = products;
-    _properties = properties || {};
+    _products = {};
+    _properties = {};
+    if (typeof eventDetails !== 'undefined') {
+      _products = eventDetails.properties.products;
+      _properties = Util.extend({}, eventDetails.properties, {products:null});
+    }
     _summary = null;
     // clean up
-    products = null;
-    properties = null;
+    eventDetails = null;
   };
 
   /**
@@ -517,7 +521,7 @@ var CatalogEvent = function (products, properties) {
         withoutSuperseded;
 
     preferredEventId = _this.getEventId();
-    preferredEvent = CatalogEvent({});
+    preferredEvent = CatalogEvent();
     productEvents = {};
     subEvents = {};
     subEvents[preferredEventId] = preferredEvent;
@@ -540,7 +544,7 @@ var CatalogEvent = function (products, properties) {
       } else {
         subEventId = eventSource + eventCode;
         if (!subEvents.hasOwnProperty(subEventId)) {
-          subEvents[subEventId] = CatalogEvent({});
+          subEvents[subEventId] = CatalogEvent();
         }
         subEvent = subEvents[subEventId];
       }
@@ -632,14 +636,15 @@ var CatalogEvent = function (products, properties) {
     eventIdProduct = _this.getEventIdProduct();
     if (eventIdProduct !== null) {
       props = eventIdProduct.properties;
-      _summary.id = props.source + props.sourceCode;
-      _summary.source = props.source;
-      _summary.sourceCode = props.sourceCode;
+      _summary.id = props.eventsource + props.eventsourcecode;
+      _summary.source = props.eventsource;
+      _summary.sourceCode = props.eventsourcecode;
     }
 
     originProduct = _this.getProductWithOriginProperties();
     if (originProduct !== null) {
       props = originProduct.properties;
+      _summary.depth = Number(props.depth);
       _summary.latitude = Number(props.latitude);
       _summary.longitude = Number(props.longitude);
       _summary.time = new Date(props.eventtime);
