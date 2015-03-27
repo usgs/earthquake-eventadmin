@@ -1,0 +1,20 @@
+
+
+.sendproduct {
+
+  dd > dl {
+    margin-top: 0;
+
+    > dt {
+      float:left;
+      clear:left;
+      margin-right:8px;
+      font-weight:normal;
+
+      &:after {
+        content: ': ';
+      }
+    }
+  }
+
+}

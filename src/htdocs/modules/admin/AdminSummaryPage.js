@@ -1,6 +1,6 @@
 'use strict';
 
-var AssociatedEventView = require('AssociatedEventView'),
+var AssociatedEventView = require('admin/AssociatedEventView'),
     EventModulePage = require('base/EventModulePage'),
     Util = require('util/Util');
 
