@@ -124,7 +124,7 @@ var EventsNearbyView = function (options) {
     // build search url
     starttime = new Date(time.getTime() - 900000);
     endtime = new Date(time.getTime() + 900000);
-    url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+    url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time-asc' +
         '&starttime=' + starttime.toISOString() +
         '&endtime=' + endtime.toISOString();
 
