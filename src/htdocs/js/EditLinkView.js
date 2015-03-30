@@ -1,5 +1,8 @@
 'use strict';
 
+var View = require('mvc/View'),
+    Util = require('util/Util');
+
 
 var DATA_DEFAULTS = {
   id: null,
@@ -25,7 +28,7 @@ var EditLinkView = function (options) {
 
 
   _initialize = function (options) {
-    _data = extend({}, DATA_DEFAULTS, options.data);
+    _data = Util.extend({}, DATA_DEFAULTS, options.data);
 
     _this.el.innerHTML =
       '<div>' +
@@ -52,7 +55,7 @@ var EditLinkView = function (options) {
     _cancel.addEventListener('click', _onCancel);
   };
 
-  _onSubmit = function (options) {
+  _onSubmit = function (_data) {
     _data.text = _text;
     _data.url = _url;
 
@@ -68,4 +71,4 @@ var EditLinkView = function (options) {
 
 };
 
-module.exports = EventAdminView;
+module.exports = EditLinkView;
