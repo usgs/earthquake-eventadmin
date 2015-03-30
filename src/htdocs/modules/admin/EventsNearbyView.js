@@ -61,11 +61,7 @@ var EventsNearbyView = function (options) {
             feature = null,
             properties = null;
 
-        console.log(data);
-        _nearbyEventsEl.innerHTML = '<p>There are ' + data.metadata.count +
-            ' events within a fifteen minute window of the event.</p>';
-
-        // Build events array with details for Collection
+        // Build array of events with event details for Collection
         for (var i = 0; i < data.features.length; i++) {
           feature = data.features[i];
           properties = feature.properties;
