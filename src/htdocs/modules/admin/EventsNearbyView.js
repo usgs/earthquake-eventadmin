@@ -1,6 +1,6 @@
 'use strict';
 
-var AssociateProductView = require('admin/AssociateProductView'),
+var AssociateEventView = require('admin/AssociateEventView'),
     EventComparisonView = require('admin/EventComparisonView'),
     CatalogEvent = require('CatalogEvent'),
     Collection = require('mvc/Collection'),
@@ -14,7 +14,7 @@ var DEFAULTS = {
 };
 
 
-var NearbyEventView = function (options) {
+var EventsNearbyView = function (options) {
   var _this,
       _initialize,
       // variables
@@ -103,7 +103,7 @@ var NearbyEventView = function (options) {
 
   _associateCallback = function (eventSummary) {
 
-    AssociateProductView({
+    AssociateEventView({
       'referenceEvent' : _event.getSummary(),
       'associateEvent': eventSummary
     });
@@ -141,4 +141,4 @@ var NearbyEventView = function (options) {
 };
 
 
-module.exports = NearbyEventView;
+module.exports = EventsNearbyView;

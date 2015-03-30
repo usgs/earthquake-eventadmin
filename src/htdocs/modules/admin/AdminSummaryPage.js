@@ -1,7 +1,7 @@
 'use strict';
 
-var AssociatedEventView = require('admin/AssociatedEventView'),
-    NearbyEventView = require('admin/NearbyEventView'),
+var EventsAssociatedView = require('admin/EventsAssociatedView'),
+    EventsNearbyView = require('admin/EventsNearbyView'),
     EventModulePage = require('base/EventModulePage'),
     Util = require('util/Util');
 
@@ -16,12 +16,12 @@ AdminSummaryPage.prototype = Object.create(EventModulePage.prototype);
 
 AdminSummaryPage.prototype._setContentMarkup = function () {
 
-  AssociatedEventView({
+  EventsAssociatedView({
     el: this._content,
     eventDetails: this._event
   });
 
-  NearbyEventView({
+  EventsNearbyView({
     el: this._content,
     eventDetails: this._event
   });

@@ -3,7 +3,7 @@
 var View = require('mvc/View'),
     ModalView = require('mvc/ModalView');
 
-var AssociateProductView = function (options) {
+var AssociateEventView = function (options) {
   var _this,
       _initialize,
 
@@ -71,4 +71,4 @@ var AssociateProductView = function (options) {
   return _this;
 };
 
-module.exports = AssociateProductView;
+module.exports = AssociateEventView;

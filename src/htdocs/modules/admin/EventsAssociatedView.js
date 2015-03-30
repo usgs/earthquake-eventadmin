@@ -9,7 +9,7 @@ var EventComparisonView = require('admin/EventComparisonView'),
     SendProductView = require('admin/SendProductView');
 
 
-var AssociatedEventView = function (options) {
+var EventsAssociatedView = function (options) {
 
   var _this,
       _initialize,
@@ -158,4 +158,4 @@ var AssociatedEventView = function (options) {
 };
 
 
-module.exports = AssociatedEventView;
+module.exports = EventsAssociatedView;
