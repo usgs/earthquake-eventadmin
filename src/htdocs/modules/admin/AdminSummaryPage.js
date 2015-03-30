@@ -1,8 +1,8 @@
 'use strict';
 
 var AssociatedEventView = require('admin/AssociatedEventView'),
+    NearbyEventView = require('admin/NearbyEventView'),
     EventModulePage = require('base/EventModulePage'),
-    NearbyEventView = require('NearbyEventView'),
     Util = require('util/Util');
 
 

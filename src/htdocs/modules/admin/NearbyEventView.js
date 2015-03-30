@@ -1,7 +1,8 @@
 'use strict';
 
-var CatalogEvent = require('./CatalogEvent'),
-    EventComparisonView = require('./EventComparisonView'),
+var AssociateProductView = require('admin/AssociateProductView'),
+    EventComparisonView = require('admin/EventComparisonView'),
+    CatalogEvent = require('CatalogEvent'),
     Collection = require('mvc/Collection'),
     View = require('mvc/View'),
     Util = require('util/Util'),
@@ -37,7 +38,7 @@ var NearbyEventView = function (options) {
     _url = _getSearchUrl();
 
     section.classname = 'nearby-event-view';
-    section.innerHTML = '<h3>Nearby Events</h3>' +
+    section.innerHTML = '<h3>Events Within 15 Minutes</h3>' +
         '<div class="nearby-events"></div>';
     _nearbyEventsEl = section.querySelector('.nearby-events');
 
@@ -69,12 +70,14 @@ var NearbyEventView = function (options) {
           feature = data.features[i];
           properties = feature.properties;
           events[i] = {
-            'id'        : feature.id,
-            'longitude' : feature.geometry.coordinates[0],
-            'latitude'  : feature.geometry.coordinates[1],
-            'depth'     : feature.geometry.coordinates[2],
-            'time'      : new Date(properties.time),
-            'magnitude' : properties.mag,
+            'id'         : feature.id,
+            'source'     : properties.net,
+            'sourceCode' : properties.code,
+            'longitude'  : feature.geometry.coordinates[0],
+            'latitude'   : feature.geometry.coordinates[1],
+            'depth'      : feature.geometry.coordinates[2],
+            'time'       : new Date(properties.time),
+            'magnitude'  : properties.mag
           };
         }
 
@@ -98,9 +101,12 @@ var NearbyEventView = function (options) {
   };
 
 
-  _associateCallback = function (data) {
-    // TODO, pop-up dialog with confirmation to associate
-    console.log(data);
+  _associateCallback = function (eventSummary) {
+
+    AssociateProductView({
+      'referenceEvent' : _event.getSummary(),
+      'associateEvent': eventSummary
+    });
   };
 
   /**
