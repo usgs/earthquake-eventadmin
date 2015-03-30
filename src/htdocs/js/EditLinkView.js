@@ -23,9 +23,8 @@ var EditLinkView = function (options) {
 
 
   _initialize = function (options) {
-    _data = extend({}, DATA_DEFAULTS, options.data)
+    _data = extend({}, DATA_DEFAULTS, options.data);
     _createLinkForm();
-
   };
 
   _createLinkForm = function () {
@@ -58,17 +57,13 @@ var EditLinkView = function (options) {
     });
   };
 
-  _onSubmit = function () {
+  _onSubmit = function (options) {
     options.data.text = _text;
     options.data.url = _url;
   };
 
   _cancel = function () {
     window.history.go(-1);
-  };
-
-  _this.render = function () {
-
   };
 
   _initialize();
