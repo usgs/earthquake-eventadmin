@@ -4,7 +4,7 @@ var EventModulePage = require('base/EventModulePage'),
     Util = require('util/Util'),
 
     Product = require('Product'),
-    SendProductView = require('SendProductView');
+    SendProductView = require('admin/SendProductView');
 
 
 var CreateProductPage = function (options) {

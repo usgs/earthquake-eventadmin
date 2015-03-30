@@ -667,4 +667,12 @@ var CatalogEvent = function (eventDetails) {
 };
 
 
+// add static methods
+CatalogEvent.productMapToList = productMapToList;
+CatalogEvent.getWithoutDeleted = getWithoutDeleted;
+CatalogEvent.getWithoutSuperseded = getWithoutSuperseded;
+CatalogEvent.getSortedMostPreferredFirst = getSortedMostPreferredFirst;
+CatalogEvent.productHasOriginProperties = productHasOriginProperties;
+
+
 module.exports = CatalogEvent;
