@@ -12,22 +12,21 @@ var EditLinkView = function (options) {
   var _this,
       _initialize,
 
+      _cancel,
       _data,
       _form,
       _text,
       _url,
 
-      _createLinkForm;
+      _onSubmit,
+      _onCancel;
 
   _this = View(options);
 
 
   _initialize = function (options) {
     _data = extend({}, DATA_DEFAULTS, options.data);
-    _createLinkForm();
-  };
 
-  _createLinkForm = function () {
     _this.el.innerHTML =
       '<div>' +
         '<form class="linkForm">' +
@@ -47,23 +46,21 @@ var EditLinkView = function (options) {
     _form = _this.el.querySelector('.linkForm');
     _text = _this.el.querySelector('#linkText');
     _url = _this.el.querySelector('#linkURL');
+    _cancel = _this.el.querySelector('.cancel');
 
-    el.querySelector('form').addEventListener('save', function () {
-      _onSubmit();
-    });
-
-    el.querySelector('form').addEventListener('cancel', function () {
-      _cancel();
-    });
+    _form.addEventListener('submit', _onSubmit);
+    _cancel.addEventListener('click', _onCancel);
   };
 
   _onSubmit = function (options) {
-    options.data.text = _text;
-    options.data.url = _url;
+    _data.text = _text;
+    _data.url = _url;
+
+    _this.trigger('save', _data);
   };
 
-  _cancel = function () {
-    window.history.go(-1);
+  _onCancel = function () {
+    _this.trigger('cancel');
   };
 
   _initialize();
