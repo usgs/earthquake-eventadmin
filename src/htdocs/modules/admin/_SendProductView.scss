@@ -16,5 +16,10 @@
       }
     }
   }
+}
 
+.sendproduct-send, .sendproduct-cancel, .sendproduct-done {
+  &.hidden {
+    display: none;
+  }
 }
