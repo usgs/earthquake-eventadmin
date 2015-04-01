@@ -174,6 +174,7 @@ var getProductWithEventIdProperties = function (list) {
 };
 
 
+
 /**
  * An event is a collection of products.
  */
@@ -247,6 +248,22 @@ var CatalogEvent = function (eventDetails) {
     } else {
       return _products;
     }
+  };
+
+  /**
+   * Get all versions of a product (type, souce, code).
+   */
+  _this.getAllProductVersions = function (type, source, code) {
+    var products = [],
+        product;
+
+    for (var i = 0; i < _products[type].length; i++) {
+      product = _products[type][i];
+      if (product.source === source && product.code === code) {
+        products.push(product);
+      }
+    }
+    return products;
   };
 
   /**

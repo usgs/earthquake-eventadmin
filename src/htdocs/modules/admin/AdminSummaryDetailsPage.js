@@ -3,6 +3,7 @@
 var CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
 
+    ProductHistoryView = require('admin/ProductHistoryView'),
     SendProductView = require('admin/SendProductView'),
     SummaryDetailsPage = require('base/SummaryDetailsPage');
 
@@ -80,6 +81,7 @@ SummaryDetailsPage.prototype._getButtons = function (product, preferred) {
   if (!preferred) {
     trumpButton = document.createElement('button');
     trumpButton.innerHTML = 'Make Preferred';
+    trumpButton.className = 'confirm';
     trumpButton.addEventListener('click', this._trumpProduct.bind(this));
     buttons.appendChild(trumpButton);
   }
@@ -88,7 +90,7 @@ SummaryDetailsPage.prototype._getButtons = function (product, preferred) {
 };
 
 SummaryDetailsPage.prototype._deleteProduct = function (e) {
-  var eventid = e.target.parentElement.getAttribute('data-id'),
+  var dataid = e.target.parentElement.getAttribute('data-id'),
       productTypes = this._options.productTypes,
       productType,
       product,
@@ -98,7 +100,7 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
   for(var i = 0; i < productTypes.length; i++) {
     productType = productTypes[i];
 
-    product = this._getProductFromDataId(eventid, productType);
+    product = this._getProductFromDataId(dataid, productType);
 
     if (product) {
       properties = product.properties;
@@ -131,8 +133,25 @@ SummaryDetailsPage.prototype._editProduct = function (e) {
 };
 
 SummaryDetailsPage.prototype._viewProduct = function (e) {
-  console.log('view product');
-  console.log(e.target.parentElement.getAttribute('data-id'));
+  var dataid = e.target.parentElement.getAttribute('data-id'),
+      products = [],
+      product = null,
+      productTypes = this._options.productTypes;
+
+  for (var i = 0; i < productTypes.length; i++) {
+    product = this._getProductFromDataId(dataid, productTypes[i]);
+    products.push({
+      'source': product.source,
+      'type': product.type,
+      'code': product.code
+    });
+  }
+
+
+  ProductHistoryView({
+    'eventDetails': this._event,
+    'products': products
+  });
 };
 
 SummaryDetailsPage.prototype._trumpProduct = function (e) {
@@ -142,7 +161,7 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
 
 SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
   var products = [],
-      product;
+      product = null;
 
   products = CatalogEvent.getWithoutSuperseded(
       CatalogEvent.productMapToList(
