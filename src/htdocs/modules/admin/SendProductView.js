@@ -1,10 +1,22 @@
 'use strict';
 
-var Util = require('util/Util'),
-    View = require('mvc/View'),
-    ModalView = require('mvc/ModalView'),
+var ProductSender = require('ProductSender'),
 
-    ProductSender = require('ProductSender');
+    Accordion = require('accordion/Accordion'),
+
+    ModalView = require('mvc/ModalView'),
+    View = require('mvc/View'),
+
+    Util = require('util/Util');
+
+
+var EXIT_CODES = {
+  0: 'OKAY',
+  1: 'EXIT_INVALID_ARGUMENTS',
+  2: 'EXIT_UNABLE_TO_BUILD',
+  3: 'EXIT_UNABLE_TO_SEND',
+  4: 'EXIT_PARTIALLY_SENT'
+};
 
 
 /**
@@ -32,14 +44,19 @@ var Util = require('util/Util'),
 var SendProductView = function (options) {
   var _this,
       _initialize,
+
       // variables
+      _accordion,
       _dialog,
-      _infoEl,
-      _product,
+      _products,
+      _sendCount,
+      _sentCount,
       _sender,
+
       // methods
       _formatProduct,
       _formatResult,
+      _getContainerForProduct,
       _onCancel,
       _onSend,
       _sendCallback;
@@ -48,23 +65,26 @@ var SendProductView = function (options) {
 
   _initialize = function () {
     var el;
+
+    _accordion = null;
+
     // options
-    _product = options.product;
+    _products = options.products || [options.product];
     _sender = options.sender || ProductSender();
     _formatProduct = options.formatProduct || null;
     _formatResult = options.formatResult || null;
+
     // create elements
     el = _this.el;
-    el.innerHTML = '<div class="sendproduct"></div>';
-    _infoEl = el.querySelector('.sendproduct');
+    el.classList.add('sendproduct');
 
     // show modal dialog
     _dialog = ModalView(el, {
-      title: 'Send Product',
+      title: 'Send Products',
       closable: false,
       buttons: [
         {
-          classes: ['sendproduct-send', 'green'],
+          classes: ['sendproduct-send', 'green', 'confirm'],
           text: 'Send',
           callback: _onSend
         },
@@ -79,30 +99,47 @@ var SendProductView = function (options) {
     options = null;
   };
 
+
+  _getContainerForProduct = function (product) {
+    var container,
+        containers = _this.el.querySelectorAll('section.accordion'),
+        i,
+        len,
+        productContainer = null;
+
+    for (i = 0, len = containers.length; i < len; i++) {
+      container = containers.item(i);
+      if (container.querySelector('.accordion-toggle').innerHTML ===
+          product.get('id')) {
+        productContainer = container;
+      }
+    }
+
+    return productContainer;
+  };
+
   _onCancel = function () {
     _dialog.hide();
     _this.trigger('cancel');
   };
 
   _onSend = function () {
-    _this.trigger('beforesend');
-    _dialog.el.querySelector('.sendproduct-send').disabled = true;
-    _sender.sendProduct(_product, _sendCallback);
-  };
-
-  _sendCallback = function (status, xhr, data) {
     var cancelButton,
-        sendButton,
-        formatted;
+        sendButton;
 
-    formatted = (typeof _formatResult === 'function' ?
-        _formatResult : _this.formatResult)(status, xhr, data);
-    if (typeof formatted === 'string') {
-      _infoEl.innerHTML = formatted;
-    } else {
-      _infoEl.innerHTML = '';
-      _infoEl.appendChild(formatted);
-    }
+    _sendCount = 0;
+    _sentCount = 0;
+
+    _this.trigger('beforesend');
+    _dialog.el.querySelector('.sendproduct-send')
+        .setAttribute('disabled', 'disabled');
+
+    _products.forEach(function (product) {
+      _sender.sendProduct(product, _sendCallback);
+      _sendCount += 1;
+    });
+
+    _this.el.querySelector('h4').innerHTML = 'Send Status';
 
     // hide send button
     sendButton = _dialog.el.querySelector('.sendproduct-send');
@@ -111,8 +148,44 @@ var SendProductView = function (options) {
     cancelButton = _dialog.el.querySelector('.sendproduct-cancel');
     cancelButton.innerHTML = 'Done';
     cancelButton.classList.add('green');
+    cancelButton.setAttribute('disabled', 'disabled');
+  };
+
+  _sendCallback = function (status, xhr, data) {
+    var container,
+        format,
+        formatted,
+        product;
+
+    _sentCount += 1;
+    product = data.product;
+    container = _getContainerForProduct(product);
+
+    container.querySelector('.accordion-toggle').classList.add('send-complete');
+    container = container.querySelector('.accordion-content');
+
+    if (typeof _formatResult === 'function') {
+      format = _formatResult;
+    } else {
+      format = _this.formatResult;
+    }
+
+    formatted = format(status, xhr, data);
+    if (typeof formatted === 'string') {
+      container.innerHTML = formatted;
+    } else {
+      container.innerHTML = '';
+      container.appendChild(formatted);
+    }
+
     // trigger event
-    _this.trigger(status === 200 ? 'success' : 'error');
+    _this.trigger(status === 200 ? 'success' : 'error', data);
+
+    if (_sentCount === _sendCount) {
+      _dialog.el.querySelector('.sendproduct-cancel')
+          .removeAttribute('disabled');
+      _this.el.querySelector('h4').innerHTML = 'All Products Sent';
+    }
   };
 
   /**
@@ -122,12 +195,20 @@ var SendProductView = function (options) {
     // remove event listeners
     _dialog.hide();
     _dialog.destroy();
+
+    if (_accordion && _accordion.destroy) {
+      _accordion.destroy();
+    }
+    _accordion = null;
+
     // free references
     _dialog = null;
-    _infoEl = null;
-    _product = null;
+    _products = null;
+    _sendCount = null;
+    _sentCount = null;
     _sender = null;
     _formatProduct = null;
+    _getContainerForProduct = null;
     _onCancel = null;
     _onSend = null;
     _sendCallback = null;
@@ -139,14 +220,33 @@ var SendProductView = function (options) {
    * Display the list of products to send.
    */
   _this.render = function () {
-    var formatted = (typeof _formatProduct === 'function' ?
-        _formatProduct : _this.formatProduct)(_product);
-    if (typeof formatted === 'string') {
-      _infoEl.innerHTML = formatted;
+    var accordionContent,
+        format;
+
+    if (typeof _formatProduct === 'function') {
+      format = _formatProduct;
     } else {
-      _infoEl.innerHTML = '';
-      _infoEl.appendChild(formatted);
+      format = _this.formatProduct;
     }
+
+    accordionContent = _products.map(function (product) {
+      return {
+        toggleText: product.get('id'),
+        toggleElement: 'h5',
+        classes: 'accordion-standard accordion-closed',
+        contentText: format(product)
+      };
+    });
+
+    if (_accordion !== null && _accordion.destroy) {
+      _accordion.destroy();
+    }
+    _this.el.innerHTML = '<h4>Products to Send</h4>';
+
+    _accordion = Accordion({
+      el: _this.el,
+      accordions: accordionContent
+    });
   };
 
   _this.hide = function () {
@@ -168,8 +268,7 @@ var SendProductView = function (options) {
         contents,
         content;
 
-    buf.push('<h4>Product To Send</h4>' +
-        '<dl>');
+    buf.push('<dl>');
 
     buf.push('<dt>ID</dt><dd>' +
         '<dl>' +
@@ -218,16 +317,30 @@ var SendProductView = function (options) {
   };
 
   _this.formatResult = function (status, xhr, data) {
-    data = data || xhr.responseText;
-    return '<div class="alert ' +
-                (status === 200 ? 'info' : 'error') + '">' +
-              '<h2>' + status + '</h2>' +
-              '<pre>' +
-                (typeof data === 'object' ?
-                    JSON.stringify(data, null, 2) :
-                    data) +
-              '</pre>' +
-            '</div>';
+    var exitCode,
+        result;
+
+    if (status !== 200) {
+      result = '<div class="alert error">' +
+        data.error +
+      '</div>';
+    } else {
+      exitCode = data.exitCode;
+
+      if (data.exitCode !== 0) {
+        result = '<div class="alert error">' +
+          EXIT_CODES[data.exitCode] + ' :: Failed to send product!' +
+        '</div>';
+      } else {
+        result = '<div class="alert info">' +
+          'Product Successfully Sent' +
+        '</div>';
+      }
+
+      result += JSON.stringify(data, null, 2);
+    }
+
+    return result;
   };
 
 
