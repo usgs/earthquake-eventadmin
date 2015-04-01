@@ -29,7 +29,7 @@ var EditLinkView = function (options) {
     _product = options.product;
     _sendProductView = SendProductView({
       product: _product
-  });
+    });
 
     _sendProductView.on('done', _onDone);
 
@@ -43,7 +43,11 @@ var EditLinkView = function (options) {
           '<small>Link to display on web page</small>' +
           '<input id="linkURL" name="linkURL" type="text"/>' +
         '</div>';
-    if (_text === '' || _url === '') {
+
+    _text = _this.el.querySelector('#linkText');
+    _url = _this.el.querySelector('#linkURL');
+
+    if ((_text === '' || null) || (_url === '' || null)) {
       title = 'Add Link';
     } else {
       title = 'Edit Link';
@@ -66,9 +70,6 @@ var EditLinkView = function (options) {
       ]
     });
 
-    _text = _this.el.querySelector('#linkText');
-    _url = _this.el.querySelector('#linkURL');
-
     options = null;
   };
 
@@ -89,9 +90,11 @@ var EditLinkView = function (options) {
   _onCancel = function () {
     _modal.hide();
     _this.trigger('cancel');
+    _this.destroy();
   };
 
   _onDone = function () {
+    _modal.hide();
     _this.trigger('done');
     _this.destroy();
   };
@@ -121,18 +124,14 @@ var EditLinkView = function (options) {
   _this.destroy = Util.compose(function () {
     _modal.hide();
     _modal.destroy();
-    if (_modal !== null) {
-      _modal = null;
-    }
-    if (_sendProductView !== null) {
-      _sendProductView = null;
-    }
+    _modal = null;
+    _sendProductView.destroy();
+    _sendProductView= null;
     _text = null;
     _url = null;
-    if (_onSubmit !== null) {
-      _onSubmit = null;
-    }
+    _onSubmit = null;
     _onCancel = null;
+    _this = null;
   }, _this.destroy);
 
   _initialize();
