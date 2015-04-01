@@ -303,6 +303,7 @@ var SendProductView = function (options) {
           '<dt>source</dt><dd>' + product.get('source') + '</dd>' +
           '<dt>type</dt><dd>' + product.get('type') + '</dd>' +
           '<dt>code</dt><dd>' + product.get('code') + '</dd>' +
+          '<dt>status</dt><dd>' + product.get('status') + '</dd>' +
         '</dl>' +
         '</dd>');
 

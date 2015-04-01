@@ -1,7 +1,10 @@
 'use strict';
 
-var SummaryDetailsPage = require('base/SummaryDetailsPage'),
-    CatalogEvent = require('CatalogEvent');
+var CatalogEvent = require('CatalogEvent'),
+    Product = require('Product'),
+
+    SendProductView = require('admin/SendProductView'),
+    SummaryDetailsPage = require('base/SummaryDetailsPage');
 
 
 SummaryDetailsPage.prototype.getSummaryContent = function (products) {
@@ -85,8 +88,41 @@ SummaryDetailsPage.prototype._getButtons = function (product, preferred) {
 };
 
 SummaryDetailsPage.prototype._deleteProduct = function (e) {
-  console.log('delete product');
-  console.log(e.target.parentElement.getAttribute('data-id'));
+  var eventid = e.target.parentElement.getAttribute('data-id'),
+      productTypes = this._options.productTypes,
+      productType,
+      product,
+      properties,
+      deleteProducts = [];
+
+  for(var i = 0; i < productTypes.length; i++) {
+    productType = productTypes[i];
+
+    product = this._getProductFromDataId(eventid, productType);
+
+    if (product) {
+      properties = product.properties;
+
+      // build array of delete products
+      deleteProducts.push(
+        Product({
+          source: product.source,
+          type: product.type,
+          status: Product.STATUS_DELETE,
+          code: product.code,
+          properties: {
+            eventSource: properties.eventsource,
+            eventSourceCode: properties.eventsourcecode
+          }
+        })
+      );
+    }
+  }
+
+  console.log(deleteProducts);
+
+  /* Eric is updating SendProductView to accept multiple products */
+  //this._sendProduct(deleteProducts);
 };
 
 SummaryDetailsPage.prototype._editProduct = function (e) {
@@ -104,9 +140,51 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
   console.log(e.target.parentElement.getAttribute('data-id'));
 };
 
-// SummaryDetailsPage.prototype._getProductFromProductId = function (productid) {
-//   var products = CatalogEvent.getWithoutSuperseded(this._options.eventDetails);
-//   // TODO, loop through products to find product
-// }
+SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
+  var products = [],
+      product;
+
+  products = CatalogEvent.getWithoutSuperseded(
+      CatalogEvent.productMapToList(
+      this._options.eventDetails.properties.products));
+
+  for (var i =0; i < products.length; i++) {
+    product = products[i];
+    if (type === product.type && dataid === product.code) {
+      return product;
+    }
+  }
+};
+
+SummaryDetailsPage.prototype._sendProduct = function (products) {
+  // send product
+  var sendProductView,
+      productSent;
+
+  sendProductView = SendProductView({
+    products: products,
+    formatProduct: function (products) {
+      // format product being sent
+      return sendProductView.formatProduct(products);
+    }
+  });
+  sendProductView.on('success', function () {
+    // track that product was sent
+    productSent = true;
+  });
+  sendProductView.on('cancel', function () {
+    if (productSent) {
+      // product was sent, which will modify the event
+      // reload page to see update
+      window.location.reload();
+    } else {
+      // product not sent, cleanup
+      products = null;
+      sendProductView.destroy();
+      sendProductView = null;
+    }
+  });
+  sendProductView.show();
+};
 
 module.exports = SummaryDetailsPage;
