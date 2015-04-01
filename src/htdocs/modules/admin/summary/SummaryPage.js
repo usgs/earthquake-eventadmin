@@ -55,7 +55,7 @@ SummaryPage.prototype._getTextContentMarkup = function (type) {
 
   // Create a button to add another
   button = document.createElement('button');
-  button.classList.add('green');
+  button.classList.add('blue');
   button.classList.add('create-text-button');
   button.setAttribute('product-type', type);
   button.innerHTML = 'Create ' + buttonTitle;
@@ -65,11 +65,11 @@ SummaryPage.prototype._getTextContentMarkup = function (type) {
 
   // If untitled, add the title for the section
   if (container.innerHTML === '') {
-    container.innerHTML = '<p class="no-product-warning warning">No &ldquo;' +
+    container.innerHTML = '<p class="alert no-product-warning info">No &ldquo;' +
         buttonTitle + '&rdquo; (' + type + ') products exist yet. If/when ' +
         'such a product is created, it will appear here.</p>';
 
-    container.querySelector('.warning').appendChild(button);
+    container.querySelector('.info').appendChild(button);
   } else {
     container.appendChild(button);
   }
