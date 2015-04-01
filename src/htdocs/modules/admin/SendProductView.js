@@ -80,7 +80,7 @@ var SendProductView = function (options) {
 
     // show modal dialog
     _dialog = ModalView(el, {
-      title: 'Send Products',
+      title: 'Products to Send',
       closable: false,
       buttons: [
         {
@@ -139,7 +139,7 @@ var SendProductView = function (options) {
       _sendCount += 1;
     });
 
-    _this.el.querySelector('h4').innerHTML = 'Send Status';
+    _dialog.el.querySelector('.modal-title').innerHTML = 'Sending&hellip;';
 
     // hide send button
     sendButton = _dialog.el.querySelector('.sendproduct-send');
@@ -161,7 +161,13 @@ var SendProductView = function (options) {
     product = data.product;
     container = _getContainerForProduct(product);
 
-    container.querySelector('.accordion-toggle').classList.add('send-complete');
+    if (status === 200 && (data.exitCode === 0 || data.exitCode === 4)) {
+      container.querySelector('.accordion-toggle')
+          .classList.add('send-complete');
+    } else {
+      container.querySelector('.accordion-toggle')
+          .classList.add('send-error');
+    }
     container = container.querySelector('.accordion-content');
 
     if (typeof _formatResult === 'function') {
@@ -184,7 +190,7 @@ var SendProductView = function (options) {
     if (_sentCount === _sendCount) {
       _dialog.el.querySelector('.sendproduct-cancel')
           .removeAttribute('disabled');
-      _this.el.querySelector('h4').innerHTML = 'All Products Sent';
+      _dialog.el.querySelector('.modal-title').innerHTML = 'Complete';
     }
   };
 
@@ -241,7 +247,9 @@ var SendProductView = function (options) {
     if (_accordion !== null && _accordion.destroy) {
       _accordion.destroy();
     }
-    _this.el.innerHTML = '<h4>Products to Send</h4>';
+    _this.el.innerHTML = '<p>' +
+      'Click a product below for more details.' +
+    '</p>';
 
     _accordion = Accordion({
       el: _this.el,
@@ -327,17 +335,27 @@ var SendProductView = function (options) {
     } else {
       exitCode = data.exitCode;
 
-      if (data.exitCode !== 0) {
-        result = '<div class="alert error">' +
-          EXIT_CODES[data.exitCode] + ' :: Failed to send product!' +
+      if (exitCode === 0) {
+        result = '<div class="alert success">' +
+          'Product Successfully Sent' +
+        '</div>';
+      } else if (exitCode === 4) {
+        result = '<div class="alert warning">' +
+          'Product Partially Sent (this is usually okay).' +
         '</div>';
       } else {
-        result = '<div class="alert info">' +
-          'Product Successfully Sent' +
+        result = '<div class="alert error">' +
+          EXIT_CODES[exitCode] + ' :: Failed to send product!' +
         '</div>';
       }
 
-      result += JSON.stringify(data, null, 2);
+      result += '<h6>Output</h6><pre>' +
+        data.output +
+      '</pre><h6>Log</h6><pre>' +
+        (data.error||'No log output') +
+      '</pre><h6>Command</h6><pre>' +
+        data.command.replace(/'--/g, '\n  \'--') +
+      '</pre>';
     }
 
     return result;
