@@ -4,6 +4,7 @@
 var
     /* jshint ignore:start */
     AdminSummaryDetailsPage = require('admin/AdminSummaryDetailsPage'),
+    AdminEventModulePage = require('admin/AdminEventModulePage'),
     /* jshint ignore:end */
     EventPage = require('base/EventPage'),
     AdminModule = require('admin/AdminModule'),
