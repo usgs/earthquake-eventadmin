@@ -55,7 +55,7 @@ SummaryPage.prototype._getTextContentMarkup = function (type) {
 
   // Create a button to add another
   button = document.createElement('button');
-  button.classList.add('blue');
+  button.classList.add('green');
   button.classList.add('create-text-button');
   button.setAttribute('product-type', type);
   button.innerHTML = 'Create ' + buttonTitle;
