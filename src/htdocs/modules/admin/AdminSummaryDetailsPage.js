@@ -16,6 +16,7 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
   if (products.length === 1) {
     // If there is only one product display details
     this.getDetailsContent(products[0]);
+    this._content.insertBefore(this._getButtons(products[0]), this._content.firstChild);
   } else {
     // there is more than one product display summary
     this.getSummaryContent(products);
@@ -67,7 +68,7 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   return div;
 };
 
-SummaryDetailsPage.prototype._getButtons = function (product, preferred) {
+SummaryDetailsPage.prototype._getButtons = function (product) {
   var buttons = document.createElement('div'),
       editButton = document.createElement('button'),
       deleteButton = document.createElement('button'),
@@ -75,29 +76,26 @@ SummaryDetailsPage.prototype._getButtons = function (product, preferred) {
       trumpButton;
 
 
-  editButton.innerHTML = 'Edit';
+  editButton.innerHTML = 'Edit Product';
   editButton.addEventListener('click', this._editProduct.bind(this));
 
-  deleteButton.innerHTML = 'Delete';
+  deleteButton.innerHTML = 'Delete Product';
   deleteButton.addEventListener('click', this._deleteProduct.bind(this));
 
-  detailsButton.innerHTML = 'View Details';
+  detailsButton.innerHTML = 'View Revisions';
   detailsButton.addEventListener('click', this._viewProduct.bind(this));
+
+  trumpButton = document.createElement('button');
+  trumpButton.innerHTML = 'Trump Preferred';
+  trumpButton.addEventListener('click', this._trumpProduct.bind(this));
 
   buttons.classList.add('button-group');
   buttons.classList.add('summary-actions');
   buttons.setAttribute('data-id', product.code);
-  buttons.appendChild(editButton);
-  buttons.appendChild(deleteButton);
   buttons.appendChild(detailsButton);
-
-  if (!preferred) {
-    trumpButton = document.createElement('button');
-    trumpButton.innerHTML = 'Make Preferred';
-    trumpButton.className = 'confirm';
-    trumpButton.addEventListener('click', this._trumpProduct.bind(this));
-    buttons.appendChild(trumpButton);
-  }
+  buttons.appendChild(editButton);
+  buttons.appendChild(trumpButton); 
+  buttons.appendChild(deleteButton);
 
   return buttons;
 };

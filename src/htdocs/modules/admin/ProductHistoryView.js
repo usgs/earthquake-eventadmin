@@ -98,17 +98,17 @@ var ProductHistoryView = function (options) {
       preferredProduct: products[0],
       buttons: [
         {
-          title: 'Make Preferred',
+          title: 'Trump Preferred',
           className: 'trump',
           callback: _preferProduct
         },
         {
-          title: 'Edit',
+          title: 'Edit Product',
           className: 'edit',
           callback: _editProduct
         },
         {
-          title: 'Delete',
+          title: 'Delete Product',
           className: 'delete',
           callback: _deleteProduct
         }

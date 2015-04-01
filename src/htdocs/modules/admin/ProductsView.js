@@ -102,15 +102,9 @@ var ProductsView = function (options) {
         className: 'actions',
         title: 'Actions',
         format: function (data) {
-          var buf = [],
-              i =0;
+          var buf = [];
 
-          if (_preferredProduct === data) {
-            buf.push('<button disabled>Make Preferred</button>');
-            i = 1;
-          }
-
-          for (i; i < _buttons.length; i++) {
+          for (var i = 0; i < _buttons.length; i++) {
             buf.push('<button class="' + _buttons[i].className +
                 '" data-id="' + data.id + '">' + _buttons[i].title +
                 '</button>');
