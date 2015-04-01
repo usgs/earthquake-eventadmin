@@ -8,11 +8,24 @@ var CatalogEvent = require('CatalogEvent'),
     SummaryDetailsPage = require('base/SummaryDetailsPage');
 
 
+SummaryDetailsPage.prototype._setContentMarkup = function () {
+  var products = this._products = this.getProducts();
+
+  products = CatalogEvent.getWithoutSuperseded(products);
+
+  if (products.length === 1) {
+    // If there is only one product display details
+    this.getDetailsContent(products[0]);
+  } else {
+    // there is more than one product display summary
+    this.getSummaryContent(products);
+  }
+};
+
+
 SummaryDetailsPage.prototype.getSummaryContent = function (products) {
   var product,
       summary;
-
-  products = CatalogEvent.getWithoutSuperseded(products);
 
   for (var i = 0; i < products.length; i++) {
     product = products[i];
