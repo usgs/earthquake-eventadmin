@@ -1,7 +1,11 @@
 /* global EventConfig, EventDetails, OffCanvas */
 'use strict';
 
-var EventPage = require('base/EventPage'),
+var
+    /* jshint ignore:start */
+    AdminSummaryDetailsPage = require('admin/AdminSummaryDetailsPage'),
+    /* jshint ignore:end */
+    EventPage = require('base/EventPage'),
     AdminModule = require('admin/AdminModule'),
     ImpactModule = require('impact/ImpactModule'),
     ScientificModule = require('scientific/ScientificModule'),
