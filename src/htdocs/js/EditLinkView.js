@@ -1,6 +1,6 @@
 'use strict';
 
-var ModalView = require('mvc/ModalView');
+var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View'),
 
@@ -23,10 +23,13 @@ var EditLinkView = function (options) {
   _this = View(options);
 
   _initialize = function (options) {
+    var content,
+        title;
+
     _product = options.product;
     _sendProductView = SendProductView({
       product: _product
-    });
+  });
 
     _sendProductView.on('done', _onDone);
 
@@ -40,9 +43,14 @@ var EditLinkView = function (options) {
           '<small>Link to display on web page</small>' +
           '<input id="linkURL" name="linkURL" type="text"/>' +
         '</div>';
+    if (_text === '' || _url === '') {
+      title = 'Add Link';
+    } else {
+      title = 'Edit Link';
+    }
 
     _modal = ModalView(content, {
-      title: 'Add/Edit Link',
+      title: title,
       closable: false,
       buttons: [
         {
@@ -79,7 +87,7 @@ var EditLinkView = function (options) {
   };
 
   _onCancel = function () {
-    _dialog.hide();
+    _modal.hide();
     _this.trigger('cancel');
   };
 
@@ -102,22 +110,22 @@ var EditLinkView = function (options) {
   };
 
   _this.hide = function () {
-    _dialog.hide();
+    _modal.hide();
   };
 
   _this.show = function () {
     _this.render();
-    _dialog.show();
+    _modal.show();
   };
 
   _this.destroy = Util.compose(function () {
     _modal.hide();
     _modal.destroy();
     if (_modal !== null) {
-      _modal = Null;
+      _modal = null;
     }
-    if (_sender !== null) {
-      _sender = null;
+    if (_sendProductView !== null) {
+      _sendProductView = null;
     }
     _text = null;
     _url = null;
