@@ -10,3 +10,10 @@
 @import 'TextProductView';
 @import 'TextSummaryDetailsView';
 @import 'EditLinkView';
+@import 'EditProductView';
+
+label > small {
+  display:block;
+  color: #666;
+  font-size: smaller;
+}
