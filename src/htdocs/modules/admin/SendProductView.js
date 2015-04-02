@@ -19,6 +19,14 @@ var EXIT_CODES = {
 };
 
 
+var getProductIdentifier = function (product) {
+  return product.get('id') || [
+    product.get('source'),
+    product.get('type'),
+    product.get('code')
+  ].join(':');
+};
+
 /**
  * View that displays product to be sent.
  *
@@ -111,13 +119,16 @@ var SendProductView = function (options) {
         containers = _this.el.querySelectorAll('section.accordion'),
         i,
         len,
-        productContainer = null;
+        productContainer = null,
+        productId = getProductIdentifier(product);
+
 
     for (i = 0, len = containers.length; i < len; i++) {
       container = containers.item(i);
       if (container.querySelector('.accordion-toggle').innerHTML ===
-          product.get('id')) {
+          productId) {
         productContainer = container;
+        break;
       }
     }
 
@@ -246,7 +257,7 @@ var SendProductView = function (options) {
 
     accordionContent = _products.map(function (product) {
       return {
-        toggleText: product.get('id'),
+        toggleText: getProductIdentifier(product),
         toggleElement: 'h5',
         classes: 'accordion-standard accordion-closed',
         contentText: format(product)
