@@ -135,7 +135,7 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
   console.log(deleteProducts);
 
   /* Eric is updating SendProductView to accept multiple products */
-  this._sendProduct(deleteProducts[0]);
+  this._sendProduct(deleteProducts);
 };
 
 SummaryDetailsPage.prototype._editProduct = function (e) {
@@ -160,7 +160,8 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
 
   ProductHistoryView({
     'eventDetails': this._event,
-    'products': products
+    'products': products,
+    'page': this
   });
 };
 
@@ -200,7 +201,7 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
 
   console.log(trumpProducts[0].get());
   // Send Trump
-  this._sendProduct(trumpProducts[0]);
+  this._sendProduct(trumpProducts);
 };
 
 SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
@@ -225,7 +226,7 @@ SummaryDetailsPage.prototype._sendProduct = function (products) {
       productSent;
 
   sendProductView = SendProductView({
-    product: products,
+    products: products,
     formatProduct: function (products) {
       // format product being sent
       return sendProductView.formatProduct(products);
