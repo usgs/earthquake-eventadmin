@@ -20,25 +20,7 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
     this._content.insertBefore(this._getButtons(products[0]), this._content.firstChild);
   } else {
     // there is more than one product display summary
-    this.getSummaryContent(products);
-  }
-};
-
-
-SummaryDetailsPage.prototype.getSummaryContent = function (products) {
-  var product,
-      summary;
-
-  for (var i = 0; i < products.length; i++) {
-    product = products[i];
-    summary = this.buildSummaryMarkup(product, (!i));
-    if (i === 0 && this._options.markPreferred) {
-      summary.classList.add('preferred');
-    } else {
-      summary.classList.add('non-preferred');
-    }
-    // append summary section
-    this._content.appendChild(summary);
+    this._content.appendChild(this.getSummaryContent(products));
   }
 };
 
@@ -133,9 +115,6 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
     }
   }
 
-  console.log(deleteProducts);
-
-  /* Eric is updating SendProductView to accept multiple products */
   this._sendProduct(deleteProducts);
 };
 
@@ -196,7 +175,6 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
     }
   }
 
-  console.log(trumpProducts[0].get());
   // Send Trump
   this._sendProduct(trumpProducts);
 };

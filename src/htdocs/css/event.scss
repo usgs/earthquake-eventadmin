@@ -55,3 +55,8 @@ small.value-diff {
 a.summary {
   border-color: #ddd;
 }
+
+.non-preferred > .summary > ul > li > span {
+  color: #999;
+  font-weight: 300;
+}

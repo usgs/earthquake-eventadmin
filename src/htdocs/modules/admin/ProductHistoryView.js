@@ -3,9 +3,7 @@
 var CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
 
-    Collection = require('mvc/Collection'),
     ModalView = require('mvc/ModalView'),
-    ProductsView = require('admin/ProductsView'),
     SendProductView = require('admin/SendProductView'),
     View = require('mvc/View');
 
@@ -26,7 +24,6 @@ var ProductHistoryView = function (options) {
       // methods
       _deleteProduct,
       _editProduct,
-      _getProductViewByType,
       _trumpProduct,
       _sendProduct;
 
@@ -46,14 +43,8 @@ var ProductHistoryView = function (options) {
     _event = CatalogEvent(options.eventDetails);
 
     // get products
-    products = options.products;
+    products = CatalogEvent.removePhases(options.products);
 
-    if (_page._options.hash === 'origin') {
-      products = CatalogEvent.removePhases(options.products);
-    }
-
-
-    // get products
     for (var i = 0; i < products.length; i++) {
       _products = _products.concat(
           _event.getAllProductVersions(
@@ -115,44 +106,6 @@ var ProductHistoryView = function (options) {
     _sendProduct(deleteProduct);
   };
 
-  _getProductViewByType = function (type) {
-    var section,
-        products = [];
-
-    // Append Products Collection Table
-    section = _section.querySelector('.associated-products-' + type);
-
-    for (var i = 0; i < _products.length; i++) {
-      if (type === _products[i].type) {
-        products.push(_products[i]);
-      }
-    }
-
-    // Build Associated Products Collection Table
-    ProductsView({
-      el: section,
-      collection: Collection(products),
-      preferredProduct: products[0],
-      buttons: [
-        {
-          title: 'Trump Preferred',
-          className: 'trump',
-          callback: _trumpProduct
-        },
-        {
-          title: 'Edit Product',
-          className: 'edit',
-          callback: _editProduct
-        },
-        {
-          title: 'Delete Product',
-          className: 'delete',
-          callback: _deleteProduct
-        }
-      ]
-    });
-  };
-
   _sendProduct = function (product) {
     // send product
     var sendProductView,
@@ -185,31 +138,8 @@ var ProductHistoryView = function (options) {
   };
 
   _this.render = function () {
-
-
-
-    for (var i = 0; i < _products.length; i++) {
-      _section.appendChild(_page.buildSummaryMarkup(_products[i]));
-    }
-
-    // var type = null,
-    //     product = null,
-    //     i;
-
-    // for(i = 0; i < _products.length; i++) {
-    //   product = _products[i];
-    //   if (type !== product.type) {
-    //     type = product.type;
-    //     _productTypes.push(type);
-    //     _section.innerHTML = _section.innerHTML + '<h4>' + type + '</h4>' +
-    //         '<section class="associated-products-' + type + '"></section>';
-    //   }
-    // }
-
-    // for(i = 0; i < _productTypes.length; i++) {
-    //   _getProductViewByType(_productTypes[i]);
-    // }
-
+    // call getSummaryContent and append the content to the modal dialog
+    _section.appendChild(_page.getSummaryContent(_products));
   };
 
   _initialize();
