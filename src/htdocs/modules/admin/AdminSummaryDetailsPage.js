@@ -24,14 +24,31 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
   }
 };
 
-SummaryDetailsPage.prototype.buildSummaryMarkup = function (product) {
-  var div = document.createElement('div'),
+
+SummaryDetailsPage.prototype.getSummaryContent = function (products) {
+  var product,
+      fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < products.length; i++) {
+    product = products[i];
+    fragment.appendChild(this.buildSummaryMarkup(products[i], !i));
+  }
+  return fragment;
+};
+
+
+SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) {
+  var fragment = document.createDocumentFragment(),
       el,
       summaryMarkup;
 
   el = document.createElement('a');
   el.className = this._options.hash + '-summary summary';
   el.setAttribute('href', this._buildHash(product));
+
+  if (preferred === true && this._options.markPreferred) {
+    el.classList.add('preferred');
+  }
 
   summaryMarkup = this._getSummaryMarkup(product);
   // Add description content
@@ -42,11 +59,11 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product) {
   }
 
   // append summary markup
-  div.appendChild(el);
+  fragment.appendChild(el);
   // add edit/delete/trump buttons
-  div.appendChild(this._getButtons(product));
+  fragment.appendChild(this._getButtons(product));
 
-  return div;
+  return fragment;
 };
 
 SummaryDetailsPage.prototype._getButtons = function (product) {
