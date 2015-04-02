@@ -1,6 +1,8 @@
 'use strict';
 
-var Model = require('mvc/Model'),
+var ProductContent = require('ProductContent'),
+
+    Model = require('mvc/Model'),
     Util = require('util/Util');
 
 
@@ -63,11 +65,21 @@ var Product = function (options) {
     preferredWeight: null
   }, options));
 
-  _initialize = function () {
-    options = null;
+  _initialize = function (/*options*/) {
+    var content,
+        contents = _this.get('contents'),
+        key;
+
+    for (key in contents) {
+      content = contents[key];
+      if (!content.get) {
+        contents[key] = ProductContent(content);
+      }
+    }
   };
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 

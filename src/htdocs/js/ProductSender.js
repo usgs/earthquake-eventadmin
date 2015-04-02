@@ -53,9 +53,21 @@ var ProductSender = function (options) {
         product: JSON.stringify(product)
       },
       success: function (data, xhr) {
-        callback(xhr.status, xhr, data);
+        callback(xhr.status, xhr, Util.extend({product: product}, data));
       },
-      error: callback
+      error: function (status, xhr) {
+        var data;
+
+        try {
+          data = JSON.parse(xhr.responseText);
+        } catch (e) {
+          data = {
+            error: xhr.responseText
+          };
+        }
+
+        callback(status, xhr, Util.extend({product: product}, data));
+      }
     });
   };
 

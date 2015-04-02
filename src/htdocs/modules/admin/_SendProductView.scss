@@ -18,8 +18,28 @@
   }
 }
 
+  .accordion-content .alert {
+    margin-top: 1em;
+  }
+
+  .send-complete:after, .send-error:after {
+    display: block;
+    position: absolute;
+    top: .75rem;
+    right: 1.5rem;
+    content: '\2713';
+    color: #58A973;
+  }
+
+  .send-error:after {
+    content: 'x';
+    color: #E46554;
+    font-weight: 700;
+  }
+
 .sendproduct-send, .sendproduct-cancel, .sendproduct-done {
   &.hidden {
     display: none;
   }
+
 }
