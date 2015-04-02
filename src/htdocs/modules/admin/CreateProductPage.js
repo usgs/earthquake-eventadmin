@@ -35,6 +35,8 @@ CreateProductPage.prototype._onSendProductClick = function () {
     product: Product(products.origin[0])
   });
   this._sendProductView.on('cancel', this.onRemove, this);
+
+  this._sendProductView.show();
 };
 
 CreateProductPage.prototype.onRemove = function () {

@@ -16,6 +16,7 @@
       }
     }
   }
+}
 
   .accordion-content .alert {
     margin-top: 1em;
@@ -34,6 +35,11 @@
     content: 'x';
     color: #E46554;
     font-weight: 700;
+  }
+
+.sendproduct-send, .sendproduct-cancel, .sendproduct-done {
+  &.hidden {
+    display: none;
   }
 
 }

@@ -1,0 +1,27 @@
+.textproduct {
+  .hidden {
+    display: none;
+  }
+
+  label > small {
+    color: #444;
+    display: block;
+    font-size: smaller;
+    font-weight: normal;
+  }
+}
+
+.textproduct-text, .textproduct-preview {
+  display: block;
+  min-height: 250px;
+  width: 100%;
+}
+
+.textproduct-text {
+  font-family: monospace;
+}
+
+.textproduct-preview {
+  border: 1px solid #ccc;
+  padding: 2px 5px;
+}

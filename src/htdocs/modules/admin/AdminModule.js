@@ -11,7 +11,7 @@ var EventModule = require('base/EventModule'),
 var DEFAULTS = {
   title: 'Admin',
   hash: 'admin',
-  cssUrl: 'modules/admin/index.css',
+  cssUrl: null,
   pages: [
     {
       factory: AdminSummaryPage,

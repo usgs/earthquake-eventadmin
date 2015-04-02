@@ -58,6 +58,7 @@ var SendProductView = function (options) {
       _formatResult,
       _getContainerForProduct,
       _onCancel,
+      _onDone,
       _onSend,
       _sendCallback;
 
@@ -92,6 +93,11 @@ var SendProductView = function (options) {
           classes: ['sendproduct-cancel'],
           text: 'Cancel',
           callback: _onCancel
+        },
+        {
+          classes: ['sendproduct-done', 'green', 'hidden'],
+          text: 'Done',
+          callback: _onDone
         }
       ]
     });
@@ -123,32 +129,37 @@ var SendProductView = function (options) {
     _this.trigger('cancel');
   };
 
+  _onDone = function () {
+    _dialog.hide();
+    _this.trigger('done');
+  };
+
   _onSend = function () {
     var cancelButton,
+        doneButton,
         sendButton;
 
     _sendCount = 0;
     _sentCount = 0;
 
-    _this.trigger('beforesend');
-    _dialog.el.querySelector('.sendproduct-send')
-        .setAttribute('disabled', 'disabled');
+    _dialog.el.querySelector('.modal-title').innerHTML = 'Sending&hellip;';
+
+    // hide send button
+    sendButton = _dialog.el.querySelector('.sendproduct-send');
+    sendButton.classList.add('hidden');
+
+    // hide the cancel button
+    cancelButton = _dialog.el.querySelector('.sendproduct-cancel');
+    cancelButton.classList.add('hidden');
+
+    // show done button
+    doneButton = _dialog.el.querySelector('.sendproduct-done');
+    doneButton.classList.remove('hidden');
 
     _products.forEach(function (product) {
       _sender.sendProduct(product, _sendCallback);
       _sendCount += 1;
     });
-
-    _dialog.el.querySelector('.modal-title').innerHTML = 'Sending&hellip;';
-
-    // hide send button
-    sendButton = _dialog.el.querySelector('.sendproduct-send');
-    sendButton.style.display = 'none';
-    // update cancel button
-    cancelButton = _dialog.el.querySelector('.sendproduct-cancel');
-    cancelButton.innerHTML = 'Done';
-    cancelButton.classList.add('green');
-    cancelButton.setAttribute('disabled', 'disabled');
   };
 
   _sendCallback = function (status, xhr, data) {
@@ -184,11 +195,8 @@ var SendProductView = function (options) {
       container.appendChild(formatted);
     }
 
-    // trigger event
-    _this.trigger(status === 200 ? 'success' : 'error', data);
-
     if (_sentCount === _sendCount) {
-      _dialog.el.querySelector('.sendproduct-cancel')
+      _dialog.el.querySelector('.sendproduct-done')
           .removeAttribute('disabled');
       _dialog.el.querySelector('.modal-title').innerHTML = 'Complete';
     }
@@ -216,6 +224,7 @@ var SendProductView = function (options) {
     _formatProduct = null;
     _getContainerForProduct = null;
     _onCancel = null;
+    _onDone = null;
     _onSend = null;
     _sendCallback = null;
     _initialize = null;
@@ -309,11 +318,13 @@ var SendProductView = function (options) {
     buf.push('<dt>Contents</dt><dd><dl>');
     for (p in contents) {
       content = contents[p];
-      buf.push('<dt>' + p + '</dt><dd>' +
+      buf.push('<dt>&ldquo;' + p + '&rdquo;</dt><dd>' +
           '<dl>' +
-            '<dt>Type</dt><dd>' + content.type + '</dd>' +
+            '<dt>Type</dt><dd>' + content.get('contentType') + '</dd>' +
             '<dt>Content</dt><dd>' +
-              (content.bytes ? content.bytes : content.url) +
+              (content.get('bytes')) ?
+                content.get('bytes') :
+                content.get('url') +
             '</dd>' +
           '</dl>' +
           '</dd>');

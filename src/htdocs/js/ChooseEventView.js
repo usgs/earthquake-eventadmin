@@ -13,11 +13,16 @@ var DEFAULTS = {
 var ChooseEventView = function (options) {
   var _this,
       _initialize,
-      // variables
+
+      _eventTime,
+      _searchForm,
+      _searchList,
       _url,
-      // methods
+
+      _createEventSearch,
       _createForm,
-      _createList;
+      _createList,
+      _onEventSearchSubmit;
 
   _this = View(options);
 
@@ -32,6 +37,8 @@ var ChooseEventView = function (options) {
         '<section class="one-of-two column">' +
           '<header><h2>Significant Earthquakes</h2></header>' +
           '<div class="eqlist"></div>' +
+          '<header><h2>Event Time</h2></header>' +
+          '<div class="eventTime"></div>' +
         '</section>' +
         '<section class="one-of-two column">' +
           '<header><h2>Event Lookup</h2></header>' +
@@ -39,10 +46,61 @@ var ChooseEventView = function (options) {
         '</section>' +
       '</section>';
 
+    _createEventSearch(el.querySelector('.eventTime'));
     _createForm(el.querySelector('.form'));
-    _createList(el.querySelector('.eqlist'));
+    _createList(el.querySelector('.eqlist'), _url);
 
     options = null;
+  };
+
+  _createEventSearch = function (el) {
+    el.innerHTML = '<form class="vertical">' +
+        '<label for="eventTime">' +
+          'Time (UTC) ' +
+        '<br/>' +
+        '<small>Search 15 minutes around entered time.</small>' +
+        '</label>' +
+        '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
+        '<br/>' +
+        '<button type="submit">Search</button>' +
+        '</form>' +
+        '<div class="searchList"></div>';
+
+    _searchList = el.querySelector('.searchList');
+    _eventTime = el.querySelector('#eventTime');
+    _searchForm = el.querySelector('form');
+
+    _searchForm.addEventListener('submit', _onEventSearchSubmit);
+  };
+
+  _onEventSearchSubmit = function (e) {
+    var endTime,
+        searchTime,
+        startTime,
+        url;
+
+    e.preventDefault();
+
+    searchTime = _eventTime.value.toUpperCase();
+
+    if (searchTime.indexOf('Z') === -1) {
+      searchTime = new Date(searchTime.concat('Z'));
+    } else {
+      searchTime = new Date(searchTime);
+    }
+
+    try {
+      startTime = new Date(searchTime.getTime() - 900000);
+      endTime = new Date(searchTime.getTime() + 900000);
+
+      url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+          '&starttime=' + startTime.toISOString() +
+          '&endtime=' + endTime.toISOString();
+
+      _createList(_searchList, url);
+    } catch (ex) {
+      _searchList.innerHTML = '<p class="alert error">Must use valid time.</p>';
+    }
   };
 
   _createForm = function (el) {
@@ -74,9 +132,9 @@ var ChooseEventView = function (options) {
         '</ol>';
   };
 
-  _createList = function (el) {
+  _createList = function (el, url) {
     Xhr.ajax({
-      url: _url,
+      url: url,
       success: function (data) {
         var buf = [];
         data.features.forEach(function (eq) {
@@ -102,6 +160,19 @@ var ChooseEventView = function (options) {
       }
     });
   };
+
+  _this.destroy = Util.compose(function () {
+    _searchForm.removeEventListener('submit', _onEventSearchSubmit);
+
+    _createEventSearch = null;
+    _createForm = null;
+    _createList = null;
+    _eventTime = null;
+    _onEventSearchSubmit = null;
+    _searchList = null;
+    _searchForm = null;
+    _url = null;
+  }, _this.destroy);
 
   _initialize();
   return _this;

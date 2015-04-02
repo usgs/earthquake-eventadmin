@@ -1,6 +1,8 @@
 // this is from earthquake-eventpages
 @import 'css/index';
 @import 'mvc/ModalView';
+@import 'htdocs/modules/admin/index';
+@import 'htdocs/modules/admin/summary/index';
 
 /* this supports both location view and dyfi-form */
 .modal-dialog {
