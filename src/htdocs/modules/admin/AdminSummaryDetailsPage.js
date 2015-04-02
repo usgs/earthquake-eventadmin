@@ -13,6 +13,10 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
 
   products = CatalogEvent.getWithoutSuperseded(products);
 
+  if (this._options.hash === 'origin') {
+    products = this._removePhases(products);
+  }
+
   if (products.length === 1) {
     // If there is only one product display details
     this.getDetailsContent(products[0]);
@@ -66,6 +70,42 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   div.appendChild(this._getButtons(product, preferred));
 
   return div;
+};
+
+SummaryDetailsPage.prototype._removePhases = function (products) {
+  var product,
+      originProducts = {},
+      phaseProducts = {},
+      newProducts = [],
+      key,
+      i;
+
+  for (i = 0; i < products.length; i++) {
+    product = products[i];
+    key = product.source + product.code;
+
+    if (product.type === 'origin'){
+      originProducts[key] = product;
+    } else if (product.type === 'phase-data') {
+      phaseProducts[key] = product;
+    }
+  }
+
+  for (i = 0; i < products.length; i++) {
+    product = products[i];
+    key = product.source + product.code;
+
+    if (originProducts.hasOwnProperty(key) &&
+        phaseProducts.hasOwnProperty(key) &&
+        originProducts[key].loaded === undefined) {
+      newProducts.push(originProducts[key]);
+      originProducts[key].loaded = true;
+    } else if (originProducts[key].loaded === undefined) {
+      newProducts.push(product);
+    }
+  }
+
+  return newProducts;
 };
 
 SummaryDetailsPage.prototype._getButtons = function (product) {
