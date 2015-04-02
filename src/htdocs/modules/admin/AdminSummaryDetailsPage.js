@@ -135,7 +135,7 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
   console.log(deleteProducts);
 
   /* Eric is updating SendProductView to accept multiple products */
-  //this._sendProduct(deleteProducts);
+  this._sendProduct(deleteProducts[0]);
 };
 
 SummaryDetailsPage.prototype._editProduct = function (e) {
@@ -158,7 +158,6 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
     });
   }
 
-
   ProductHistoryView({
     'eventDetails': this._event,
     'products': products
@@ -166,8 +165,42 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
 };
 
 SummaryDetailsPage.prototype._trumpProduct = function (e) {
-  console.log('trump product');
-  console.log(e.target.parentElement.getAttribute('data-id'));
+  var dataid = e.target.parentElement.getAttribute('data-id'),
+      productTypes = this._options.productTypes,
+      productType,
+      product,
+      properties,
+      trumpProducts = [];
+
+  for(var i = 0; i < productTypes.length; i++) {
+    productType = productTypes[i];
+
+    product = this._getProductFromDataId(dataid, productType);
+
+    if (product) {
+      properties = product.properties;
+
+      // build array of delete products
+      trumpProducts.push(
+        Product({
+          source: product.source,
+          type: 'trump-' + product.type,
+          status: Product.STATUS_DELETE,
+          code: product.code,
+          properties: {
+            'eventSource': properties.eventsource,
+            'eventSourceCode': properties.eventsourcecode,
+            'trump-source': product.source,
+            'trump-code': product.code
+          }
+        })
+      );
+    }
+  }
+
+  console.log(trumpProducts[0].get());
+  // Send Trump
+  this._sendProduct(trumpProducts[0]);
 };
 
 SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
@@ -192,7 +225,7 @@ SummaryDetailsPage.prototype._sendProduct = function (products) {
       productSent;
 
   sendProductView = SendProductView({
-    products: products,
+    product: products,
     formatProduct: function (products) {
       // format product being sent
       return sendProductView.formatProduct(products);
