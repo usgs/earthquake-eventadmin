@@ -11,11 +11,8 @@ var CatalogEvent = require('CatalogEvent'),
 SummaryDetailsPage.prototype._setContentMarkup = function () {
   var products = this._products = this.getProducts();
 
-  products = CatalogEvent.getWithoutSuperseded(products);
-
-  if (this._options.hash === 'origin') {
-    products = this._removePhases(products);
-  }
+  products = CatalogEvent.removePhases(
+      CatalogEvent.getWithoutSuperseded(products));
 
   if (products.length === 1) {
     // If there is only one product display details
@@ -70,42 +67,6 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   div.appendChild(this._getButtons(product, preferred));
 
   return div;
-};
-
-SummaryDetailsPage.prototype._removePhases = function (products) {
-  var product,
-      originProducts = {},
-      phaseProducts = {},
-      newProducts = [],
-      key,
-      i;
-
-  for (i = 0; i < products.length; i++) {
-    product = products[i];
-    key = product.source + product.code;
-
-    if (product.type === 'origin'){
-      originProducts[key] = product;
-    } else if (product.type === 'phase-data') {
-      phaseProducts[key] = product;
-    }
-  }
-
-  for (i = 0; i < products.length; i++) {
-    product = products[i];
-    key = product.source + product.code;
-
-    if (originProducts.hasOwnProperty(key) &&
-        phaseProducts.hasOwnProperty(key) &&
-        originProducts[key].loaded === undefined) {
-      newProducts.push(originProducts[key]);
-      originProducts[key].loaded = true;
-    } else if (originProducts[key].loaded === undefined) {
-      newProducts.push(product);
-    }
-  }
-
-  return newProducts;
 };
 
 SummaryDetailsPage.prototype._getButtons = function (product) {
@@ -191,11 +152,7 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
 
   for (var i = 0; i < productTypes.length; i++) {
     product = this._getProductFromDataId(dataid, productTypes[i]);
-    products.push({
-      'source': product.source,
-      'type': product.type,
-      'code': product.code
-    });
+    products.push(product);
   }
 
   ProductHistoryView({

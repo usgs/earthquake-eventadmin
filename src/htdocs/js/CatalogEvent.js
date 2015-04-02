@@ -174,6 +174,47 @@ var getProductWithEventIdProperties = function (list) {
 };
 
 
+var removePhases = function (products) {
+  var product,
+      originProducts = {},
+      phaseProducts = {},
+      newProducts = [],
+      loaded = {},
+      key,
+      i;
+
+
+
+  for (i = 0; i < products.length; i++) {
+    product = products[i];
+    key = product.source + product.code;
+
+    if (product.type === 'origin'){
+      originProducts[key] = product;
+    } else if (product.type === 'phase-data') {
+      phaseProducts[key] = product;
+    }
+  }
+
+  for (i = 0; i < products.length; i++) {
+    product = products[i];
+    key = product.source + product.code;
+
+    if (product.type !== 'origin' && product.type !== 'phase-data') {
+      newProducts.push(product);
+    } else if(originProducts.hasOwnProperty(key) &&
+        phaseProducts.hasOwnProperty(key) &&
+        loaded[key] !== true) {
+      newProducts.push(originProducts[key]);
+      loaded[key] = true;
+    } else if (loaded[key] !== true) {
+      newProducts.push(product);
+    }
+  }
+
+  return newProducts;
+};
+
 
 /**
  * An event is a collection of products.
@@ -690,6 +731,7 @@ CatalogEvent.getWithoutDeleted = getWithoutDeleted;
 CatalogEvent.getWithoutSuperseded = getWithoutSuperseded;
 CatalogEvent.getSortedMostPreferredFirst = getSortedMostPreferredFirst;
 CatalogEvent.productHasOriginProperties = productHasOriginProperties;
+CatalogEvent.removePhases = removePhases;
 
 
 module.exports = CatalogEvent;

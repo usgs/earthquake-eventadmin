@@ -17,9 +17,11 @@ var ProductHistoryView = function (options) {
       _dialog,
       _el,
       _event,
+      _page,
       _products = [],
-      _productTypes = [],
+      //_productTypes = [],
       _section,
+
 
       // methods
       _deleteProduct,
@@ -34,6 +36,7 @@ var ProductHistoryView = function (options) {
     var products = [];
 
     _el = _this.el;
+    _page = options.page;
 
     _section = document.createElement('section');
     _section.className = 'associated-products';
@@ -42,7 +45,13 @@ var ProductHistoryView = function (options) {
     // get event
     _event = CatalogEvent(options.eventDetails);
 
+    // get products
     products = options.products;
+
+    if (_page._options.hash === 'origin') {
+      products = CatalogEvent.removePhases(options.products);
+    }
+
 
     // get products
     for (var i = 0; i < products.length; i++) {
@@ -176,23 +185,30 @@ var ProductHistoryView = function (options) {
   };
 
   _this.render = function () {
-    var type = null,
-        product = null,
-        i;
 
-    for(i = 0; i < _products.length; i++) {
-      product = _products[i];
-      if (type !== product.type) {
-        type = product.type;
-        _productTypes.push(type);
-        _section.innerHTML = _section.innerHTML + '<h4>' + type + '</h4>' +
-            '<section class="associated-products-' + type + '"></section>';
-      }
+
+
+    for (var i = 0; i < _products.length; i++) {
+      _section.appendChild(_page.buildSummaryMarkup(_products[i]));
     }
 
-    for(i = 0; i < _productTypes.length; i++) {
-      _getProductViewByType(_productTypes[i]);
-    }
+    // var type = null,
+    //     product = null,
+    //     i;
+
+    // for(i = 0; i < _products.length; i++) {
+    //   product = _products[i];
+    //   if (type !== product.type) {
+    //     type = product.type;
+    //     _productTypes.push(type);
+    //     _section.innerHTML = _section.innerHTML + '<h4>' + type + '</h4>' +
+    //         '<section class="associated-products-' + type + '"></section>';
+    //   }
+    // }
+
+    // for(i = 0; i < _productTypes.length; i++) {
+    //   _getProductViewByType(_productTypes[i]);
+    // }
 
   };
 

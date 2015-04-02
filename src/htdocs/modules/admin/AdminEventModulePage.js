@@ -7,7 +7,9 @@ EventModulePage.prototype.getPreferredSummaryMarkup = function (product, hash, n
   var preferredProductMarkup = document.createElement('section');
 
   this._options.module.getPage(hash, function (page) {
-    var products = CatalogEvent.getWithoutSuperseded(page.getProducts()),
+    var products = CatalogEvent.removePhases(
+          CatalogEvent.getWithoutSuperseded(
+          page.getProducts())),
         preferredLink = document.createElement('a');
 
     preferredProductMarkup.innerHTML = '<h3>' + name + '</h3>';
