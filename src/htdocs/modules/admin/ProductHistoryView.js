@@ -1,10 +1,8 @@
 'use strict';
 
 var CatalogEvent = require('CatalogEvent'),
-    Product = require('Product'),
 
     ModalView = require('mvc/ModalView'),
-    SendProductView = require('admin/SendProductView'),
     View = require('mvc/View');
 
 var ProductHistoryView = function (options) {
@@ -17,15 +15,7 @@ var ProductHistoryView = function (options) {
       _event,
       _page,
       _products = [],
-      //_productTypes = [],
-      _section,
-
-
-      // methods
-      _deleteProduct,
-      _editProduct,
-      _trumpProduct,
-      _sendProduct;
+      _section;
 
   _this = View(options);
 
@@ -64,77 +54,6 @@ var ProductHistoryView = function (options) {
     _dialog.show();
 
     options = null;
-  };
-
-  _trumpProduct = function (product) {
-    var trumpProduct;
-
-    trumpProduct = Product({
-        source: product.source,
-        type: 'trump-' + product.type,
-        code: product.code,
-        properties: {
-          'eventSource': product.properties.eventsource,
-          'eventSourceCode': product.properties.eventsourcecode,
-          'trump-source': product.source,
-          'trump-code': product.code
-        }
-      });
-
-    _sendProduct(trumpProduct);
-  };
-
-  _editProduct = function (product) {
-    console.log('triggered _editProduct');
-    console.log(product);
-  };
-
-  _deleteProduct = function (product) {
-    var deleteProduct;
-
-    deleteProduct = Product({
-        source: product.source,
-        type: product.type,
-        status: Product.STATUS_DELETE,
-        code: product.code,
-        properties: {
-          eventSource: product.properties.eventsource,
-          eventSourceCode: product.properties.eventsourcecode
-        }
-      });
-
-    _sendProduct(deleteProduct);
-  };
-
-  _sendProduct = function (product) {
-    // send product
-    var sendProductView,
-        productSent;
-
-    sendProductView = SendProductView({
-      product: product,
-      formatProduct: function (products) {
-        // format product being sent
-        return sendProductView.formatProduct(products);
-      }
-    });
-    sendProductView.on('success', function () {
-      // track that product was sent
-      productSent = true;
-    });
-    sendProductView.on('cancel', function () {
-      if (productSent) {
-        // product was sent, which will modify the event
-        // reload page to see update
-        window.location.reload();
-      } else {
-        // product not sent, cleanup
-        product = null;
-        sendProductView.destroy();
-        sendProductView = null;
-      }
-    });
-    sendProductView.show();
   };
 
   _this.render = function () {

@@ -24,12 +24,10 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
   }
 };
 
-SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) {
+SummaryDetailsPage.prototype.buildSummaryMarkup = function (product) {
   var div = document.createElement('div'),
       el,
       summaryMarkup;
-
-  preferred = (typeof preferred === 'undefined' ? true : preferred);
 
   el = document.createElement('a');
   el.className = this._options.hash + '-summary summary';
@@ -46,7 +44,7 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   // append summary markup
   div.appendChild(el);
   // add edit/delete/trump buttons
-  div.appendChild(this._getButtons(product, preferred));
+  div.appendChild(this._getButtons(product));
 
   return div;
 };
