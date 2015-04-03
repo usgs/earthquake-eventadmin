@@ -10,7 +10,7 @@ var AssociateEventView = require('admin/AssociateEventView'),
 
 
 var DEFAULTS = {
-  url: 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
+  searchUrl: 'http://dev-earthquake.cr.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time-asc'
 };
 
 
@@ -21,7 +21,7 @@ var EventsNearbyView = function (options) {
       _el,
       _event,
       _nearbyEventsEl,
-      _url,
+      _searchStub,
       // methods
       _associateCallback,
       _createView,
@@ -35,7 +35,7 @@ var EventsNearbyView = function (options) {
 
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
-    _url = _getSearchUrl();
+    _searchStub = options.searchUrl;
 
     section.classname = 'nearby-event-view';
     section.innerHTML = '<h3>Events Within 15 Minutes</h3>' +
@@ -55,7 +55,7 @@ var EventsNearbyView = function (options) {
    */
   _createView = function () {
     Xhr.ajax({
-      url: _url,
+      url: _getSearchUrl(),
       success: function (data) {
         var events = [],
             feature = null,
@@ -124,7 +124,7 @@ var EventsNearbyView = function (options) {
     // build search url
     starttime = new Date(time.getTime() - 900000);
     endtime = new Date(time.getTime() + 900000);
-    url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time-asc' +
+    url = _searchStub +
         '&starttime=' + starttime.toISOString() +
         '&endtime=' + endtime.toISOString();
 

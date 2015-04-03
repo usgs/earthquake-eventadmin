@@ -64,7 +64,9 @@ if (!isset($TEMPLATE)) {
   $EVENT_CONFIG = array(
     'MOUNT_PATH' => $CONFIG['MOUNT_PATH'],
     'KML_STUB' => isset($CONFIG['KML_STUB']) ? $CONFIG['KML_STUB'] : null,
-    'DYFI_RESPONSE_URL' => $CONFIG['DYFI_RESPONSE_URL']
+    'DYFI_RESPONSE_URL' => $CONFIG['DYFI_RESPONSE_URL'],
+    'OFFSITE_HOST' => $CONFIG['OFFSITE_HOST'],
+    'SEARCH_STUB' => $CONFIG['SEARCH_STUB']
   );
 
   $HEAD = '<link rel="stylesheet" href="css/event.css"/>';

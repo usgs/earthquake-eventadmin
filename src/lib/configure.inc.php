@@ -76,6 +76,12 @@ $prompts = array(
     'secure' => false
   ),
 
+  'SEARCH_STUB' => array(
+    'prompt' => 'Site-relative path stub for GeoJSON nearby events summary',
+    'default' => '/fdsnws/event/1/query?format=geojson&orderby=time-asc',
+    'secure' => false
+  ),
+
   'OFFSITE_HOST' => array(
     'prompt' => 'Offsite host where content exists',
     'default' => 'earthquake.usgs.gov',

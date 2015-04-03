@@ -7,7 +7,11 @@ var EventsAssociatedView = require('admin/EventsAssociatedView'),
 
 
 var AdminSummaryPage = function (options) {
+
   options = Util.extend({}, options || {});
+
+  this._searchUrl = 'http://' + options.eventConfig.OFFSITE_HOST +
+      options.eventConfig.SEARCH_STUB;
 
   EventModulePage.call(this, options);
 };
@@ -23,7 +27,8 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
 
   EventsNearbyView({
     el: this._content,
-    eventDetails: this._event
+    eventDetails: this._event,
+    searchUrl: this._searchUrl
   });
 
 };
