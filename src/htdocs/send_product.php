@@ -17,11 +17,9 @@ include_once '../lib/functions.inc.php';
 try {
   // session specific data directory
   $workingDir = sys_get_temp_dir() . 'send_product_' . session_id();
-  if (is_dir($workingDir)) {
-    rrmdir($workingDir);
+  if (!is_dir($workingDir)) {
+    mkdir($workingDir);
   }
-  mkdir($workingDir);
-
 
   // configure sender
   $sender = new ProductSender();
@@ -49,18 +47,47 @@ try {
   $inlineContent = null;
   $inlineContentType = null;
 
+
+  // make product specific directory
+  $workingDir = $workingDir . '/' . $source . '_' . $type . '_' . $code;
+  if (is_dir($workdingDir)) {
+    // remove existing directory
+    rrmdir($workingDir);
+  }
+  // make directory recursively
+  mkdir($workingDir, 0777, true);
+
+  // close session to allow parallel requests
+  session_write_close();
+
+
   // convert contents to files
   $contents = $product['contents'];
-  $files = array();
+  $directory = null;
   foreach ($contents as $path => $content) {
     if ($path === '') {
       if (!isset($content['bytes'])) {
-        throw new Exception('Inline content (path "") must use "bytes"');
+        if (isset($content['url'])) {
+          $content['bytes'] = file_get_contents($content['url']);
+        } else {
+          throw new Exception('Inline content (path "") must use "bytes"');
+        }
       }
       $inlineContent = $content['bytes'];
       $inlineContentType = $content['contentType'] || 'text/plain';
     } else {
-      $file = $workingDir . DIRECTORY_SEPARATOR . $path;
+      if ($directory === null) {
+        $directory = $workingDir;
+      }
+      // some sanitization of path
+      $path = str_replace('..', '__', $path);
+      $file = $directory . DIRECTORY_SEPARATOR . $path;
+      // make sure parent directory exists
+      $parentDir = dirname($file);
+      if (!is_dir($parentDir)) {
+        mkdir($parentDir, 0777, true);
+      }
+      // create or download content
       if (isset($content['bytes'])) {
         file_put_contents($file, $content['bytes']);
       } else {
@@ -68,7 +95,10 @@ try {
           throw new Exception('Unable to download url ' . $content['url']);
         };
       }
-      $files[] = $file;
+      // preserve last modified
+      if (isset($content['lastModified'])) {
+        touch($file, $content['lastModified'] / 1000);
+      }
     }
   }
 
@@ -85,12 +115,15 @@ try {
   $sender->setLinks($links);
   $sender->setInlineContent($inlineContent);
   $sender->setInlineContentType($inlineContentType);
-  $sender->setContents($files);
+  $sender->setDirectory($directory);
 
 
   // send and return output
   header('Content-type: application/json');
   echo json_encode($sender->send());
+
+  // product was sent, remove directory
+  rrmdir($workingDir);
 } catch (Exception $e) {
   header('HTTP/1.0 400 Bad Request');
   header('Content-type: application/json');
