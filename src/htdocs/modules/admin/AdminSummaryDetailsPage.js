@@ -42,7 +42,12 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
       el,
       summaryMarkup;
 
-  el = document.createElement('a');
+  if (this._options.viewUp === true) {
+    el = document.createElement('div');
+  } else {
+    el = document.createElement('a');
+  }
+
   el.className = this._options.hash + '-summary summary';
   el.setAttribute('href', this._buildHash(product));
 
