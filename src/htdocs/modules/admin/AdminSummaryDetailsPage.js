@@ -46,8 +46,14 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   el.className = this._options.hash + '-summary summary';
   el.setAttribute('href', this._buildHash(product));
 
-  if (preferred === true && this._options.markPreferred) {
+
+  if (this._options.viewUp !== true && preferred === true &&
+      this._options.markPreferred) {
     el.classList.add('preferred');
+  }
+
+  if (this._options.viewUp === true && preferred !== true) {
+    el.classList.add('superseded');
   }
 
   summaryMarkup = this._getSummaryMarkup(product);
@@ -80,8 +86,11 @@ SummaryDetailsPage.prototype._getButtons = function (product) {
   deleteButton.innerHTML = 'Delete Product';
   deleteButton.addEventListener('click', this._deleteProduct.bind(this));
 
-  detailsButton.innerHTML = 'View Revisions';
-  detailsButton.addEventListener('click', this._viewProduct.bind(this));
+  if (this._options.viewUp !== true) {
+    detailsButton.innerHTML = 'View Revisions';
+    detailsButton.addEventListener('click', this._viewProduct.bind(this));
+    buttons.appendChild(detailsButton);
+  }
 
   trumpButton = document.createElement('button');
   trumpButton.innerHTML = 'Trump Preferred';
@@ -90,7 +99,6 @@ SummaryDetailsPage.prototype._getButtons = function (product) {
   buttons.classList.add('button-group');
   buttons.classList.add('summary-actions');
   buttons.setAttribute('data-id', product.code);
-  buttons.appendChild(detailsButton);
   buttons.appendChild(editButton);
   buttons.appendChild(trumpButton); 
   buttons.appendChild(deleteButton);
@@ -149,11 +157,14 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
     products.push(product);
   }
 
+  this._options.viewUp = true;
+
   ProductHistoryView({
     'eventDetails': this._event,
     'products': products,
     'page': this
   });
+
 };
 
 SummaryDetailsPage.prototype._trumpProduct = function (e) {

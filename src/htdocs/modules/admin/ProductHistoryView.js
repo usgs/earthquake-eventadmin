@@ -26,7 +26,7 @@ var ProductHistoryView = function (options) {
     _page = options.page;
 
     _section = document.createElement('section');
-    _section.className = 'associated-products';
+    _section.className = 'product-history';
     _el.appendChild(_section);
 
     // get event
