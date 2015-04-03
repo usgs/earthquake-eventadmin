@@ -4,7 +4,8 @@ var EventModulePage = require('base/EventModulePage'),
     Util = require('util/Util'),
 
     Product = require('Product'),
-    SendProductView = require('admin/SendProductView');
+    SendProductView = require('admin/SendProductView'),
+    FileUploadView = require('FileUploadView');
 
 
 var CreateProductPage = function (options) {
@@ -19,13 +20,26 @@ CreateProductPage.prototype = Object.create(EventModulePage.prototype);
 
 
 CreateProductPage.prototype._setContentMarkup = function () {
-  var el = this._content;
+  var el = this._content,
+      uploadView;
 
-  el.innerHTML = '<button class="sendProduct">Send Product</button>';
+  el.innerHTML = '<button class="sendProduct">Send Product</button>' +
+      '<div class="myfileupload"></div>';
   this._sendProductButton = el.querySelector('.sendProduct');
 
   this._onSendProductClick = this._onSendProductClick.bind(this);
   this._sendProductButton.addEventListener('click', this._onSendProductClick);
+
+  uploadView = FileUploadView({
+    el: el.querySelector('.myfileupload')
+  });
+
+  uploadView.on('upload', function (file) {
+    console.log(file);
+  });
+  uploadView.on('uploaderror', function (xhr) {
+    console.log(xhr);
+  });
 };
 
 CreateProductPage.prototype._onSendProductClick = function () {

@@ -4,6 +4,10 @@
 @import 'htdocs/modules/admin/index';
 @import 'htdocs/modules/admin/summary/index';
 
+@import 'FileUploadView';
+@import 'FileUploadStatusView';
+
+
 /* this supports both location view and dyfi-form */
 .modal-dialog {
 
