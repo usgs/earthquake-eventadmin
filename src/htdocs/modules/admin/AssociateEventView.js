@@ -41,7 +41,7 @@ var AssociateEventView = function (options) {
           callback: _onConfirm
         },
         {
-          classes: ['cancel', 'red'],
+          classes: ['cancel'],
           text: 'Cancel',
           callback: _onCancel
         }
