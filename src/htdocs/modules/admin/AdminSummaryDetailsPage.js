@@ -42,7 +42,7 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
       el,
       summaryMarkup;
 
-  if (this._options.viewUp === true) {
+  if (this._dialogVisible === true) {
     el = document.createElement('div');
   } else {
     el = document.createElement('a');
@@ -52,12 +52,12 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
   el.setAttribute('href', this._buildHash(product));
 
 
-  if (this._options.viewUp !== true && preferred === true &&
+  if (this._dialogVisible !== true && preferred === true &&
       this._options.markPreferred) {
     el.classList.add('preferred');
   }
 
-  if (this._options.viewUp === true && preferred !== true) {
+  if (this._dialogVisible === true && preferred !== true) {
     el.classList.add('superseded');
   }
 
@@ -91,7 +91,7 @@ SummaryDetailsPage.prototype._getButtons = function (product) {
   deleteButton.innerHTML = 'Delete Product';
   deleteButton.addEventListener('click', this._deleteProduct.bind(this));
 
-  if (this._options.viewUp !== true) {
+  if (this._dialogVisible !== true) {
     detailsButton.innerHTML = 'View Revisions';
     detailsButton.addEventListener('click', this._viewProduct.bind(this));
     buttons.appendChild(detailsButton);
@@ -162,7 +162,7 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
     products.push(product);
   }
 
-  this._options.viewUp = true;
+  this._dialogVisible = true;
 
   ProductHistoryView({
     'eventDetails': this._event,
