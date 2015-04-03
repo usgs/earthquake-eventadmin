@@ -1,7 +1,8 @@
 'use strict';
 
-var View = require('mvc/View'),
-    ModalView = require('mvc/ModalView');
+var ModalView = require('mvc/ModalView'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
 var AssociateEventView = function (options) {
   var _this,
@@ -66,6 +67,26 @@ var AssociateEventView = function (options) {
       '<h4>Event</h4><pre><code>' + JSON.stringify(_referenceEvent, null, '  ') + '</code></pre>' +
       '<h4>Event to Associate</h4><pre><code>' + JSON.stringify(_associateEvent, null, '  ') + '</code></pre>';
   };
+
+  /**
+   * Clean up private variables, methods, and remove event listeners.
+   */
+  _this.destroy = Util.compose(function () {
+
+    // methods
+      _getContent = null;
+      _onCancel = null;
+      _onConfirm = null;
+
+    // variables
+    if (_dialog !== null) {
+      _dialog.destroy();
+      _dialog = null;
+    }
+      _infoEl = null;
+      _associateEvent = null;
+      _referenceEvent = null;
+  }, _this.destroy);
 
   _initialize();
   return _this;

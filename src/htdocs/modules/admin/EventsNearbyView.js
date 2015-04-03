@@ -19,6 +19,7 @@ var EventsNearbyView = function (options) {
       _initialize,
 
       // variables
+      _associateEventView,
       _el,
       _event,
       _nearbyEventsEl,
@@ -92,7 +93,7 @@ var EventsNearbyView = function (options) {
             }
           ]
         });
-        
+
       },
       error: function (status, xhr) {
         _nearbyEventsEl.innerHTML = '<p class="alert error">' +
@@ -104,8 +105,7 @@ var EventsNearbyView = function (options) {
 
 
   _associateCallback = function (eventSummary) {
-
-    AssociateEventView({
+    _associateEventView = AssociateEventView({
       'referenceEvent' : _event.getSummary(),
       'associateEvent': eventSummary
     });
@@ -136,6 +136,26 @@ var EventsNearbyView = function (options) {
 
     return url;
   };
+
+  /**
+   * Clean up private variables, methods, and remove event listeners.
+   */
+  _this.destroy = Util.compose(function () {
+
+    // methods
+    _associateCallback = null;
+    _createView = null;
+
+    // variables
+    if (_associateEventView !== null) {
+      _associateEventView.destroy();
+      _associateEventView = null;
+    }
+      _el = null;
+      _event = null;
+      _nearbyEventsEl = null;
+      _searchStub = null;
+  }, _this.destroy);
 
 
   _initialize();
