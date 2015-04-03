@@ -3,6 +3,7 @@
 var CatalogEvent = require('CatalogEvent'),
 
     ModalView = require('mvc/ModalView'),
+    Util = require('util/Util'),
     View = require('mvc/View');
 
 var ProductHistoryView = function (options) {
@@ -60,6 +61,23 @@ var ProductHistoryView = function (options) {
     // call getSummaryContent and append the content to the modal dialog
     _section.appendChild(_page.getSummaryContent(_products));
   };
+
+  /**
+   * Clean up private variables, methods, and remove event listeners.
+   */
+  _this.destroy = Util.compose(function () {
+
+    // variables
+    if (_dialog !== null) {
+      _dialog.destroy();
+      _dialog = null;
+    }
+      _el = null;
+      _event = null;
+      _page = null;
+      _products = null;
+      _section = null;
+  }, _this.destroy);
 
   _initialize();
   return _this;
