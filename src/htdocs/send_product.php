@@ -91,7 +91,12 @@ try {
       if (isset($content['bytes'])) {
         file_put_contents($file, $content['bytes']);
       } else {
-        if (!downloadURL($content['url'], $file, false)) {
+        $url = $content['url'];
+        if (strpos($url, '/') === 0) {
+          // uploaded file
+          $url = $HOST_URL_PREFIX . $url;
+        }
+        if (!downloadURL($url, $file, false)) {
           throw new Exception('Unable to download url ' . $content['url']);
         };
       }
