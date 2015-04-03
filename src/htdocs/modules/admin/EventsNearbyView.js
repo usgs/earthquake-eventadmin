@@ -17,11 +17,13 @@ var DEFAULTS = {
 var EventsNearbyView = function (options) {
   var _this,
       _initialize,
+
       // variables
       _el,
       _event,
       _nearbyEventsEl,
       _searchStub,
+
       // methods
       _associateCallback,
       _createView,
@@ -92,7 +94,11 @@ var EventsNearbyView = function (options) {
         });
         
       },
-      error: function () {},
+      error: function (status, xhr) {
+        _nearbyEventsEl.innerHTML = '<p class="alert error">' +
+            '<b>' + status + ': ' + xhr.statusText + '</b><br/>'+
+            xhr.responseText + '</p>';
+      }
     });
   };
 
