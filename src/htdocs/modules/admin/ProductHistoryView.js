@@ -119,6 +119,10 @@ var ProductHistoryView = function (options) {
       _section.appendChild(el);
       // append buttons
       _section.appendChild(_getButtons(_products[i], i));
+
+      if (i !== 0) {
+        el.classList.add('superseded');
+      }
     }
   };
 

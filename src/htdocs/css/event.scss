@@ -60,3 +60,8 @@ a.summary {
   color: #999;
   font-weight: 300;
 }
+
+
+.summary > .deleted > ul > li > span {
+  text-decoration: line-through;
+}
