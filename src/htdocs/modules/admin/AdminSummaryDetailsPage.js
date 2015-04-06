@@ -80,33 +80,40 @@ SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) 
 SummaryDetailsPage.prototype._getButtons = function (product) {
   var buttons = document.createElement('div'),
       editButton = document.createElement('button'),
-      deleteButton = document.createElement('button'),
-      detailsButton = document.createElement('button'),
+      deleteButton,
+      detailsButton,
       trumpButton;
 
 
   editButton.innerHTML = 'Edit Product';
   editButton.addEventListener('click', this._editProduct.bind(this));
 
-  deleteButton.innerHTML = 'Delete Product';
-  deleteButton.addEventListener('click', this._deleteProduct.bind(this));
-
   if (this._dialogVisible !== true) {
+    detailsButton = document.createElement('button');
     detailsButton.innerHTML = 'View Revisions';
     detailsButton.addEventListener('click', this._viewProduct.bind(this));
-    buttons.appendChild(detailsButton);
-  }
 
-  trumpButton = document.createElement('button');
-  trumpButton.innerHTML = 'Trump Preferred';
-  trumpButton.addEventListener('click', this._trumpProduct.bind(this));
+    deleteButton = document.createElement('button');
+    deleteButton.innerHTML = 'Delete Product';
+    deleteButton.addEventListener('click', this._deleteProduct.bind(this));
+
+    trumpButton = document.createElement('button');
+    trumpButton.innerHTML = 'Trump Preferred';
+    trumpButton.addEventListener('click', this._trumpProduct.bind(this));
+
+    // preserve this order
+    buttons.appendChild(detailsButton);
+    buttons.appendChild(editButton);
+    buttons.appendChild(trumpButton);
+    buttons.appendChild(deleteButton);
+  } else {
+    // for revisions only display edit button
+    buttons.appendChild(editButton);
+  }
 
   buttons.classList.add('button-group');
   buttons.classList.add('summary-actions');
   buttons.setAttribute('data-id', product.code);
-  buttons.appendChild(editButton);
-  buttons.appendChild(trumpButton); 
-  buttons.appendChild(deleteButton);
 
   return buttons;
 };
