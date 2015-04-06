@@ -159,7 +159,10 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
 
   for (var i = 0; i < productTypes.length; i++) {
     product = this._getProductFromDataId(dataid, productTypes[i]);
-    products.push(product);
+    // if either a phase-data or origin product doesn't exist
+    if (product !== null) {
+      products.push(product);
+    }
   }
 
   this._dialogVisible = true;
@@ -224,6 +227,8 @@ SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
       return product;
     }
   }
+
+  return null;
 };
 
 SummaryDetailsPage.prototype._sendProduct = function (products) {
