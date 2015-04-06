@@ -16,7 +16,11 @@ var ProductDetailsView = function (options) {
       _event,
       _page,
       _product,
-      _section;
+      _section,
+
+      // buttons
+      _editProduct,
+      _getButtons;
 
   _this = View(options);
 
@@ -47,11 +51,45 @@ var ProductDetailsView = function (options) {
     options = null;
   };
 
+  _getButtons = function () {
+    var buttons = document.createElement('div'),
+        editButton,
+        editProduct;
+
+    // button group
+    buttons.classList.add('button-group');
+    buttons.classList.add('summary-actions');
+
+    // add button
+    editButton = document.createElement('button');
+    editButton.innerHTML = 'Edit Product';
+    buttons.appendChild(editButton);
+
+    editProduct = _editProduct.bind(this);
+    editButton.addEventListener('click', editProduct);
+
+    buttons.destroy = function () {
+      editButton.removeEventListener('click', editProduct);
+      editProduct = null;
+      editButton = null;
+      buttons = null;
+    };
+
+    return buttons;
+  };
+
+  _editProduct = function () {
+    var product = _product;
+
+    console.log('edit product');
+    console.log(product);
+  };
 
   _this.render = function () {
     var el = _page.getDetailsContent(_product);
 
     // call getSummaryContent and append the content to the modal dialog
+    _section.appendChild(_getButtons(_product));
     _section.appendChild(el);
   };
 
@@ -59,6 +97,13 @@ var ProductDetailsView = function (options) {
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
+    var buttons = [];
+
+    // unbind all buttons
+    buttons = _section.querySelectorAll('.button-group');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i]._destroy();
+    }
 
     // variables
     if (_dialog !== null) {

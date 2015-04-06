@@ -19,7 +19,7 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
   if (products.length === 1) {
     // If there is only one product display details
     this._content.appendChild(this.getDetailsContent(products[0]));
-    this._content.insertBefore(this._getButtons(products[0]), this._content.firstChild);
+    this._content.insertBefore(this._getButtons(products[0], 0), this._content.firstChild);
   } else {
     // there is more than one product display summary
     this._content.appendChild(this.getSummaryContent(products));
@@ -50,35 +50,66 @@ SummaryDetailsPage.prototype.getSummaryContent = function (products) {
 SummaryDetailsPage.prototype._getButtons = function (product, dataid) {
   var buttons = document.createElement('div'),
       editButton,
+      editProduct,
       deleteButton,
+      deleteProduct,
       detailsButton,
-      trumpButton;
+      detailsProduct,
+      trumpButton,
+      trumpProduct;
 
+  // button container
+  buttons.classList.add('button-group');
+  buttons.classList.add('summary-actions');
+  buttons.setAttribute('data-id', dataid);
+
+  // buttons
   editButton = document.createElement('button');
   editButton.innerHTML = 'Edit Product';
-  editButton.addEventListener('click', this._editProduct.bind(this));
 
   detailsButton = document.createElement('button');
   detailsButton.innerHTML = 'View Revisions';
-  detailsButton.addEventListener('click', this._viewProduct.bind(this));
 
   deleteButton = document.createElement('button');
   deleteButton.innerHTML = 'Delete Product';
-  deleteButton.addEventListener('click', this._deleteProduct.bind(this));
 
   trumpButton = document.createElement('button');
   trumpButton.innerHTML = 'Trump Preferred';
-  trumpButton.addEventListener('click', this._trumpProduct.bind(this));
 
-  // preserve this order
+  // append buttons in this order
   buttons.appendChild(detailsButton);
   buttons.appendChild(editButton);
   buttons.appendChild(trumpButton);
   buttons.appendChild(deleteButton);
 
-  buttons.classList.add('button-group');
-  buttons.classList.add('summary-actions');
-  buttons.setAttribute('data-id', dataid);
+  // bindings
+  editProduct = this._editProduct.bind(this);
+  deleteProduct = this._deleteProduct.bind(this);
+  detailsProduct = this._viewProduct.bind(this);
+  trumpProduct = this._trumpProduct.bind(this);
+
+  editButton.addEventListener('click', editProduct);
+  deleteButton.addEventListener('click', deleteProduct);
+  detailsButton.addEventListener('click', detailsProduct);
+  trumpButton.addEventListener('click', trumpProduct);
+
+  buttons._destroy = function () {
+    editButton.removeEventListener('click', editProduct);
+    deleteButton.removeEventListener('click', deleteProduct);
+    detailsButton.removeEventListener('click', detailsProduct);
+    trumpButton.removeEventListener('click', trumpProduct);
+
+    buttons = null;
+    editButton = null;
+    deleteButton = null;
+    detailsButton = null;
+    trumpButton = null;
+
+    editProduct = null;
+    deleteProduct = null;
+    detailsProduct = null;
+    trumpProduct = null;
+  };
 
   return buttons;
 };
@@ -119,8 +150,10 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
 };
 
 SummaryDetailsPage.prototype._editProduct = function (e) {
+  var product = this._products[e.currentTarget.parentElement.getAttribute('data-id')];
+
   console.log('edit product');
-  console.log(e.target.parentElement.getAttribute('data-id'));
+  console.log(product);
 };
 
 SummaryDetailsPage.prototype._viewProduct = function (e) {
@@ -219,6 +252,25 @@ SummaryDetailsPage.prototype._sendProduct = function (products) {
   });
   sendProductView.show();
 };
+
+
+  // clean-up resources.
+SummaryDetailsPage.prototype.destroy = function () {
+  var buttons = [];
+
+  // unbind all buttons
+  buttons = this._content.querySelectorAll('.button-group');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i]._destroy();
+  }
+
+  this._content = null;
+  this._products = null;
+  this._options = null;
+
+  //EventModulePage.prototype.destroy.call(this);
+};
+
 
 
 module.exports = SummaryDetailsPage;

@@ -60,33 +60,45 @@ var ProductHistoryView = function (options) {
   };
 
 
-  _getButtons = function (product) {
+  _getButtons = function (product, dataid) {
     var buttons = document.createElement('div'),
-        editButton;
+        editButton,
+        editProduct;
 
-    editButton = document.createElement('button');
-    editButton.innerHTML = 'Edit Product';
-    editButton.addEventListener('click', _editProduct.bind(this));
-
-    // preserve this order
-    buttons.appendChild(editButton);
-
+    // button group
     buttons.classList.add('button-group');
     buttons.classList.add('summary-actions');
-    buttons.setAttribute('data-id', product.id);
+    buttons.setAttribute('data-id', dataid);
+
+    // add button
+    editButton = document.createElement('button');
+    editButton.innerHTML = 'Edit Product';
+    buttons.appendChild(editButton);
+
+    editProduct = _editProduct.bind(this);
+    editButton.addEventListener('click', editProduct);
+
+    buttons.destroy = function () {
+      editButton.removeEventListener('click', editProduct);
+      editProduct = null;
+      editButton = null;
+      buttons = null;
+    };
 
     return buttons;
   };
 
   _editProduct = function (e) {
+    var product = _products[e.currentTarget.parentElement.getAttribute('data-id')];
+
     console.log('edit product');
-    console.log(e.target.parentElement.getAttribute('data-id'));
+    console.log(product);
   };
 
   _viewProductDetails = function (e) {
-    // TODO, grab data attribute off summary element
     var dataid = e.currentTarget.getAttribute('data-id');
 
+    // keep the hash from updating
     e.preventDefault();
 
     ProductDetailsView({
@@ -106,7 +118,7 @@ var ProductHistoryView = function (options) {
       el.addEventListener('click', _viewProductDetails);
       _section.appendChild(el);
       // append buttons
-      _section.appendChild(_getButtons(_products[i]));
+      _section.appendChild(_getButtons(_products[i], i));
     }
   };
 
@@ -114,6 +126,20 @@ var ProductHistoryView = function (options) {
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
+
+    var buttons = [],
+        summaries = [];
+
+    // unbind all buttons
+    buttons = _section.querySelectorAll('.button-group');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i]._destroy();
+    }
+
+    summaries = _section.querySelectorAll('.summary');
+    for (i = 0; i < summaries.length; i ++) {
+      summaries[i].removeEventListener('click', _viewProductDetails);
+    }
 
     // variables
     if (_dialog !== null) {
