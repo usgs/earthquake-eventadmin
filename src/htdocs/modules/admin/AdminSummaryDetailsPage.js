@@ -115,17 +115,16 @@ SummaryDetailsPage.prototype._getButtons = function (product, dataid) {
 };
 
 SummaryDetailsPage.prototype._deleteProduct = function (e) {
-  var dataid = e.target.parentElement.getAttribute('data-id'),
+  var product = this._products[e.target.parentElement.getAttribute('data-id')],
       productTypes = this._options.productTypes,
       productType,
-      product,
       properties,
       deleteProducts = [];
 
   for(var i = 0; i < productTypes.length; i++) {
     productType = productTypes[i];
 
-    product = this._getProductFromDataId(dataid, productType);
+    product = this._getProductFromDataId(product.code, productType);
 
     if (product) {
       properties = product.properties;
@@ -167,17 +166,16 @@ SummaryDetailsPage.prototype._viewProduct = function (e) {
 };
 
 SummaryDetailsPage.prototype._trumpProduct = function (e) {
-  var dataid = e.target.parentElement.getAttribute('data-id'),
+  var product = this._products[e.target.parentElement.getAttribute('data-id')],
       productTypes = this._options.productTypes,
       productType,
-      product,
       properties,
       trumpProducts = [];
 
   for(var i = 0; i < productTypes.length; i++) {
     productType = productTypes[i];
 
-    product = this._getProductFromDataId(dataid, productType);
+    product = this._getProductFromDataId(product.code, productType);
 
     if (product) {
       properties = product.properties;
