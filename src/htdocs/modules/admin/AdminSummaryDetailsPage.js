@@ -9,14 +9,16 @@ var CatalogEvent = require('CatalogEvent'),
 
 
 SummaryDetailsPage.prototype._setContentMarkup = function () {
-  var products = this._products = this.getProducts();
+  var products = this.getProducts();
 
   products = CatalogEvent.removePhases(
       CatalogEvent.getWithoutSuperseded(products));
 
+  this._products = products;
+
   if (products.length === 1) {
     // If there is only one product display details
-    this.getDetailsContent(products[0]);
+    this._content.appendChild(this.getDetailsContent(products[0]));
     this._content.insertBefore(this._getButtons(products[0]), this._content.firstChild);
   } else {
     // there is more than one product display summary
@@ -26,94 +28,57 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
 
 
 SummaryDetailsPage.prototype.getSummaryContent = function (products) {
-  var product,
+  var summary,
+      product,
       fragment = document.createDocumentFragment();
 
   for (var i = 0; i < products.length; i++) {
     product = products[i];
-    fragment.appendChild(this.buildSummaryMarkup(products[i], !i));
+    summary = this.buildSummaryMarkup(product, !i);
+    // append summary markup
+    fragment.appendChild(summary);
+    // add edit/delete/trump buttons
+    fragment.appendChild(this._getButtons(product, i));
+
+    if (i === 0 && this._options.markPreferred) {
+      summary.classList.add('preferred');
+    }
   }
   return fragment;
 };
 
-
-SummaryDetailsPage.prototype.buildSummaryMarkup = function (product, preferred) {
-  var fragment = document.createDocumentFragment(),
-      el,
-      summaryMarkup;
-
-  if (this._dialogVisible === true) {
-    el = document.createElement('div');
-  } else {
-    el = document.createElement('a');
-  }
-
-  el.className = this._options.hash + '-summary summary';
-  el.setAttribute('href', this._buildHash(product));
-
-
-  if (this._dialogVisible !== true && preferred === true &&
-      this._options.markPreferred) {
-    el.classList.add('preferred');
-  }
-
-  if (this._dialogVisible === true && preferred !== true) {
-    el.classList.add('superseded');
-  }
-
-  summaryMarkup = this._getSummaryMarkup(product);
-  // Add description content
-  if (typeof summaryMarkup === 'object') {
-    el.appendChild(summaryMarkup);
-  } else {
-    el.innerHTML = summaryMarkup;
-  }
-
-  // append summary markup
-  fragment.appendChild(el);
-  // add edit/delete/trump buttons
-  fragment.appendChild(this._getButtons(product));
-
-  return fragment;
-};
-
-SummaryDetailsPage.prototype._getButtons = function (product) {
+SummaryDetailsPage.prototype._getButtons = function (product, dataid) {
   var buttons = document.createElement('div'),
-      editButton = document.createElement('button'),
+      editButton,
       deleteButton,
       detailsButton,
       trumpButton;
 
-
+  editButton = document.createElement('button');
   editButton.innerHTML = 'Edit Product';
   editButton.addEventListener('click', this._editProduct.bind(this));
 
-  if (this._dialogVisible !== true) {
-    detailsButton = document.createElement('button');
-    detailsButton.innerHTML = 'View Revisions';
-    detailsButton.addEventListener('click', this._viewProduct.bind(this));
+  detailsButton = document.createElement('button');
+  detailsButton.innerHTML = 'View Revisions';
+  detailsButton.addEventListener('click', this._viewProduct.bind(this));
 
-    deleteButton = document.createElement('button');
-    deleteButton.innerHTML = 'Delete Product';
-    deleteButton.addEventListener('click', this._deleteProduct.bind(this));
+  deleteButton = document.createElement('button');
+  deleteButton.innerHTML = 'Delete Product';
+  deleteButton.addEventListener('click', this._deleteProduct.bind(this));
 
-    trumpButton = document.createElement('button');
-    trumpButton.innerHTML = 'Trump Preferred';
-    trumpButton.addEventListener('click', this._trumpProduct.bind(this));
+  trumpButton = document.createElement('button');
+  trumpButton.innerHTML = 'Trump Preferred';
+  trumpButton.addEventListener('click', this._trumpProduct.bind(this));
 
-    // preserve this order
-    buttons.appendChild(detailsButton);
-    buttons.appendChild(editButton);
-    buttons.appendChild(trumpButton);
-    buttons.appendChild(deleteButton);
-  } else {
-    // for revisions only display edit button
-    buttons.appendChild(editButton);
-  }
+  // preserve this order
+  buttons.appendChild(detailsButton);
+  buttons.appendChild(editButton);
+  buttons.appendChild(trumpButton);
+  buttons.appendChild(deleteButton);
 
   buttons.classList.add('button-group');
   buttons.classList.add('summary-actions');
-  buttons.setAttribute('data-id', product.code);
+  buttons.setAttribute('data-id', dataid);
 
   return buttons;
 };
@@ -159,27 +124,13 @@ SummaryDetailsPage.prototype._editProduct = function (e) {
 };
 
 SummaryDetailsPage.prototype._viewProduct = function (e) {
-  var dataid = e.target.parentElement.getAttribute('data-id'),
-      products = [],
-      product = null,
-      productTypes = this._options.productTypes;
-
-  for (var i = 0; i < productTypes.length; i++) {
-    product = this._getProductFromDataId(dataid, productTypes[i]);
-    // if either a phase-data or origin product doesn't exist
-    if (product !== null) {
-      products.push(product);
-    }
-  }
-
-  this._dialogVisible = true;
+  var dataid = e.currentTarget.parentElement.getAttribute('data-id');
 
   ProductHistoryView({
     'eventDetails': this._event,
-    'products': products,
+    'product': this._products[dataid],
     'page': this
   });
-
 };
 
 SummaryDetailsPage.prototype._trumpProduct = function (e) {
@@ -268,5 +219,6 @@ SummaryDetailsPage.prototype._sendProduct = function (products) {
   });
   sendProductView.show();
 };
+
 
 module.exports = SummaryDetailsPage;
