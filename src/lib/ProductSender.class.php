@@ -36,7 +36,7 @@ class ProductSender {
 	private $links;
 	private $inlineContent;
 	private $inlineContentType;
-	private $contents;
+	private $directory;
 
 	private $privateKeyFile;
 
@@ -87,8 +87,8 @@ class ProductSender {
 	public function getInlineContentType() { return $this->inlineContentType; }
 	public function setInlineContentType($contentType) { $this->inlineContentType = $contentType; }
 
-	public function getContents() { return $this->contents; }
-	public function setContents($contents) { $this->contents = $contents; }
+	public function getDirectory() { return $this->directory; }
+	public function setDirectory($directory) { $this->directory = $directory; }
 
 	public function getPrivateKeyFile() { return $this->privateKeyFile; }
 	public function setPrivateKeyFile($keyFile) { $this->privateKeyFile = $keyFile; }
@@ -133,10 +133,8 @@ class ProductSender {
 			$args[] = escapeshellarg('--contentType=' . $this->inlineContentType);
 		}
 
-		if ($this->contents) {
-			foreach ($this->contents as $content) {
-				$args[] = escapeshellarg('--file=' . $content);
-			}
+		if ($this->directory) {
+			$args[] = escapeshellarg('--directory=' . $this->directory);
 		}
 
 		if ($this->privateKeyFile) {

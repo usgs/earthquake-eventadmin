@@ -1,0 +1,51 @@
+
+.fileUploadStatus {
+
+  padding-right: 5em;
+  position: relative;
+
+  // button is ~5em wide
+  > button {
+    position: absolute;
+    right: 1em;
+    top: .75em;
+  }
+
+  > .name,
+  > .size,
+  > .result {
+    display: block;
+    font-size: 1em;
+    margin-right: 1em;
+
+    @media screen and (min-width: 768px) {
+      font-size: .8125em;
+    }
+  }
+
+  > .size {
+    opacity: .8;
+  }
+
+  @media screen and (min-width: 580px) {
+    > .name,
+    > .size {
+      display: inline-block;
+    }
+
+    > progress {
+      float: right;
+      width: 30%;
+    }
+
+    > .result {
+      display: block;
+      clear: left;
+    }
+  }
+
+  > .hidden {
+    display: none;
+  }
+
+}
