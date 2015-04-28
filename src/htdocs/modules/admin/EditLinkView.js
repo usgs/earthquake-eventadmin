@@ -55,7 +55,7 @@ var EditLinkView = function (options) {
     _sendProductView.on('done', _onDone);
 
     content =
-        '<div class= "">' +
+        '<div class="addEditLink">' +
           '<label for="linkText">Link Text</label>' +
           '<small>Text to display on web page</small>' +
           '<input id="linkText" name="linkText" type="text"/>' +
@@ -90,8 +90,6 @@ var EditLinkView = function (options) {
         }
       ]
     });
-
-    options = null;
   };
 
   _onSubmit = function () {
@@ -155,7 +153,8 @@ var EditLinkView = function (options) {
     _this = null;
   }, _this.destroy);
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 
 };
