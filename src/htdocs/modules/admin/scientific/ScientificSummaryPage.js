@@ -31,7 +31,7 @@ AdminScientificSummaryPage.prototype.getLinks = function () {
   button = document.createElement('button');
   button.innerHTML = 'Add Link';
 
-  button.addEventListener('click', this.modalView);
+  button.addEventListener('click', this.modalView.bind(this));
   fragment.appendChild(button);
   return fragment;
 };
@@ -54,7 +54,11 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
 AdminScientificSummaryPage.prototype.modalView = function () {
   //calls modal view
   EditLinkView({
-    
+    type: 'scitech-link',
+    source: this._event.properties.net,
+    code: this._event.properties.code,
+    eventsource: ,
+    eventsourcecode:
   }).show();
 };
 
