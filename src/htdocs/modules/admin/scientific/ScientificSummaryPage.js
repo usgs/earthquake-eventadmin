@@ -23,16 +23,30 @@ AdminScientificSummaryPage.prototype = Object.create(ScientificSummaryPage.proto
  *         Fragment with links, or empty if no information present.
  */
 AdminScientificSummaryPage.prototype.getLinks = function () {
-  var fragment,
-      button;
+  var button,
+      el,
+      fragment,
+      links,
+      products;
 
   fragment = ScientificSummaryPage.prototype.getLinks.call(this);
-  // TODO add scitech-link button
-  button = document.createElement('button');
-  button.innerHTML = 'Add Link';
 
-  button.addEventListener('click', this.modalView.bind(this));
-  fragment.appendChild(button);
+  products = this._event.properties.products;
+  links = products['scitech-link'];
+
+
+  // TODO add scitech-link button
+  el = document.createElement('div');
+
+  el.innerHTML = '<p class="alert no-product-warning info">'+
+      'Links can be added here.' +
+      '<br/>' +
+      '<button class="green create-link-button">Add Link</button>' +
+      '</p>';
+
+  button = el.querySelector('.create-link-button');
+  button.addEventListener('click', this.onAddClick.bind(this));
+  fragment.appendChild(el);
   return fragment;
 };
 /**
@@ -51,14 +65,17 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
   return el;
 };
 
-AdminScientificSummaryPage.prototype.modalView = function () {
+AdminScientificSummaryPage.prototype.onAddClick = function () {
+  var props = this._event.properties,
+      time = new Date().getTime();
+
   //calls modal view
   EditLinkView({
     type: 'scitech-link',
-    source: this._event.properties.net,
-    code: this._event.properties.code,
-    eventsource: ,
-    eventsourcecode:
+    source: 'admin',
+    code: props.net + '-' + props.code + '-' + props.url +'-'+ time,
+    eventSource: props.net,
+    eventSourceCode: props.code
   }).show();
 };
 
