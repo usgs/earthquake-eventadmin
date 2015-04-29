@@ -1,6 +1,6 @@
 'use strict';
 
-var
+var FileUploadView = require('FileUploadView'),
     Product = require('Product'),
     ProductContent = require('ProductContent'),
 
@@ -156,6 +156,7 @@ var EditProductView = function (options) {
       _sourceInput,
       _statusInput,
       _typeInput,
+      _uploadView,
 
       _createInput,
       _createViewSkeleton,
@@ -166,6 +167,8 @@ var EditProductView = function (options) {
       _createViewSkeletonProperties,
       _onCancel,
       _onCreate,
+      _onFileUpload,
+      _onFileUploadError,
       _parsePropertyInput,
       _renderBasic,
       _renderFiles,
@@ -366,11 +369,13 @@ var EditProductView = function (options) {
     // TODO :: Add support for file-based content types
     upload = fragment.appendChild(document.createElement('div'));
     upload.classList.add('editproduct-upload-wrapper');
-    upload.innerHTML =
-      '<h4>Upload Files</h4>' +
-      '<p class="alert warning">' +
-        'Support for uploaded files coming soon&hellip;' +
-      '</p>';
+
+    _uploadView = FileUploadView({
+      el: upload.appendChild(document.createElement('div')),
+      hideOnSuccess: true
+    });
+    _uploadView.on('upload', _onFileUpload);
+    _uploadView.on('uploaderror', _onFileUploadError);
 
     return fragment;
   };
@@ -520,6 +525,14 @@ var EditProductView = function (options) {
         ]
       }).show();
     }
+  };
+
+  _onFileUpload = function (file) {
+    console.log(file);
+  };
+
+  _onFileUploadError = function (xhr) {
+    console.log(xhr);
   };
 
   _parsePropertyInput = function () {
@@ -808,6 +821,7 @@ var EditProductView = function (options) {
     _sourceInput = null;
     _statusInput = null;
     _typeInput = null;
+    _uploadView = null;
 
     _createInput = null;
     _createViewSkeleton = null;
@@ -818,6 +832,8 @@ var EditProductView = function (options) {
     _createViewSkeletonProperties = null;
     _onCancel = null;
     _onCreate = null;
+    _onFileUpload = null;
+    _onFileUploadError = null;
     _parsePropertyInput = null;
     _renderBasic = null;
     _renderFiles = null;
