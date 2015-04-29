@@ -2,7 +2,9 @@
 
 var ProductContent = require('ProductContent'),
 
+    Collection = require('mvc/Collection'),
     Model = require('mvc/Model'),
+
     Util = require('util/Util');
 
 
@@ -36,15 +38,7 @@ var STATUS_UPDATE = 'UPDATE',
  * @param options.links {Object}
  *        keys are link relation names.
  *        values are arrays of uri Strings for relation.
- * @param options.contents {Object}.
- *        keys are content paths.
- *        values are content objects with keys:
- *          contentType: {String} mime type
- *          lastModified: {Number} millisecond epoch update time.
- *          length: {Number} content length, optional for new content.
- *          url: {String} url for content that lives on a server.
- *          bytes: {String} inline content (or edited).
- *        Every content should have one of "url" or "bytes".
+ * @param options.contents {Collection<ProductContent>}.
  * @param options.preferredWeight {Number}
  *        optional, current preferred weight of product.
  */
@@ -61,21 +55,31 @@ var Product = function (options) {
     status: STATUS_UPDATE,
     properties: {},
     links: {},
-    contents: {},
+    contents: null,
     preferredWeight: null
   }, options));
 
   _initialize = function (/*options*/) {
-    var content,
-        contents = _this.get('contents'),
-        key;
+    var contents = _this.get('contents'),
+        contentsGood = true;
 
-    contents = Util.extend({}, contents);
-    for (key in contents) {
-      content = contents[key];
-      if (!content.get) {
-        contents[key] = ProductContent(content);
-      }
+    if (!contents) {
+      contents = [];
+    }
+
+    if (Array.isArray(contents)) {
+      contentsGood = false;
+      contents = contents.map(function (content) {
+        if (!content.get) {
+          content = ProductContent(content);
+        }
+        return content;
+      });
+      contents = Collection(contents);
+    }
+
+    if (!contentsGood) {
+      _this.set({contents: contents}, {silent: true});
     }
     _this.set({'contents': contents});
   };
