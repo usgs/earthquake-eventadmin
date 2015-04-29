@@ -24,7 +24,7 @@ var EditLinkView = function (options) {
   _this = View(options);
 
   _initialize = function (options) {
-    var content,
+    var properties,
         title;
 
     _product = options.product;
@@ -54,27 +54,27 @@ var EditLinkView = function (options) {
 
     _sendProductView.on('done', _onDone);
 
-    content =
+    _this.el.innerHTML =
         '<div class="addEditLink">' +
-          '<label for="linkText">Link Text</label>' +
-          '<small>Text to display on web page</small>' +
+          '<label for="linkText">Link Text: </label>' +
           '<input id="linkText" name="linkText" type="text"/>' +
           '<br/>' +
-          '<label for="linkURL">Link URL</label>' +
-          '<small>Link to display on web page</small>' +
+          '<label for="linkURL">Link URL: </label>' +
           '<input id="linkURL" name="linkURL" type="text"/>' +
         '</div>';
 
     _text = _this.el.querySelector('#linkText');
     _url = _this.el.querySelector('#linkURL');
 
-    if ((_text === '' || null) || (_url === '' || null)) {
+    properties = _product.get('properties');
+
+    if (!properties.text || !properties.url) {
       title = 'Add Link';
     } else {
       title = 'Edit Link';
     }
 
-    _modal = ModalView(content, {
+    _modal = ModalView(_this.el, {
       title: title,
       closable: false,
       buttons: [
