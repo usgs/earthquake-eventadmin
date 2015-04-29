@@ -2,6 +2,7 @@
 
 var CatalogEvent = require('CatalogEvent'),
     ProductDetailsView = require('admin/ProductDetailsView'),
+    Tensor = require('scientific/tensor/Tensor'),
 
     ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
@@ -109,16 +110,22 @@ var ProductHistoryView = function (options) {
   };
 
   _this.render = function () {
-    var el;
+    var el,
+        product;
 
     for (var i = 0; i < _products.length; i++) {
-      // call getSummaryContent and append the content to the modal dialog
-      el = _page.buildSummaryMarkup(_products[i]);
+      product = _products[i];
+      // get tensor information for MT and FM
+      if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
+        product = Tensor.fromProduct(product);
+      }
+      // call buildSummaryMarkup and append the content to the modal dialog
+      el = _page.buildSummaryMarkup(product);
       el.setAttribute('data-id', i);
       el.addEventListener('click', _viewProductDetails);
       _section.appendChild(el);
       // append buttons
-      _section.appendChild(_getButtons(_products[i], i));
+      _section.appendChild(_getButtons(product, i));
 
       if (i !== 0) {
         el.classList.add('superseded');
