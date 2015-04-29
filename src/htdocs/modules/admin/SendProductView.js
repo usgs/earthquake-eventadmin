@@ -327,7 +327,6 @@ var SendProductView = function (options) {
         r,
         l,
         contents,
-        content,
         type;
 
     buf.push('<dl>');
@@ -360,10 +359,10 @@ var SendProductView = function (options) {
     }
     buf.push('</dl></dd>');
 
-    contents = product.get('contents');
+    contents = product.get('contents').data();
     buf.push('<dt>Contents</dt><dd><ul>');
-    for (p in contents) {
-      content = contents[p];
+    contents.forEach(function (content) {
+      p = content.get('path');
       type = content.get('contentType');
 
       if (p === '') {
@@ -374,7 +373,7 @@ var SendProductView = function (options) {
 
       buf.push('<li>' + name + ' (' + prettySize(content.get('length')) +
           ') ' + type + '</li>');
-    }
+    });
     buf.push('</ul></dd>');
 
     buf.push('</dl>');

@@ -70,7 +70,7 @@ var TextProductView = function (options) {
           'review-status': 'Reviewed',
         },
         contents: {
-          '': ProductContent({bytes: ''})
+          '': ProductContent({path: '', bytes: ''})
         }
       });
     }
@@ -144,21 +144,25 @@ var TextProductView = function (options) {
    *
    */
   _onCreate = function () {
-    var contents = Util.extend({}, _product.get('contents')),
-        content = contents[''] || ProductContent({bytes: ''}),
+    var contents = _product.get('contents'),
+        content = contents.get(''),
+        contentAttributes = null,
         text = _textEl.value || '';
 
-    content.set({
+    contentAttributes = {
+      path: '',
       bytes: text,
       contentType: 'text/html',
       lastModified: (new Date()).getTime(),
       length: text.length
-    });
-    contents[''] = content;
+    };
 
-    _product.set({
-      contents: contents
-    });
+    if (content) {
+      content.set(contentAttributes);
+    } else {
+      content = ProductContent(contentAttributes);
+      contents.add(content);
+    }
 
     _sendProductView.show();
   };
@@ -243,9 +247,18 @@ var TextProductView = function (options) {
    *
    */
   _this.render = function () {
-    var content = _product.get('contents')[''] || ProductContent({bytes: ''});
+    var content,
+        contents = _product.get('contents');
 
-    _textEl.value = content.get('bytes');
+    if (contents && contents.get) {
+      content = contents.get('');
+    }
+
+    if (!content) {
+      _textEl.value = '';
+    } else {
+      _textEl.value = content.get('bytes');
+    }
   };
 
   /**

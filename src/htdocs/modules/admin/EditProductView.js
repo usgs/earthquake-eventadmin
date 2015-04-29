@@ -361,7 +361,8 @@ var EditProductView = function (options) {
           'class="editproduct-inline-type"/>' +
       '<label for="editproduct-inline-content">Content</label>' +
       '<textarea id="editproduct-inline-content" ' +
-          'class="editproduct-inline-content"></textarea>';
+          'class="editproduct-inline-content"></textarea>' +
+      '<div class="product-contents"></div>';
 
     _contentTypeInput = inline.querySelector('.editproduct-inline-type');
     _contentInput = inline.querySelector('.editproduct-inline-content');
@@ -532,6 +533,8 @@ var EditProductView = function (options) {
   };
 
   _onFileUploadError = function (xhr) {
+    // Status view already shows user good info. No need to do more stuff
+    // in this method.
     console.log(xhr);
   };
 
@@ -562,7 +565,7 @@ var EditProductView = function (options) {
   };
 
   _renderFiles = function () {
-    var inline = _product.get('contents')[''];
+    var inline = _product.get('contents').get('');
 
     if (inline) {
       _contentTypeInput.value = inline.get('contentType');
@@ -664,22 +667,37 @@ var EditProductView = function (options) {
 
   _validateFiles = function () {
     var contents,
-        errors;
+        errors,
+        inline,
+        inlineAttributes;
 
     errors = [];
-    contents = {};
+    contents = _product.get('contents');
 
-    if (_contentTypeInput.value !== '' && _contentInput.value !== '') {
-      contents[''] = ProductContent({
-        contentType: _contentTypeInput.value,
-        lastModified: (new Date()).getTime(),
-        bytes: _contentInput.value,
-        length: _contentInput.value.length
-      });
+    try {
+      if (_contentTypeInput.value !== '' && _contentInput.value !== '') {
+        inline = contents.get('');
+        inlineAttributes = {
+          bytes: _contentInput.value,
+          contentType: _contentTypeInput.value,
+          lastModified: (new Date()).getTime(),
+          length: _contentInput.value.length,
+          path: ''
+        };
+
+        if (!inline) {
+          inline = ProductContent(inlineAttributes);
+          contents.add(inline);
+        } else {
+          inline.set(inlineAttributes);
+        }
+      }
+    } catch (e) {
+      errors.push(e);
     }
 
     // TODO :: Validate file-based content
-    contents = Util.extend({}, _product.get('contents'), contents);
+
 
     if (errors.length !== 0) {
       throw errors;
