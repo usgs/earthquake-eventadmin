@@ -2,7 +2,6 @@
 'use strict';
 
 var Product = require('Product'),
-    ProductContent = require('ProductContent'),
 
     TextProductView = require('admin/TextProductView');
 
@@ -25,9 +24,9 @@ describe('TextProductView', function () {
             eventSource: 'testEventSource',
             eventSourceCode: 'testEventSourceCode'
           },
-          contents: {
-            '': ProductContent({bytes: ''})
-          }
+          contents: [
+            {path: '', bytes: ''}
+          ]
         })
       });
 
@@ -101,14 +100,15 @@ describe('TextProductView', function () {
             eventsource: 'testEventSource',
             eventsourcecode: 'testEventSourceCode'
           },
-          contents: {
-            '': ProductContent({
+          contents: [
+            {
               bytes: productText,
               type: 'text/html',
               length: productText.length,
-              lastModified: (new Date()).getTime()
-            })
-          }
+              lastModified: (new Date()).getTime(),
+              path: ''
+            }
+          ]
         })
       });
 
