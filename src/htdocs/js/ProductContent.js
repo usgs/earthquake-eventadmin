@@ -11,12 +11,15 @@ var ProductContent = function (options) {
 
   _this = Model(Util.extend({
     contentType: 'text/plain',
+    id: null,
     lastModified: (new Date()).getTime(),
-    length: 0
+    length: 0,
+    path: null
   }, options));
 
-  _initialize = function () {
+  _initialize = function (options) {
     var bytes = _this.get('bytes'),
+        path = _this.get('path'),
         url = _this.get('url');
 
     if (bytes === null && url === null) {
@@ -28,6 +31,12 @@ var ProductContent = function (options) {
       throw new Error('Invalid product contents. Actual length and claimed ' +
           'length differ.');
     }
+
+    if (path === null) {
+      throw new Error('Invalid product contents. A path must be specified.');
+    }
+
+    _this.set({id: options.id || path}, {silent: true});
   };
 
   _initialize(options);
