@@ -119,17 +119,18 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
       productTypes = this._options.productTypes,
       productType,
       properties,
-      deleteProducts = [];
+      deleteProducts = [],
+      deleteText,
+      deleteTitle;
 
   for(var i = 0; i < productTypes.length; i++) {
-    productType = productTypes[i];
 
+    productType = productTypes[i];
     product = this._getProductFromDataId(product.code, productType);
 
     if (product) {
-      properties = product.properties;
-
       // build array of delete products
+      properties = product.properties;
       deleteProducts.push(
         Product({
           source: product.source,
@@ -137,15 +138,20 @@ SummaryDetailsPage.prototype._deleteProduct = function (e) {
           status: Product.STATUS_DELETE,
           code: product.code,
           properties: {
-            eventSource: properties.eventsource,
-            eventSourceCode: properties.eventsourcecode
+            eventsource: properties.eventsource,
+            eventsourcecode: properties.eventsourcecode
           }
         })
       );
     }
   }
 
-  this._sendProduct(deleteProducts);
+  // Set modal title and text
+  deleteTitle = 'Delete Product(s)';
+  deleteText = 'The following DELETE product(s) will be sent. ' +
+      'Click a product below for more details.';
+  // Send delete product
+  this._sendProduct(deleteProducts, deleteTitle, deleteText);
 };
 
 SummaryDetailsPage.prototype._editProduct = function (e) {
@@ -170,7 +176,9 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
       productTypes = this._options.productTypes,
       productType,
       properties,
-      trumpProducts = [];
+      trumpProducts = [],
+      trumpText,
+      trumpTitle;
 
   for(var i = 0; i < productTypes.length; i++) {
     productType = productTypes[i];
@@ -188,8 +196,8 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
           status: Product.STATUS_DELETE,
           code: product.code,
           properties: {
-            'eventSource': properties.eventsource,
-            'eventSourceCode': properties.eventsourcecode,
+            'eventsource': properties.eventsource,
+            'eventsourcecode': properties.eventsourcecode,
             'trump-source': product.source,
             'trump-code': product.code
           }
@@ -198,8 +206,12 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
     }
   }
 
-  // Send Trump
-  this._sendProduct(trumpProducts);
+  // Set modal title and text
+  trumpTitle = 'Trump Product(s)';
+  trumpText = 'The following TRUMP product(s) will be sent. ' +
+      'Click a product below for more details.';
+  // Send trump product
+  this._sendProduct(trumpProducts, trumpTitle, trumpText);
 };
 
 SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
@@ -220,12 +232,14 @@ SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
   return null;
 };
 
-SummaryDetailsPage.prototype._sendProduct = function (products) {
+SummaryDetailsPage.prototype._sendProduct = function (products, title, text) {
   // send product
   var sendProductView,
       productSent;
 
   sendProductView = SendProductView({
+    modalTitle: title,
+    modalText: text,
     products: products,
     formatProduct: function (products) {
       // format product being sent
