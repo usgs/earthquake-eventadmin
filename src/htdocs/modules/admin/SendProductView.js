@@ -18,6 +18,10 @@ var EXIT_CODES = {
   4: 'EXIT_PARTIALLY_SENT'
 };
 
+var DEFAULTS = {
+  modalText: 'Click a product below for more details.',
+  modalTitle: 'Products to Send'
+};
 
 var getProductIdentifier = function (product) {
   return product.get('id') || [
@@ -56,6 +60,8 @@ var SendProductView = function (options) {
       // variables
       _accordion,
       _dialog,
+      _modalText,
+      _modalTitle,
       _products,
       _sendCount,
       _sentCount,
@@ -78,10 +84,13 @@ var SendProductView = function (options) {
     _accordion = null;
 
     // options
+    options = Util.extend({}, DEFAULTS, options);
     _products = options.products || [options.product];
     _sender = options.sender || ProductSender();
     _formatProduct = options.formatProduct || null;
     _formatResult = options.formatResult || null;
+    _modalText = options.modalText;
+    _modalTitle = options.modalTitle;
 
     // create elements
     el = _this.el;
@@ -89,7 +98,7 @@ var SendProductView = function (options) {
 
     // show modal dialog
     _dialog = ModalView(el, {
-      title: 'Products to Send',
+      title: _modalTitle,
       closable: false,
       buttons: [
         {
@@ -267,9 +276,7 @@ var SendProductView = function (options) {
     if (_accordion !== null && _accordion.destroy) {
       _accordion.destroy();
     }
-    _this.el.innerHTML = '<p>' +
-      'Click a product below for more details.' +
-    '</p>';
+    _this.el.innerHTML = '<p>' + _modalText + '</p>';
 
     _accordion = Accordion({
       el: _this.el,
@@ -372,13 +379,15 @@ var SendProductView = function (options) {
         '</div>';
       }
 
-      result += '<h6>Output</h6><pre>' +
-        data.output +
-      '</pre><h6>Log</h6><pre>' +
-        (data.error||'No log output') +
-      '</pre><h6>Command</h6><pre>' +
-        data.command.replace(/'--/g, '\n  \'--') +
-      '</pre>';
+      if (data.output !== '') {
+        result += '<h6>Output</h6><pre><code>' + data.output + '</code></pre>';
+      }
+      result += '<h6>Log</h6>' +
+          '<pre><code>' + (data.error || 'No log output') + '</code></pre>';
+      result += '<h6>Command</h6>' +
+          '<pre><code>' +
+            data.command.replace(/'--/g, '\n  \'--') +
+          '</code></pre>';
     }
 
     return result;
