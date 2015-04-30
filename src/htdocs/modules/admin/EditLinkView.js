@@ -7,6 +7,11 @@ var ModalView = require('mvc/ModalView'),
 
     SendProductView = require('admin/SendProductView.js');
 
+/**
+ * Modal view that allows the user to either add or edit links.
+ * @param options {Object}
+ *        all options are passed to EditLinkView.
+ */
 var EditLinkView = function (options) {
   var _this,
       _initialize,
@@ -23,6 +28,12 @@ var EditLinkView = function (options) {
 
   _this = View(options);
 
+
+  /**
+   * Creates modal dialog box
+   * @param options {Object}
+   *        all options are passed to modal
+   */
   _initialize = function (options) {
     var properties,
         title;
@@ -57,22 +68,18 @@ var EditLinkView = function (options) {
     _this.el.innerHTML =
         '<div class="addEditLink">' +
           '<label for="linkText">Link Text: </label>' +
-          '<input id="linkText" name="linkText" type="text"/>' +
+          '<br/>' +
+          '<input id="linkText" name="linkText" type="text" class="text-box"/>' +
           '<br/>' +
           '<label for="linkURL">Link URL: </label>' +
-          '<input id="linkURL" name="linkURL" type="text"/>' +
+          '<br/>' +
+          '<input id="linkURL" name="linkURL" type="text"  class="text-box"/>' +
         '</div>';
 
     _text = _this.el.querySelector('#linkText');
     _url = _this.el.querySelector('#linkURL');
 
     properties = _product.get('properties');
-
-    if (!properties.text || !properties.url) {
-      title = 'Add Link';
-    } else {
-      title = 'Edit Link';
-    }
 
     _modal = ModalView(_this.el, {
       title: title,
@@ -92,6 +99,7 @@ var EditLinkView = function (options) {
     });
   };
 
+
   _onSubmit = function () {
     var props;
 
@@ -106,17 +114,20 @@ var EditLinkView = function (options) {
     _sendProductView.show();
   };
 
+
   _onCancel = function () {
     _modal.hide();
     _this.trigger('cancel');
     _this.destroy();
   };
 
+
   _onDone = function () {
     _modal.hide();
     _this.trigger('done');
     _this.destroy();
   };
+
 
   _this.render = function () {
     var props,
@@ -131,9 +142,11 @@ var EditLinkView = function (options) {
     _url.value = url;
   };
 
+
   _this.hide = function () {
     _modal.hide();
   };
+
 
   _this.show = function () {
     _this.render();
@@ -145,7 +158,7 @@ var EditLinkView = function (options) {
     _modal.destroy();
     _modal = null;
     _sendProductView.destroy();
-    _sendProductView= null;
+    _sendProductView = null;
     _text = null;
     _url = null;
     _onSubmit = null;
