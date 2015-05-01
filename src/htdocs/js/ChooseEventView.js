@@ -109,7 +109,8 @@ var ChooseEventView = function (options) {
 
       _createList(_searchList, url);
     } catch (ex) {
-      _searchList.innerHTML = '<p class="alert error">Must use valid time.</p>';
+      _searchList.innerHTML = '<p class="alert error">Must use valid time ' +
+          'format: yyyy-mm-dd hh:mm:ss</p>';
     }
   };
 
