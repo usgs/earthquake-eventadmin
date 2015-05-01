@@ -41,18 +41,15 @@ var ChooseEventView = function (options) {
         '<section class="one-of-two column">' +
           '<header><h2>Find an Event</h2></header>' +
           '<p>' +
-            '<a href="/earthquakes/search/">Find an event ' +
-                'using the search form</a>' +
+            '<a target="_blank" ' +
+                'href="http://earthquake.usgs.gov/earthquakes/map"' +
+                '>Latest Earthquakes</a>' +
+            '<br/>' +
+            '<a target="_blank" ' +
+                'href="http://earthquake.usgs.gov/earthquakes/search"' +
+                '>Search Earthquake Archives</a>' +
           '</p>' +
-          '<header>' +
-            '<h4>Already Know an Event ID</h4>' +
-            '<small class="help">Jump directly to an event with the event id</small>' +
-          '</header>' +
           '<div class="eventId"></div>' +
-          '<header>' +
-            '<h4>Already Know an Event Time</h4>' +
-            '<small class="help">Search 15 minutes around entered time.</small>' +
-          '</header>' +
           '<div class="eventTime"></div>' +
         '</section>' +
       '</section>';
@@ -68,7 +65,8 @@ var ChooseEventView = function (options) {
     el.innerHTML = '<form class="vertical">' +
         '<label for="eventTime">' +
           'Time (UTC) ' +
-        '<br/>' +
+          '<br/>' +
+          '<small>Search 15 minutes around entered time.</small>' +
         '</label>' +
         '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
         '<br/>' +
@@ -135,7 +133,7 @@ var ChooseEventView = function (options) {
               time;
           time = new Date(props.time).toISOString()
               .replace('T', ' ')
-              .replace('Z', ' UTC');
+              .replace(/\.[\d]+Z/, ' UTC');
           buf.push('<li>' +
               '<a class="eq" href="event.php?eventid=' + eq.id + '">' +
                   props.title +
