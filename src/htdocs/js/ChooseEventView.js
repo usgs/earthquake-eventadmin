@@ -46,7 +46,7 @@ var ChooseEventView = function (options) {
           '</p>' +
           '<header>' +
             '<h3>Already Know an Event ID</h3>' +
-            '<small class="help">Use the event id to jump directly to an event.</small>' +
+            '<small class="help">Jump directly to an event with the event id</small>' +
           '</header>' +
           '<div class="eventId"></div>' +
           '<header>' +
