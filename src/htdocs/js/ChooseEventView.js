@@ -111,25 +111,7 @@ var ChooseEventView = function (options) {
         '<input id="eventid" name="eventid" type="text"/>' +
         '<br/>' +
         '<button type="submit">View Event</button>' +
-        '</form>' +
-        '<p>If you do not know the Event ID:</p>' +
-        '<ol>' +
-        '<li>' +
-          '<a target="_blank"' +
-              ' href="http://earthquake.usgs.gov/earthquakes/map/">' +
-            'Find the earthquake using the map' +
-          '</a>' +
-        '</li>' +
-        '<li>' +
-          'Open the event page by selecting the event,' +
-          ' then clicking the link at the bottom of the list' +
-        '</li>' +
-        '<li>' +
-          'Copy the event id at the end of the event page URL:' +
-          '<br/><img class="eventid" src="eventid.png"' +
-            ' alt="image showing event id in URL"/>' +
-        '</li>' +
-        '</ol>';
+        '</form>';
   };
 
   _createList = function (el, url) {
