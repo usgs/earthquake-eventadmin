@@ -193,7 +193,7 @@ SummaryDetailsPage.prototype._trumpProduct = function (e) {
         Product({
           source: product.source,
           type: 'trump-' + product.type,
-          status: Product.STATUS_DELETE,
+          status: Product.STATUS_UPDATE,
           code: product.code,
           properties: {
             'eventsource': properties.eventsource,
