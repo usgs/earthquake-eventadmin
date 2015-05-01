@@ -37,17 +37,28 @@ var ChooseEventView = function (options) {
         '<section class="one-of-two column">' +
           '<header><h2>Significant Earthquakes</h2></header>' +
           '<div class="eqlist"></div>' +
-          '<header><h2>Event Time</h2></header>' +
-          '<div class="eventTime"></div>' +
         '</section>' +
         '<section class="one-of-two column">' +
-          '<header><h2>Event Lookup</h2></header>' +
-          '<div class="form"></div>' +
+          '<header><h2>Find an Event</h2></header>' +
+          '<p>' +
+            '<a href="/earthquakes/search/">Find the earthquake ' +
+                'using the search form</a>' +
+          '</p>' +
+          '<header>' +
+            '<h3>Already Know an Event ID</h3>' +
+            '<small class="help">Use the event id to jump directly to an event.</small>' +
+          '</header>' +
+          '<div class="eventId"></div>' +
+          '<header>' +
+            '<h3>Already Know an Event Time</h3>' +
+            '<small class="help">Search 15 minutes around entered time.</small>' +
+          '</header>' +
+          '<div class="eventTime"></div>' +
         '</section>' +
       '</section>';
 
     _createEventSearch(el.querySelector('.eventTime'));
-    _createForm(el.querySelector('.form'));
+    _createForm(el.querySelector('.eventId'));
     _createList(el.querySelector('.eqlist'), _url);
 
     options = null;
@@ -58,7 +69,6 @@ var ChooseEventView = function (options) {
         '<label for="eventTime">' +
           'Time (UTC) ' +
         '<br/>' +
-        '<small>Search 15 minutes around entered time.</small>' +
         '</label>' +
         '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
         '<br/>' +
@@ -104,7 +114,7 @@ var ChooseEventView = function (options) {
   };
 
   _createForm = function (el) {
-    el.innerHTML = '<form method="GET" action="event.php">' +
+    el.innerHTML = '<form method="GET" action="event.php" class="vertical">' +
         '<label for="eventid">' +
           'Event ID' +
         '</label>' +

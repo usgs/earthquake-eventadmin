@@ -1,24 +1,5 @@
 @import 'htdocs/css/alert';
 
-.form {
-  label {
-    display: block;
-
-    > small {
-      font-weight: normal;
-    }
-  }
-
-  p,
-  ol {
-    font-size: .9em;
-  }
-
-  img.eventid {
-    border: 1px solid #ccc;
-  }
-}
-
 .eq {
   background-color: #eee;
   border: 1px solid #ccc;
@@ -52,5 +33,28 @@
   }
   .choose-event {
     display:none;
+  }
+}
+
+small.help {
+  font-style: oblique;
+  color: #999;
+}
+
+.eventId,
+.eventTime {
+
+  > form {
+    > label {
+      font-size: 0.8125em;
+    }
+
+    > input {
+      width: 100%;
+    }
+
+    > button {
+      margin: 4px 0;
+    }
   }
 }
