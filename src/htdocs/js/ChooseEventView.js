@@ -45,12 +45,12 @@ var ChooseEventView = function (options) {
                 'using the search form</a>' +
           '</p>' +
           '<header>' +
-            '<h3>Already Know an Event ID</h3>' +
+            '<h4>Already Know an Event ID</h4>' +
             '<small class="help">Jump directly to an event with the event id</small>' +
           '</header>' +
           '<div class="eventId"></div>' +
           '<header>' +
-            '<h3>Already Know an Event Time</h3>' +
+            '<h4>Already Know an Event Time</h4>' +
             '<small class="help">Search 15 minutes around entered time.</small>' +
           '</header>' +
           '<div class="eventTime"></div>' +
@@ -74,9 +74,9 @@ var ChooseEventView = function (options) {
         '<br/>' +
         '<button type="submit">Search</button>' +
         '</form>' +
-        '<div class="searchList"></div>';
+        '<div class="eqlist"></div>';
 
-    _searchList = el.querySelector('.searchList');
+    _searchList = el.querySelector('.eqlist');
     _eventTime = el.querySelector('#eventTime');
     _searchForm = el.querySelector('form');
 
