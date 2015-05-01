@@ -1,56 +1,66 @@
 @import 'htdocs/css/alert';
 
-.form {
-  label {
-    display: block;
-
-    > small {
-      font-weight: normal;
-    }
-  }
-
-  p,
-  ol {
-    font-size: .9em;
-  }
-
-  img.eventid {
-    border: 1px solid #ccc;
-  }
+/* Earthquake quick summaries */
+.eqlist > ul {
+  border-bottom: 1px solid #ddd;
 }
 
-.eq {
-  background-color: #eee;
-  border: 1px solid #ccc;
-  color: #111;
+a.eq {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  color: #444;
   display: block;
   font-size:.9em;
   line-height: 1.3;
-  margin-bottom: 1em;
-  padding: 5px;
+  padding: 12px 16px;
   position: relative;
   text-decoration: none;
 
   > small {
     color: #999;
     display: block;
+    margin: 2px 0 0;
+    font-weight: 300;
 
     &.eventid {
       position: absolute;
-      right: 5px;
-      bottom: 5px;
+      right: 16px;
+      bottom: 12px;
     }
   }
 }
 
-.show-event {
-  display:none;
+a.eq:visited {
+  color: #444;
 }
-.show-event-detail {
-  .show-event {
-    display:block;
-  }
-  .choose-event {
-    display:none;
+
+a.eq:hover {
+  background-color: rgb(231, 240, 250);
+}
+
+
+/* Form Styles */
+small.help {
+  font-style: oblique;
+  color: #999;
+  font-weight: 300;
+}
+
+.eventId,
+.eventTime {
+
+  > form {
+    > label {
+      font-size: 0.8125em;
+    }
+
+    > input {
+      width: 100%;
+    }
+
+    > button {
+      margin: 4px 0;
+    }
   }
 }

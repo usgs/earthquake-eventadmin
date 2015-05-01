@@ -35,19 +35,30 @@ var ChooseEventView = function (options) {
     el = _this.el;
     el.innerHTML = '<section class="row choose-event">' +
         '<section class="one-of-two column">' +
-          '<header><h2>Significant Earthquakes</h2></header>' +
+          '<header><h2>Significant Events</h2></header>' +
           '<div class="eqlist"></div>' +
-          '<header><h2>Event Time</h2></header>' +
-          '<div class="eventTime"></div>' +
         '</section>' +
         '<section class="one-of-two column">' +
-          '<header><h2>Event Lookup</h2></header>' +
-          '<div class="form"></div>' +
+          '<header><h2>Find an Event</h2></header>' +
+          '<p>' +
+            '<a href="/earthquakes/search/">Find an event ' +
+                'using the search form</a>' +
+          '</p>' +
+          '<header>' +
+            '<h4>Already Know an Event ID</h4>' +
+            '<small class="help">Jump directly to an event with the event id</small>' +
+          '</header>' +
+          '<div class="eventId"></div>' +
+          '<header>' +
+            '<h4>Already Know an Event Time</h4>' +
+            '<small class="help">Search 15 minutes around entered time.</small>' +
+          '</header>' +
+          '<div class="eventTime"></div>' +
         '</section>' +
       '</section>';
 
     _createEventSearch(el.querySelector('.eventTime'));
-    _createForm(el.querySelector('.form'));
+    _createForm(el.querySelector('.eventId'));
     _createList(el.querySelector('.eqlist'), _url);
 
     options = null;
@@ -58,15 +69,14 @@ var ChooseEventView = function (options) {
         '<label for="eventTime">' +
           'Time (UTC) ' +
         '<br/>' +
-        '<small>Search 15 minutes around entered time.</small>' +
         '</label>' +
         '<input id="eventTime" name="eventTime" type="text" placeholder="yyyy-mm-dd hh:mm:ss"/>' +
         '<br/>' +
         '<button type="submit">Search</button>' +
         '</form>' +
-        '<div class="searchList"></div>';
+        '<div class="eqlist"></div>';
 
-    _searchList = el.querySelector('.searchList');
+    _searchList = el.querySelector('.eqlist');
     _eventTime = el.querySelector('#eventTime');
     _searchForm = el.querySelector('form');
 
@@ -99,37 +109,20 @@ var ChooseEventView = function (options) {
 
       _createList(_searchList, url);
     } catch (ex) {
-      _searchList.innerHTML = '<p class="alert error">Must use valid time.</p>';
+      _searchList.innerHTML = '<p class="alert error">Must use valid time ' +
+          'format: yyyy-mm-dd hh:mm:ss</p>';
     }
   };
 
   _createForm = function (el) {
-    el.innerHTML = '<form method="GET" action="event.php">' +
+    el.innerHTML = '<form method="GET" action="event.php" class="vertical">' +
         '<label for="eventid">' +
           'Event ID' +
         '</label>' +
         '<input id="eventid" name="eventid" type="text"/>' +
         '<br/>' +
         '<button type="submit">View Event</button>' +
-        '</form>' +
-        '<p>If you do not know the Event ID:</p>' +
-        '<ol>' +
-        '<li>' +
-          '<a target="_blank"' +
-              ' href="http://earthquake.usgs.gov/earthquakes/map/">' +
-            'Find the earthquake using the map' +
-          '</a>' +
-        '</li>' +
-        '<li>' +
-          'Open the event page by selecting the event,' +
-          ' then clicking the link at the bottom of the list' +
-        '</li>' +
-        '<li>' +
-          'Copy the event id at the end of the event page URL:' +
-          '<br/><img class="eventid" src="eventid.png"' +
-            ' alt="image showing event id in URL"/>' +
-        '</li>' +
-        '</ol>';
+        '</form>';
   };
 
   _createList = function (el, url) {
