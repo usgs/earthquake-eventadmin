@@ -35,13 +35,13 @@ var ChooseEventView = function (options) {
     el = _this.el;
     el.innerHTML = '<section class="row choose-event">' +
         '<section class="one-of-two column">' +
-          '<header><h2>Significant Earthquakes</h2></header>' +
+          '<header><h2>Significant Events</h2></header>' +
           '<div class="eqlist"></div>' +
         '</section>' +
         '<section class="one-of-two column">' +
           '<header><h2>Find an Event</h2></header>' +
           '<p>' +
-            '<a href="/earthquakes/search/">Find the earthquake ' +
+            '<a href="/earthquakes/search/">Find an event ' +
                 'using the search form</a>' +
           '</p>' +
           '<header>' +
