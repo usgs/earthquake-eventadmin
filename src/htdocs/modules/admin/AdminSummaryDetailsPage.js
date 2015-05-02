@@ -4,7 +4,6 @@ var CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
 
     ProductHistoryView = require('admin/ProductHistoryView'),
-    SendProductView = require('admin/SendProductView'),
     SummaryDetailsPage = require('base/SummaryDetailsPage');
 
 
@@ -230,39 +229,6 @@ SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
   }
 
   return null;
-};
-
-SummaryDetailsPage.prototype._sendProduct = function (products, title, text) {
-  // send product
-  var sendProductView,
-      productSent;
-
-  sendProductView = SendProductView({
-    modalTitle: title,
-    modalText: text,
-    products: products,
-    formatProduct: function (products) {
-      // format product being sent
-      return sendProductView.formatProduct(products);
-    }
-  });
-  sendProductView.on('success', function () {
-    // track that product was sent
-    productSent = true;
-  });
-  sendProductView.on('cancel', function () {
-    if (productSent) {
-      // product was sent, which will modify the event
-      // reload page to see update
-      window.location.reload();
-    } else {
-      // product not sent, cleanup
-      products = null;
-      sendProductView.destroy();
-      sendProductView = null;
-    }
-  });
-  sendProductView.show();
 };
 
 
