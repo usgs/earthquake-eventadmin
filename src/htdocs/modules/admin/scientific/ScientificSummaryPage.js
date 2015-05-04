@@ -126,4 +126,14 @@ AdminScientificSummaryPage.prototype.onAddClick = function () {
   }).show();
 };
 
+/**
+ * Removed event listeners and sets valuse to null
+ */
+AdminScientificSummaryPage.prototype.destroy = function () {
+  this.onAddButton.removeEventListener('click', this.onAddClick);
+  this.onEditClick.removeEventListener('click', this.onEditClick);
+  this.onAddClick = null;
+  this.onEditClick = null;
+};
+
 module.exports = AdminScientificSummaryPage;
