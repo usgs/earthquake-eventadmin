@@ -18,7 +18,7 @@ var
     DYFIFormPage = require('impact/DYFIFormPage'),
     ShakeMapPage = require('impact/ShakeMapPage'),
     PagerPage = require('impact/PagerPage'),
-    ScientificSummaryPage = require('scientific/ScientificSummaryPage'),
+    ScientificSummaryPage = require('admin/scientific/ScientificSummaryPage'),
     HypocenterPage = require('scientific/HypocenterPage'),
     MomentTensorPage = require('scientific/MomentTensorPage'),
     FocalMechanismPage = require('scientific/FocalMechanismPage'),
