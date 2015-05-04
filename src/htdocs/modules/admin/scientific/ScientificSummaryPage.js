@@ -14,6 +14,7 @@ var AdminScientificSummaryPage = function (options) {
   this.onAddClick = this.onAddClick.bind(this);
   this.onEditClick = this.onEditClick.bind(this);
   this.onAddButton = null;
+  this._productButtons = [];
   ScientificSummaryPage.call(this, options);
 };
 
@@ -61,20 +62,22 @@ AdminScientificSummaryPage.prototype.getLinks = function () {
  *         fragment element.
  */
 AdminScientificSummaryPage.prototype.getLink = function (product) {
-  var button,
+  var editButton,
       fragment;
+
   fragment = document.createDocumentFragment();
 
   fragment.appendChild(
     ScientificSummaryPage.prototype.getLink.call(this, product)
   );
 
-  button = document.createElement('button');
-  button.classList.add('edit-link-button');
-  button.innerHTML = 'Edit Link';
-  button.setAttribute('data-product-id', product.id);
-  button.addEventListener('click', this.onEditClick);
-  fragment.appendChild(button);
+  editButton = document.createElement('button');
+  editButton.classList.add('edit-link-button');
+  editButton.innerHTML = 'Edit Link';
+  editButton.setAttribute('data-product-id', product.id);
+  editButton.addEventListener('click', this.onEditClick);
+  this._productButtons.push(editButton);
+  fragment.appendChild(editButton);
 
   return fragment;
 };
@@ -130,10 +133,14 @@ AdminScientificSummaryPage.prototype.onAddClick = function () {
  * Removed event listeners and sets valuse to null
  */
 AdminScientificSummaryPage.prototype.destroy = function () {
-  this.onAddButton.removeEventListener('click', this.onAddClick);
-  this.onEditClick.removeEventListener('click', this.onEditClick);
-  this.onAddClick = null;
-  this.onEditClick = null;
+  ScientificSummaryPage.prototype.destroy.apply(this);
+
+  this._productButtons.forEach(function (button) {
+    button.removeEventListener('click', this.onAddClick);
+    button.removeEventListener('click', this.onEditClick);
+  }, this);
+
+  this._productButtons = null;
 };
 
 module.exports = AdminScientificSummaryPage;
