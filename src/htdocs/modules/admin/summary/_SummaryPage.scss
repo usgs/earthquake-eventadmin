@@ -1,4 +1,15 @@
-.create-text-button {
+
+.edit-text {
+  margin: 1em 0;
+
+  > section {
+    border: 1px solid #ddd;
+    padding: 16px;
+  }
+}
+
+.create-text-button,
+.edit-text-button {
   display: block;
 }
 
