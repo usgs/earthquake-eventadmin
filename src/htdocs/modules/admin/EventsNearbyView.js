@@ -107,7 +107,7 @@ var EventsNearbyView = function (options) {
   _associateCallback = function (eventSummary) {
     _associateEventView = AssociateEventView({
       'referenceEvent' : _event.getSummary(),
-      'associateEvent': eventSummary
+      'associateEventId': eventSummary.id
     });
   };
 
