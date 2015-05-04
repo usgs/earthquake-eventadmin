@@ -7,7 +7,8 @@ var CollectionTable = require('mvc/CollectionTable'),
 var DEFAULTS = {
     className: 'collection-table event-comparison tabular',
     emptyMarkup: '&ndash;',
-    buttons: null
+    buttons: null,
+    eventLink: null
   };
 
 
@@ -17,12 +18,13 @@ var EventComparisonView = function (options) {
       _initialize,
 
       // private variables
-      _buttons = options.buttons || [],
-      _callbackMap = {},
-      _collection = options.collection,
-      _collectionTable = null,
-      _formatter = Formatter({round: 3, empty: '&ndash;'}),
-      _referenceEvent = options.referenceEvent,
+      _buttons,
+      _callbackMap,
+      _collection,
+      _collectionTable,
+      _eventLink,
+      _formatter,
+      _referenceEvent,
 
       // private methods
       _getColumns,
@@ -35,6 +37,12 @@ var EventComparisonView = function (options) {
         referenceEventRow;
 
     options = Util.extend({}, DEFAULTS, options);
+    _buttons = options.buttons || [];
+    _collection = options.collection;
+    _eventLink = options.eventLink;
+    _formatter = Formatter({round: 3, empty: '&ndash;'});
+    _referenceEvent = options.referenceEvent;
+
     options.columns = _getColumns();
     _collectionTable = CollectionTable(options);
 
@@ -44,6 +52,7 @@ var EventComparisonView = function (options) {
     referenceEventRow.classList.add('reference-event');
 
     // Build callback map, keys a button.classname with its callback parameter
+    _callbackMap = {};
     for (var i = 0; i < _buttons.length; i++) {
       title = _buttons[i].title;
       if (_callbackMap.hasOwnProperty(title)) {
@@ -81,7 +90,12 @@ var EventComparisonView = function (options) {
         className: 'eventid',
         title: 'Event ID',
         format: function (data) {
-          return data.id;
+          var id = data.id;
+          if (_eventLink === null || _referenceEvent.id === id) {
+            return id;
+          }
+          return '<a href="' + _eventLink.replace('{eventid}', id) + '">' +
+              id + '</a>';
         }
       },
       {
