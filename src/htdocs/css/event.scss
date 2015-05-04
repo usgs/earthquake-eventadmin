@@ -61,7 +61,10 @@ a.summary {
   font-weight: 300;
 }
 
-
 .summary > .deleted > ul > li > span {
   text-decoration: line-through;
+}
+
+tr.reference-event > td {
+background-color: rgba(231, 240, 250, 0.5);
 }

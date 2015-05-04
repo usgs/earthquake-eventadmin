@@ -31,11 +31,17 @@ var EventComparisonView = function (options) {
   _this = {};
 
   _initialize = function () {
-    var title =  null;
+    var title =  null,
+        referenceEventRow;
 
     options = Util.extend({}, DEFAULTS, options);
     options.columns = _getColumns();
     _collectionTable = CollectionTable(options);
+
+    // highlight current event in the comparison table
+    referenceEventRow = _collectionTable.el.querySelector(
+        '[data-id="' + _referenceEvent.id + '"]');
+    referenceEventRow.classList.add('reference-event');
 
     // Build callback map, keys a button.classname with its callback parameter
     for (var i = 0; i < _buttons.length; i++) {
