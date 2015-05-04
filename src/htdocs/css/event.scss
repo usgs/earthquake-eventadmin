@@ -28,22 +28,6 @@
   }
 }
 
-table.event-comparison > tbody > tr > td {
-  vertical-align:top;
-}
-
-td.actions > button {
-  display: block;
-  margin: 4px auto;
-}
-
-small.value-diff {
-  color: #999;
-  display:block;
-  font-size: 12px;
-  font-weight: 300;
-}
-
 .summary-actions {
   margin: 1em 0;
 }
@@ -63,8 +47,4 @@ a.summary {
 
 .summary > .deleted > ul > li > span {
   text-decoration: line-through;
-}
-
-tr.reference-event > td {
-background-color: rgba(231, 240, 250, 0.5);
 }
