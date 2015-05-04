@@ -11,6 +11,9 @@ var ScientificSummaryPage = require('scientific/ScientificSummaryPage'),
  *        module options.
  */
 var AdminScientificSummaryPage = function (options) {
+  this.onAddClick = this.onAddClick.bind(this);
+  this.onEditClick = this.onEditClick.bind(this);
+  this.onAddButton = null;
   ScientificSummaryPage.call(this, options);
 };
 
@@ -41,7 +44,8 @@ AdminScientificSummaryPage.prototype.getLinks = function () {
       '</p>';
 
   button = el.querySelector('.create-link-button');
-  button.addEventListener('click', this.onAddClick.bind(this));
+  button.addEventListener('click', this.onAddClick);
+  this.onAddButton = button;
   fragment.appendChild(el);
 
   return fragment;
@@ -69,7 +73,7 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
   button.classList.add('edit-link-button');
   button.innerHTML = 'Edit Link';
   button.setAttribute('data-product-id', product.id);
-  button.addEventListener('click', this.onEditClick.bind(this));
+  button.addEventListener('click', this.onEditClick);
   fragment.appendChild(button);
 
   return fragment;
