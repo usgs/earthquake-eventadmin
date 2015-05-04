@@ -69,11 +69,11 @@ var EditLinkView = function (options) {
         '<div class="addEditLink">' +
           '<label for="linkText">Link Text: </label>' +
           '<br/>' +
-          '<input id="linkText" name="linkText" type="text" class="text-box"/>' +
+          '<input id="linkText" name="linkText" type="text"/>' +
           '<br/>' +
           '<label for="linkURL">Link URL: </label>' +
           '<br/>' +
-          '<input id="linkURL" name="linkURL" type="text"  class="text-box"/>' +
+          '<input id="linkURL" name="linkURL" type="text"/>' +
         '</div>';
 
     _text = _this.el.querySelector('#linkText');
@@ -99,7 +99,9 @@ var EditLinkView = function (options) {
     });
   };
 
-
+  /**
+   * On modal view submit sends properties and calls sendProductView.
+   */
   _onSubmit = function () {
     var props;
 
@@ -114,21 +116,27 @@ var EditLinkView = function (options) {
     _sendProductView.show();
   };
 
-
+  /**
+   * Hides the modal view and calls destroy
+   */
   _onCancel = function () {
     _modal.hide();
     _this.trigger('cancel');
     _this.destroy();
   };
 
-
+  /**
+   * Hides the modal view and calls destroy.
+   */
   _onDone = function () {
     _modal.hide();
     _this.trigger('done');
     _this.destroy();
   };
 
-
+  /**
+   * Gets Text and url values if they exists.
+   */
   _this.render = function () {
     var props,
         text,
@@ -142,17 +150,24 @@ var EditLinkView = function (options) {
     _url.value = url;
   };
 
-
+  /**
+   * Hides the modal dialog box.
+   */
   _this.hide = function () {
     _modal.hide();
   };
 
-
+  /**
+   * Shows modal dialog box.
+   */
   _this.show = function () {
     _this.render();
     _modal.show();
   };
 
+  /**
+   * Cleans up everyting.
+   */
   _this.destroy = Util.compose(function () {
     _modal.hide();
     _modal.destroy();
