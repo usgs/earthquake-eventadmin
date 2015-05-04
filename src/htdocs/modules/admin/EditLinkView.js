@@ -23,7 +23,6 @@ var EditLinkView = function (options) {
       _url,
 
       _onCancel,
-      _onDone,
       _onSubmit;
 
   _this = View(options);
@@ -35,8 +34,7 @@ var EditLinkView = function (options) {
    *        all options are passed to modal
    */
   _initialize = function (options) {
-    var properties,
-        title;
+    var title;
 
     _product = options.product;
 
@@ -50,12 +48,7 @@ var EditLinkView = function (options) {
       _product = Product({
         type: options.type,
         source: options.source,
-        code: options.code,
-        properties: {
-          eventsource: options.eventSource,
-          eventsourcecode: options.eventSourceCode,
-          'review-status': 'Reviewed',
-        }
+        code: options.code
       });
     }
 
@@ -63,23 +56,18 @@ var EditLinkView = function (options) {
       product: _product
     });
 
-    _sendProductView.on('done', _onDone);
+    _sendProductView.on('done', _onCancel);
 
     _this.el.innerHTML =
-        '<div class="addEditLink">' +
+        '<div class="addEditLink vertical">' +
           '<label for="linkText">Link Text: </label>' +
-          '<br/>' +
           '<input id="linkText" name="linkText" type="text"/>' +
-          '<br/>' +
           '<label for="linkURL">Link URL: </label>' +
-          '<br/>' +
           '<input id="linkURL" name="linkURL" type="text"/>' +
         '</div>';
 
     _text = _this.el.querySelector('#linkText');
     _url = _this.el.querySelector('#linkURL');
-
-    properties = _product.get('properties');
 
     _modal = ModalView(_this.el, {
       title: title,
@@ -122,15 +110,6 @@ var EditLinkView = function (options) {
   _onCancel = function () {
     _modal.hide();
     _this.trigger('cancel');
-    _this.destroy();
-  };
-
-  /**
-   * Hides the modal view and calls destroy.
-   */
-  _onDone = function () {
-    _modal.hide();
-    _this.trigger('done');
     _this.destroy();
   };
 
