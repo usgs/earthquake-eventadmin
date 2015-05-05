@@ -38,7 +38,8 @@ var TextHistoryView = function (/*options*/) {
    */
   _this.buildSummaryMarkup = function (product) {
     var el = document.createElement('div');
-
+    el.classList.add('summary');
+    el.classList.add('text-summary');
     el.innerHTML = new Date(product.updateTime).toISOString()
         .replace('T', ' ')
         .replace(/[\d\.+]Z/, ' UTC');
@@ -59,6 +60,7 @@ var TextHistoryView = function (/*options*/) {
     html = EventModulePage.prototype._replaceRelativePaths.call(
         null, html, product.contents);
     el = document.createElement('div');
+    el.classList.add('text-detail');
     el.innerHTML = html;
     return el;
   };
