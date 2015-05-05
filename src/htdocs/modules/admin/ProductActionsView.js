@@ -252,6 +252,7 @@ var ProductActionsView = function (options) {
     }
 
     ProductDetailsView({
+      actionsView: _this,
       editView: _editView,
       page: _page,
       product: _products[0]
