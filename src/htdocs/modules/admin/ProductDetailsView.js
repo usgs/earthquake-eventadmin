@@ -1,10 +1,11 @@
 'use strict';
 
-var CatalogEvent = require('CatalogEvent'),
-
-    ModalView = require('mvc/ModalView'),
+var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
-    View = require('mvc/View');
+    View = require('mvc/View'),
+
+    Product = require('Product');
+
 
 var ProductDetailsView = function (options) {
   var _this,
@@ -12,8 +13,8 @@ var ProductDetailsView = function (options) {
 
       // variables
       _dialog,
+      _editView,
       _el,
-      _event,
       _page,
       _product,
       _section,
@@ -33,8 +34,7 @@ var ProductDetailsView = function (options) {
     _section.className = 'product-details';
     _el.appendChild(_section);
 
-    // get event
-    _event = CatalogEvent(options.eventDetails);
+    _editView = options.editView;
 
     // get products
     _product = options.product;
@@ -79,10 +79,9 @@ var ProductDetailsView = function (options) {
   };
 
   _editProduct = function () {
-    var product = _product;
-
-    console.log('edit product');
-    console.log(product);
+    _editView({
+      product: Product(_product)
+    }).show();
   };
 
   _this.render = function () {
@@ -111,7 +110,6 @@ var ProductDetailsView = function (options) {
       _dialog = null;
     }
       _el = null;
-      _event = null;
       _page = null;
       _product = null;
       _section = null;
