@@ -72,23 +72,28 @@ var AssociateEventView = function (options) {
     });
 
     _dialog.show();
-
     options = null;
   };
 
+  /**
+   * Confirm button callback for modal dialog
+   */
   _onConfirm = function () {
     _appendAssociationText();
     _createSendProductView();
   };
 
+  /**
+   * Cancel button callback for modal dialog
+   */
   _onCancel = function () {
     _dialog.hide();
   };
 
-
   /**
-   * Build content for SendProductView
-   *
+   * Request the event detail feed for the event to be associated, and
+   * manage the association logic required to create an association between
+   * the two events
    */
   _getContent = function () {
     Xhr.ajax({
@@ -99,13 +104,13 @@ var AssociateEventView = function (options) {
 
         // check if there is a matching event source
         if (matchingEventSource !== null) {
-          // build an associate product for each id with the matching source
           _associateProductText = 'multiple event ids for same event from ' +
               'same source';
+          // build an associate product for each id with the matching source
           _associateProducts = _generateAssociateProducts(matchingEventSource, associateEvent);
         } else {
-          // associate the preferred eventsource and eventsourcecode
           _associateProductText = 'outside association window';
+          // associate using the preferred eventsource and eventsourcecode
           _associateProducts.push(Product({
             source: 'admin',
             type: 'associate',
@@ -120,17 +125,18 @@ var AssociateEventView = function (options) {
           }));
         }
 
+        // textarea where the user can update the inline text product content
         _infoEl.innerHTML = '<p>These are the reasons that the events did ' +
             'not associate:</p>' +
             '<textarea class="textproduct-text">' + _associateProductText +
                 '</textarea>';
       },
-      error: function (e) {
-        console.log(e.message);
+      error: function () {
+        _infoEl.innerHTML = '<p class="alert error">Unable to request the ' +
+            'detail feed for event: ' + _associateEventId + '</p>';
       }
     });
   };
-
 
   /**
    * Adds association logic text as inline product content from
@@ -147,7 +153,6 @@ var AssociateEventView = function (options) {
       });
     }
   };
-
 
   /**
    * Display associate products in SendProductView
@@ -205,7 +210,6 @@ var AssociateEventView = function (options) {
     return products;
   };
 
-
   /**
    * Finds the matching eventSource that is preventing association by
    * comparing eventCodes on the event you are trying to associate against
@@ -222,7 +226,6 @@ var AssociateEventView = function (options) {
         referenceEventCodes,
         associateEventCodes;
 
-    // TODO, check event codes to see if an event from the same source is preventing association
     referenceEventCodes = _referenceEvent.eventCodes;
     associateEventCodes = associateEventSummary.eventCodes;
 
@@ -234,7 +237,6 @@ var AssociateEventView = function (options) {
 
     return matchingSource;
   };
-
 
   /**
    * Clean up private variables, methods, and remove event listeners.
