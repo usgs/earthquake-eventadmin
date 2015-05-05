@@ -1,10 +1,9 @@
 'use strict';
 
-var CatalogEvent = require('CatalogEvent'),
-
-    ModalView = require('mvc/ModalView'),
+var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View');
+
 
 var ProductDetailsView = function (options) {
   var _this,
@@ -12,34 +11,30 @@ var ProductDetailsView = function (options) {
 
       // variables
       _dialog,
-      _el,
-      _event,
+      _actionsView,
       _page,
       _product,
-      _section,
-
-      // buttons
-      _editProduct,
-      _getButtons;
+      _section;
 
   _this = View(options);
 
-  _initialize = function () {
+  _initialize = function (options) {
+    var el = _this.el;
 
-    _el = _this.el;
     _page = options.page;
+    _product = options.product;
+
+    _actionsView = options.actionsView.newActionsView({
+      product: _product,
+      deleteProduct: false,
+      trumpProduct: false,
+      viewHistory: false
+    });
 
     _section = document.createElement('section');
     _section.className = 'product-details';
-    _el.appendChild(_section);
+    el.appendChild(_section);
 
-    // get event
-    _event = CatalogEvent(options.eventDetails);
-
-    // get products
-    _product = options.product;
-
-    // render the view
     _this.render();
 
     _dialog = ModalView(_section, {
@@ -47,49 +42,13 @@ var ProductDetailsView = function (options) {
       closable: true
     });
     _dialog.show();
-
-    options = null;
-  };
-
-  _getButtons = function () {
-    var buttons = document.createElement('div'),
-        editButton,
-        editProduct;
-
-    // button group
-    buttons.classList.add('button-group');
-    buttons.classList.add('summary-actions');
-
-    // add button
-    editButton = document.createElement('button');
-    editButton.innerHTML = 'Edit Product';
-    buttons.appendChild(editButton);
-
-    editProduct = _editProduct.bind(this);
-    editButton.addEventListener('click', editProduct);
-
-    buttons.destroy = function () {
-      editButton.removeEventListener('click', editProduct);
-      editProduct = null;
-      editButton = null;
-      buttons = null;
-    };
-
-    return buttons;
-  };
-
-  _editProduct = function () {
-    var product = _product;
-
-    console.log('edit product');
-    console.log(product);
   };
 
   _this.render = function () {
     var el = _page.getDetailsContent(_product);
 
     // call getSummaryContent and append the content to the modal dialog
-    _section.appendChild(_getButtons(_product));
+    _section.appendChild(_actionsView.el);
     _section.appendChild(el);
   };
 
@@ -97,27 +56,29 @@ var ProductDetailsView = function (options) {
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
-    var buttons = [];
-
-    // unbind all buttons
-    buttons = _section.querySelectorAll('.button-group');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i]._destroy();
-    }
-
     // variables
     if (_dialog !== null) {
+      _dialog.off();
+      _dialog.hide();
       _dialog.destroy();
       _dialog = null;
     }
-      _el = null;
-      _event = null;
-      _page = null;
-      _product = null;
-      _section = null;
+
+    if (_this === null) {
+      return;
+    }
+
+    _actionsView.destroy();
+
+    _actionsView = null;
+    _page = null;
+    _section = null;
+    _this = null;
   }, _this.destroy);
 
-  _initialize();
+
+  _initialize(options);
+  options = null;
   return _this;
 };
 

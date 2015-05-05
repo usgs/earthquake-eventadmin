@@ -1,0 +1,29 @@
+
+.product-history {
+
+  > .alert {
+    margin-bottom: 1em;
+
+    > .product-action-view {
+      margin: 0;
+    }
+
+    > .summary {
+      background-color: #fff;
+
+      &:hover {
+        background-color: inherit;
+      }
+    }
+  }
+
+  .deleted > ul > li > span {
+    text-decoration: line-through;
+  }
+
+  .superseded > ul > li > span {
+    color: #999;
+    font-weight: 300;
+  }
+
+}

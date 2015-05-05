@@ -1,0 +1,31 @@
+
+.product-action-view {
+
+  margin: 1em 0;
+
+  .history {
+    color: #00f;
+  }
+
+  .edit {
+    color: #090;
+  }
+
+  .delete {
+    color: #f00;
+  }
+
+  .trump {
+    color: #f90;
+  }
+
+  @media screen and (max-width: 767px) {
+    > button {
+      width: 25%;
+      padding: 0 8px;
+      font-size: .8125em;
+      line-height: 3rem;
+      height: 3rem;
+    }
+  }
+}

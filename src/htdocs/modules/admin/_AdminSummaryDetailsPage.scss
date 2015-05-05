@@ -1,0 +1,18 @@
+
+.edit-summary {
+
+  margin: 1em 0;
+
+  > .product-action-view {
+    margin: 0;
+  }
+
+  > .summary {
+    background-color: #fff;
+
+    &:hover {
+      background-color: inherit;
+    }
+  }
+
+}

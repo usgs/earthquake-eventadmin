@@ -1,24 +1,33 @@
 'use strict';
 
 var CatalogEvent = require('CatalogEvent'),
-    Product = require('Product'),
 
-    ProductHistoryView = require('admin/ProductHistoryView'),
+    ProductActionsView = require('admin/ProductActionsView'),
     SummaryDetailsPage = require('base/SummaryDetailsPage');
 
 
 SummaryDetailsPage.prototype._setContentMarkup = function () {
-  var products = this.getProducts();
+  var actionsView,
+      products = this.getProducts(),
+      product;
 
   products = CatalogEvent.removePhases(
       CatalogEvent.getWithoutSuperseded(products));
 
   this._products = products;
+  this._actionViews = [];
 
   if (products.length === 1) {
+    product = products[0];
     // If there is only one product display details
+    actionsView = ProductActionsView({
+      event: this._event,
+      page: this,
+      products: [(product.product ? product.product : product)]
+    });
+    this._actionViews.push(actionsView);
+    this._content.appendChild(actionsView.el);
     this._content.appendChild(this.getDetailsContent(products[0]));
-    this._content.insertBefore(this._getButtons(products[0], 0), this._content.firstChild);
   } else {
     // there is more than one product display summary
     this._content.appendChild(this.getSummaryContent(products));
@@ -27,17 +36,30 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
 
 
 SummaryDetailsPage.prototype.getSummaryContent = function (products) {
-  var summary,
+  var actionsView,
+      el,
+      summary,
       product,
       fragment = document.createDocumentFragment();
 
   for (var i = 0; i < products.length; i++) {
     product = products[i];
+    el = document.createElement('div');
+    el.classList.add('alert');
+    el.classList.add('edit-summary');
+    fragment.appendChild(el);
+
     summary = this.buildSummaryMarkup(product, !i);
-    // append summary markup
-    fragment.appendChild(summary);
     // add edit/delete/trump buttons
-    fragment.appendChild(this._getButtons(product, i));
+    actionsView = ProductActionsView({
+      event: this._event,
+      page: this,
+      products: [(product.product ? product.product : product)]
+    });
+    this._actionViews.push(actionsView);
+    // append summary markup
+    el.appendChild(actionsView.el);
+    el.appendChild(summary);
 
     if (i === 0 && this._options.markPreferred) {
       summary.classList.add('preferred');
@@ -46,172 +68,6 @@ SummaryDetailsPage.prototype.getSummaryContent = function (products) {
   return fragment;
 };
 
-SummaryDetailsPage.prototype._getButtons = function (product, dataid) {
-  var buttons = document.createElement('div'),
-      editButton,
-      editProduct,
-      deleteButton,
-      deleteProduct,
-      detailsButton,
-      detailsProduct,
-      trumpButton,
-      trumpProduct;
-
-  // button container
-  buttons.classList.add('button-group');
-  buttons.classList.add('summary-actions');
-  buttons.setAttribute('data-id', dataid);
-
-  // buttons
-  editButton = document.createElement('button');
-  editButton.innerHTML = 'Edit Product';
-
-  detailsButton = document.createElement('button');
-  detailsButton.innerHTML = 'View Revisions';
-
-  deleteButton = document.createElement('button');
-  deleteButton.innerHTML = 'Delete Product';
-
-  trumpButton = document.createElement('button');
-  trumpButton.innerHTML = 'Trump Preferred';
-
-  // append buttons in this order
-  buttons.appendChild(detailsButton);
-  buttons.appendChild(editButton);
-  buttons.appendChild(trumpButton);
-  buttons.appendChild(deleteButton);
-
-  // bindings
-  editProduct = this._editProduct.bind(this);
-  deleteProduct = this._deleteProduct.bind(this);
-  detailsProduct = this._viewProduct.bind(this);
-  trumpProduct = this._trumpProduct.bind(this);
-
-  editButton.addEventListener('click', editProduct);
-  deleteButton.addEventListener('click', deleteProduct);
-  detailsButton.addEventListener('click', detailsProduct);
-  trumpButton.addEventListener('click', trumpProduct);
-
-  buttons._destroy = function () {
-    editButton.removeEventListener('click', editProduct);
-    deleteButton.removeEventListener('click', deleteProduct);
-    detailsButton.removeEventListener('click', detailsProduct);
-    trumpButton.removeEventListener('click', trumpProduct);
-
-    buttons = null;
-    editButton = null;
-    deleteButton = null;
-    detailsButton = null;
-    trumpButton = null;
-
-    editProduct = null;
-    deleteProduct = null;
-    detailsProduct = null;
-    trumpProduct = null;
-  };
-
-  return buttons;
-};
-
-SummaryDetailsPage.prototype._deleteProduct = function (e) {
-  var product = this._products[e.target.parentElement.getAttribute('data-id')],
-      productTypes = this._options.productTypes,
-      productType,
-      properties,
-      deleteProducts = [],
-      deleteText,
-      deleteTitle;
-
-  for(var i = 0; i < productTypes.length; i++) {
-
-    productType = productTypes[i];
-    product = this._getProductFromDataId(product.code, productType);
-
-    if (product) {
-      // build array of delete products
-      properties = product.properties;
-      deleteProducts.push(
-        Product({
-          source: product.source,
-          type: product.type,
-          status: Product.STATUS_DELETE,
-          code: product.code,
-          properties: {
-            eventsource: properties.eventsource,
-            eventsourcecode: properties.eventsourcecode
-          }
-        })
-      );
-    }
-  }
-
-  // Set modal title and text
-  deleteTitle = 'Delete Product(s)';
-  deleteText = 'The following DELETE product(s) will be sent. ' +
-      'Click a product below for more details.';
-  // Send delete product
-  this._sendProduct(deleteProducts, deleteTitle, deleteText);
-};
-
-SummaryDetailsPage.prototype._editProduct = function (e) {
-  var product = this._products[e.currentTarget.parentElement.getAttribute('data-id')];
-
-  console.log('edit product');
-  console.log(product);
-};
-
-SummaryDetailsPage.prototype._viewProduct = function (e) {
-  var dataid = e.currentTarget.parentElement.getAttribute('data-id');
-
-  ProductHistoryView({
-    'eventDetails': this._event,
-    'product': this._products[dataid],
-    'page': this
-  });
-};
-
-SummaryDetailsPage.prototype._trumpProduct = function (e) {
-  var product = this._products[e.target.parentElement.getAttribute('data-id')],
-      productTypes = this._options.productTypes,
-      productType,
-      properties,
-      trumpProducts = [],
-      trumpText,
-      trumpTitle;
-
-  for(var i = 0; i < productTypes.length; i++) {
-    productType = productTypes[i];
-
-    product = this._getProductFromDataId(product.code, productType);
-
-    if (product) {
-      properties = product.properties;
-
-      // build array of delete products
-      trumpProducts.push(
-        Product({
-          source: product.source,
-          type: 'trump-' + product.type,
-          status: Product.STATUS_UPDATE,
-          code: product.code,
-          properties: {
-            'eventsource': properties.eventsource,
-            'eventsourcecode': properties.eventsourcecode,
-            'trump-source': product.source,
-            'trump-code': product.code
-          }
-        })
-      );
-    }
-  }
-
-  // Set modal title and text
-  trumpTitle = 'Trump Product(s)';
-  trumpText = 'The following TRUMP product(s) will be sent. ' +
-      'Click a product below for more details.';
-  // Send trump product
-  this._sendProduct(trumpProducts, trumpTitle, trumpText);
-};
 
 SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
   var products = [],
@@ -233,20 +89,21 @@ SummaryDetailsPage.prototype._getProductFromDataId = function (dataid, type) {
 
 
   // clean-up resources.
+SummaryDetailsPage.prototype._destroy = SummaryDetailsPage.prototype.destroy;
 SummaryDetailsPage.prototype.destroy = function () {
-  var buttons = [];
 
-  // unbind all buttons
-  buttons = this._content.querySelectorAll('.button-group');
-  for (var i = 0; i < buttons.length; i++) {
-    buttons[i]._destroy();
-  }
+  this._actionViews.forEach(function (view) {
+    view.destroy();
+  });
+  this._actionViews = null;
 
   this._content = null;
   this._products = null;
   this._options = null;
 
-  //EventModulePage.prototype.destroy.call(this);
+
+  // call regular destroy method
+  SummaryDetailsPage.prototype._destroy.call(this);
 };
 
 

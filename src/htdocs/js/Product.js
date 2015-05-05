@@ -70,12 +70,14 @@ var Product = function (options) {
         contents = _this.get('contents'),
         key;
 
+    contents = Util.extend({}, contents);
     for (key in contents) {
       content = contents[key];
       if (!content.get) {
         contents[key] = ProductContent(content);
       }
     }
+    _this.set({'contents': contents});
   };
 
   _initialize(options);
