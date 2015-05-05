@@ -1,9 +1,6 @@
 /* global chai, describe, it */
 'use strict';
 
-// var Product = require('Product'),
-//     ProductContent = require('PrductContent'),
-
 var  EditLinkView = require('admin/EditLinkView');
 
 
@@ -16,21 +13,26 @@ describe('EditLinkViewTest', function () {
     });
   });
 
-  // describe('Shows / Hides modal view', function () {
-  //
-  //   it('is visible', function () {
-  //     var editLinkView = EditLinkView({
-  //
-  //     });
-  //
-  //     editLinkView.show();
-  //
-  //     /* jshint -W030 */
-  //     expect(document.querySelector('#linkText')).to.not.be.null;
-  //     /* jshint +W030 */
-  //
-  //   });
-  //
-  // });
+  describe('shows / Hides modal view', function () {
 
+    it('is visible/hidden after being called', function () {
+      var editLinkView = EditLinkView({
+        source: 'testSource',
+        type: 'testType',
+        code: 'testCode',
+        eventSource: 'testEventSource',
+        eventSourceCode: 'testEventSourceCode'
+      });
+
+      editLinkView.show();
+      /* jshint -W030 */
+      expect(document.querySelector('#linkText')).not.to.be.null;
+      /* jshint +W030 */
+
+      editLinkView.hide();
+      /* jshint -W030 */
+      expect(document.querySelector('#linkText')).to.be.null;
+      /* jshint +W030 */
+    });
+  });
 });
