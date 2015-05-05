@@ -4,7 +4,10 @@
 var TextProductView = require('admin/TextProductView'),
     SummaryPage = require('summary/SummaryPage'),
 
-    Product = require('Product');
+    Product = require('Product'),
+    ProductActionsView = require('admin/ProductActionsView'),
+    TextSummaryDetailsView = require('admin/TextSummaryDetailsView'),
+    TextProductView = require('admin/TextProductView');
 
 
 var __type_to_display = function (type) {
@@ -21,6 +24,7 @@ var __type_to_display = function (type) {
 
 var AdminSummaryPage = function (options) {
   this._textProductButtons = [];
+  this._actionViews = [];
 
   SummaryPage.call(this, options);
 };
@@ -45,28 +49,19 @@ AdminSummaryPage.prototype._getTexts = function (type) {
   // Create a button to add another
   buttonTitle = __type_to_display(type);
   button = document.createElement('button');
-  button.classList.add('green');
-  button.classList.add('create-text-button');
+  button.classList.add('add-product-button');
   button.setAttribute('product-type', type);
-  button.innerHTML = 'Create ' + buttonTitle;
+  button.innerHTML = 'Add ' + buttonTitle + ' (' + type + ') ' + ' Product';
 
   button._clickHandler = this._getAddTextClick();
   button.addEventListener('click', button._clickHandler);
   this._textProductButtons.push(button);
 
-  if (fragment.firstChild) {
-    fragment.appendChild(button);
-  } else {
-    el = document.createElement('p');
-    el.classList.add('alert');
-    el.classList.add('info');
-    el.classList.add('no-product-warning');
-    el.innerHTML = 'No &ldquo;' + buttonTitle + '&rdquo; (' + type + ')' +
-        ' products exist yet.  If/when such a product is created,' +
-        ' it will appear here.';
-    el.appendChild(button);
-    fragment.appendChild(el);
-  }
+  el = document.createElement('p');
+  el.classList.add('alert');
+  el.classList.add('info');
+  el.appendChild(button);
+  fragment.insertBefore(el, fragment.firstChild);
 
   return fragment;
 };
@@ -79,38 +74,24 @@ AdminSummaryPage.prototype._getTexts = function (type) {
  * @see earthquake-eventpages::summary/SummaryPage#_getText
  */
 AdminSummaryPage.prototype._getText = function (product) {
-  var buttonEl,
-      buttonTitle,
-      editButton,
-      deleteButton,
+  var actionsView,
       el;
 
   el = document.createElement('div');
   el.classList.add('edit-text');
 
+  // add buttons
+  actionsView = ProductActionsView({
+    editView: TextProductView,
+    event: this._event,
+    products: [product],
+    page: TextSummaryDetailsView()
+  });
+  el.appendChild(actionsView.el);
+  this._actionViews.push(actionsView);
+
   // add normal content
   el.appendChild(SummaryPage.prototype._getText.call(this, product));
-
-  // now add buttons
-  buttonEl = document.createElement('div');
-  buttonEl.classList.add('button-group');
-  el.appendChild(buttonEl);
-
-  buttonTitle = __type_to_display(product.type);
-  // edit button
-  editButton = document.createElement('button');
-  editButton.innerHTML = 'Edit ' + buttonTitle;
-  editButton._clickHandler = this._getEditTextClick(product);
-  editButton.addEventListener('click', editButton._clickHandler);
-  this._textProductButtons.push(editButton);
-  buttonEl.appendChild(editButton);
-
-  deleteButton = document.createElement('button');
-  deleteButton.innerHTML = 'Delete ' + buttonTitle;
-  deleteButton._clickHandler = this._getDeleteTextClick(product);
-  deleteButton.addEventListener('click', deleteButton._clickHandler);
-  this._textProductButtons.push(deleteButton);
-  buttonEl.appendChild(deleteButton);
 
   return el;
 };
@@ -129,8 +110,12 @@ AdminSummaryPage.prototype.destroy = function () {
     button.removeEventListener('click', button._clickHandler);
     button._clickHandler = null;
   }, this);
-
   this._textProductButtons = null;
+
+  this._actionViews.forEach(function (view) {
+    view.destroy();
+  });
+  this._actionViews = null;
 };
 
 /**

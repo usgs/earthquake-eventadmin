@@ -1,18 +1,11 @@
 
 .edit-text {
   margin: 1em 0;
-
-  > section {
-    border: 1px solid #ddd;
-    padding: 16px;
-  }
+  border: 1px solid #ddd;
+  padding: 16px;
 }
 
-.create-text-button,
-.edit-text-button {
+.add-product-button {
+  color: #090;
   display: block;
-}
-
-.no-product-warning {
-  padding: 1em;
 }
