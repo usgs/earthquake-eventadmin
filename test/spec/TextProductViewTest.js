@@ -103,10 +103,10 @@ describe('TextProductView', function () {
           contents: [
             {
               bytes: productText,
-              type: 'text/html',
-              length: productText.length,
+              id: '',
               lastModified: (new Date()).getTime(),
-              path: ''
+              length: productText.length,
+              type: 'text/html'
             }
           ]
         })
