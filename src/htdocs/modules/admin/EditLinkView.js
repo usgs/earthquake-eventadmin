@@ -48,7 +48,11 @@ var EditLinkView = function (options) {
       _product = Product({
         type: options.type,
         source: options.source,
-        code: options.code
+        code: options.code,
+        properties: {
+          eventsource: options.eventSource,
+          eventsourcecode: options.eventSourceCode
+        }
       });
     }
 
