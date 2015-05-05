@@ -3,16 +3,19 @@
 // always run inside a session
 session_start();
 
-
 if (!isset($_POST['product'])) {
     header('400 Bad Request');
     echo 'product parameter required';
     exit();
 }
 
+
 include_once '../conf/config.inc.php';
 include_once '../lib/ProductSender.class.php';
 include_once '../lib/functions.inc.php';
+
+$uploadDir = realpath(sys_get_temp_dir() . 'file_upload_' . session_id());
+$uploadPrefix = $CONFIG['MOUNT_PATH'] . '/file_upload.php?file=';
 
 try {
   // session specific data directory
@@ -50,7 +53,7 @@ try {
 
   // make product specific directory
   $workingDir = $workingDir . '/' . $source . '_' . $type . '_' . $code;
-  if (is_dir($workdingDir)) {
+  if (is_dir($workingDir)) {
     // remove existing directory
     rrmdir($workingDir);
   }
@@ -92,13 +95,20 @@ try {
         file_put_contents($file, $content['bytes']);
       } else {
         $url = $content['url'];
-        if (strpos($url, '/') === 0) {
-          // uploaded file
-          $url = $HOST_URL_PREFIX . $url;
-        }
-        if (!downloadURL($url, $file, false)) {
+        if (strpos($url, $uploadPrefix) === 0) {
+          // uploaded file is local
+          $url = str_replace($uploadPrefix, '', $url);
+
+          $uploadFile = realpath($uploadDir . DIRECTORY_SEPARATOR . $url);
+
+          if (strpos($uploadFile, $uploadDir) === 0) {
+            file_put_contents($file, file_get_contents($uploadFile));
+          } else {
+            throw new Exception('The uploaded file must be in the upload directory. ' . $uploadFile . ':' . $uploadDir);
+          }
+        } else if (!downloadURL($url, $file, false)) {
           throw new Exception('Unable to download url ' . $content['url']);
-        };
+        }
       }
       // preserve last modified
       if (isset($content['lastModified'])) {
