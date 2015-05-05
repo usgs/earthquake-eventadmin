@@ -13,8 +13,10 @@ var compass = {
       cssDir: config.build + '/' + config.src,
       environment: 'development',
       importPath: [
+        NODE_MODULES,
         NODE_MODULES + '/earthquake-eventpages/src/htdocs/',
         NODE_MODULES + '/hazdev-accordion/src',
+        NODE_MODULES + '/hazdev-cache-invalidator/src/htdocs/css',
         NODE_MODULES + '/hazdev-location-view/src',
         NODE_MODULES + '/hazdev-question-view/src',
         NODE_MODULES + '/hazdev-svgimagemap/src',

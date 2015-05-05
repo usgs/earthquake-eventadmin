@@ -33,6 +33,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-mocha-phantomjs": "~0.5.0",
     "hazdev-accordion": "usgs/hazdev-accordion",
+    "hazdev-cache-invalidator": "git://github.com/usgs/hazdev-cache-invalidator.git",
     "hazdev-location-view": "usgs/hazdev-location-view",
     "hazdev-question-view": "usgs/hazdev-question-view",
     "hazdev-svgimagemap": "usgs/hazdev-svgimagemap",

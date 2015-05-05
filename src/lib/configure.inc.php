@@ -104,6 +104,19 @@ $prompts = array(
     'prompt' => 'Private key used to sign products',
     'default' => '',
     'secure' => false
+  ),
+
+
+  'SQUID_SERVERS' => array(
+    'prompt' => 'Squid caching servers for invalidation (comma separated list)',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'SQUID_HOSTNAMES' => array(
+    'prompt' => 'Hostname(s) to invalidate (comma separated list)',
+    'default' => '',
+    'secure' => false
   )
 
 );

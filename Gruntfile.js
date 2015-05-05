@@ -22,6 +22,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:build',
     'copy:eventpages',
+    'copy:invalidator',
     'compass:eventpages',
     'concurrent:build'
   ]);
