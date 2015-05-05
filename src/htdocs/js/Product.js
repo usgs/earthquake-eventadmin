@@ -68,12 +68,22 @@ var Product = function (options) {
     }
 
     if (Array.isArray(contents)) {
+      // Handle case if given an array
       contentsGood = false;
       contents = contents.map(function (content) {
         if (!content.get) {
           content = ProductContent(content);
         }
         return content;
+      });
+      contents = Collection(contents);
+    } else if (!contents.hasOwnProperty('get') ||
+        !contents.hasOwnProperty('add')) {
+      // Handle case when given an object map (like from data feed)
+      contentsGood = false;
+      contents = Object.keys(contents).map(function (key) {
+        return ProductContent(
+            Util.extend({}, {id: key}, contents[key]));
       });
       contents = Collection(contents);
     }
@@ -83,6 +93,31 @@ var Product = function (options) {
     }
     _this.set({'contents': contents});
   };
+
+
+  _this.toJSON = Util.compose(_this.toJSON, function (json) {
+    var objectContents = {};
+
+    json.contents.forEach(function (content) {
+      objectContents[content.id] = {
+        contentType: content.contentType,
+        length: content.legnth,
+        lastModified: content.lastModified
+      };
+
+      if (content.hasOwnProperty('url') && content.url !== null) {
+        objectContents[content.id].url = content.url;
+      } else if (content.hasOwnProperty('bytes') && content.bytes !== null) {
+        objectContents[content.id].bytes = content.bytes;
+      }
+
+      // Maybe add path = id here ?
+    });
+
+    json.contents = objectContents;
+
+    return json;
+  });
 
   _initialize(options);
   options = null;
