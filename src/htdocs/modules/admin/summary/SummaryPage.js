@@ -78,6 +78,7 @@ AdminSummaryPage.prototype._getText = function (product) {
       el;
 
   el = document.createElement('div');
+  el.classList.add('alert');
   el.classList.add('edit-text');
 
   // add buttons

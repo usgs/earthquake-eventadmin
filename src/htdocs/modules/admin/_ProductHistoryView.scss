@@ -1,21 +1,29 @@
 
-.summary-actions {
-  margin: 1em 0 0;
-}
+.product-history {
 
-.summary-actions + .summary {
-  margin: -1px 0 0;
-}
+  > .alert {
+    margin-bottom: 1em;
 
-a.summary {
-  border-color: #ddd;
-}
+    > .product-action-view {
+      margin: 0;
+    }
 
-.product-history > .superseded > ul > li > span {
-  color: #999;
-  font-weight: 300;
-}
+    > .summary {
+      background-color: #fff;
 
-.summary > .deleted > ul > li > span {
-  text-decoration: line-through;
+      &:hover {
+        background-color: inherit;
+      }
+    }
+  }
+
+  .deleted > ul > li > span {
+    text-decoration: line-through;
+  }
+
+  .superseded > ul > li > span {
+    color: #999;
+    font-weight: 300;
+  }
+
 }

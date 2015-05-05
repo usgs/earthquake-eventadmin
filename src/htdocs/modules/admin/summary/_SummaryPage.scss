@@ -1,11 +1,13 @@
 
 .edit-text {
-  margin: 1em 0;
-  border: 1px solid #ddd;
-  padding: 16px;
-
   > .product-action-view {
-    margin: 0;
+    margin-top: 0;
+  }
+
+  > section {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 1em;
   }
 }
 

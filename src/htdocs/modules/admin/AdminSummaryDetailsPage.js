@@ -37,12 +37,18 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
 
 SummaryDetailsPage.prototype.getSummaryContent = function (products) {
   var actionsView,
+      el,
       summary,
       product,
       fragment = document.createDocumentFragment();
 
   for (var i = 0; i < products.length; i++) {
     product = products[i];
+    el = document.createElement('div');
+    el.classList.add('alert');
+    el.classList.add('edit-summary');
+    fragment.appendChild(el);
+
     summary = this.buildSummaryMarkup(product, !i);
     // add edit/delete/trump buttons
     actionsView = ProductActionsView({
@@ -52,8 +58,8 @@ SummaryDetailsPage.prototype.getSummaryContent = function (products) {
     });
     this._actionViews.push(actionsView);
     // append summary markup
-    fragment.appendChild(summary);
-    summary.insertBefore(actionsView.el, summary.firstChild);
+    el.appendChild(actionsView.el);
+    el.appendChild(summary);
 
     if (i === 0 && this._options.markPreferred) {
       summary.classList.add('preferred');

@@ -64,7 +64,8 @@ var ProductHistoryView = function (options) {
   _this.render = function () {
     var actionView,
         el,
-        product;
+        product,
+        summary;
 
     for (var i = 0; i < _products.length; i++) {
       product = _products[i];
@@ -73,24 +74,27 @@ var ProductHistoryView = function (options) {
         product = Tensor.fromProduct(product);
       }
 
-      // call buildSummaryMarkup and append the content to the modal dialog
-      el = _page.buildSummaryMarkup(product);
-      if (i !== 0) {
-        el.classList.add('superseded');
-      }
+      el = document.createElement('div');
+      el.classList.add('alert');
 
-      // prepend buttons
       actionView = _actionsView.newActionsView({
         product: product,
         viewHistory: false,
         deleteProduct: false,
         trumpProduct: false,
       });
-      el.insertBefore(actionView.el, el.firstChild);
-      actionView._summaryEl = el;
-      el.addEventListener('click', actionView.onViewDetails);
       _actionViews.push(actionView);
+      el.appendChild(actionView.el);
 
+      // call buildSummaryMarkup and append the content to the modal dialog
+      summary = _page.buildSummaryMarkup(product);
+      if (i !== 0) {
+        summary.classList.add('superseded');
+      }
+      actionView._summaryEl = el;
+      summary.addEventListener('click', actionView.onViewDetails);
+      el.appendChild(summary);
+      
       _section.appendChild(el);
     }
   };
