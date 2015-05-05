@@ -1,12 +1,35 @@
 'use strict';
 
-var CatalogEvent = require('CatalogEvent'),
-    ProductDetailsView = require('admin/ProductDetailsView'),
+var ModalView = require('mvc/ModalView'),
+    Util = require('util/Util'),
+    View = require('mvc/View'),
+
     Tensor = require('scientific/tensor/Tensor'),
 
-    ModalView = require('mvc/ModalView'),
-    Util = require('util/Util'),
-    View = require('mvc/View');
+    CatalogEvent = require('CatalogEvent'),
+    EditProductView,
+    Product = require('Product'),
+    ProductDetailsView = require('admin/ProductDetailsView');
+
+
+EditProductView = function (options) {
+  var _this,
+      _modal;
+
+  _this = View(options);
+  _this.el.innerHTML = JSON.stringify(options.product);
+
+  _modal = ModalView(_this.el, {
+    closable: true,
+    title: 'Edit Product View'
+  });
+
+  _this.hide = _modal.hide;
+  _this.show = _modal.show;
+
+  return _this;
+};
+
 
 var ProductHistoryView = function (options) {
   var _this,
@@ -14,6 +37,7 @@ var ProductHistoryView = function (options) {
 
       // variables
       _dialog,
+      _editView,
       _el,
       _event,
       _page,
@@ -36,6 +60,8 @@ var ProductHistoryView = function (options) {
     _section = document.createElement('section');
     _section.className = 'product-history';
     _el.appendChild(_section);
+
+    _editView = options.editView || EditProductView;
 
     // get event
     _event = CatalogEvent(options.eventDetails);
@@ -92,8 +118,9 @@ var ProductHistoryView = function (options) {
   _editProduct = function (e) {
     var product = _products[e.currentTarget.parentElement.getAttribute('data-id')];
 
-    console.log('edit product');
-    console.log(product);
+    _editView({
+      product: Product(product)
+    }).show();
   };
 
   _viewProductDetails = function (e) {
@@ -103,9 +130,9 @@ var ProductHistoryView = function (options) {
     e.preventDefault();
 
     ProductDetailsView({
-      'eventDetails': this._event,
-      'page': _page,
-      'product': _products[dataid]
+      editView: _editView,
+      page: _page,
+      product: _products[dataid]
     });
   };
 
@@ -119,14 +146,14 @@ var ProductHistoryView = function (options) {
       if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
         product = Tensor.fromProduct(product);
       }
+      // append buttons
+      _section.appendChild(_getButtons(product, i));
+
       // call buildSummaryMarkup and append the content to the modal dialog
       el = _page.buildSummaryMarkup(product);
       el.setAttribute('data-id', i);
       el.addEventListener('click', _viewProductDetails);
       _section.appendChild(el);
-      // append buttons
-      _section.appendChild(_getButtons(product, i));
-
       if (i !== 0) {
         el.classList.add('superseded');
       }

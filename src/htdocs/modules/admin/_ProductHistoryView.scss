@@ -1,0 +1,21 @@
+
+.summary-actions {
+  margin: 1em 0 0;
+}
+
+.summary-actions + .summary {
+  margin: -1px 0 0;
+}
+
+a.summary {
+  border-color: #ddd;
+}
+
+.product-history > .superseded > ul > li > span {
+  color: #999;
+  font-weight: 300;
+}
+
+.summary > .deleted > ul > li > span {
+  text-decoration: line-through;
+}

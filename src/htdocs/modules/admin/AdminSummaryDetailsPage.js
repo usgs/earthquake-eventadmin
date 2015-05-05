@@ -34,10 +34,10 @@ SummaryDetailsPage.prototype.getSummaryContent = function (products) {
   for (var i = 0; i < products.length; i++) {
     product = products[i];
     summary = this.buildSummaryMarkup(product, !i);
-    // append summary markup
-    fragment.appendChild(summary);
     // add edit/delete/trump buttons
     fragment.appendChild(this._getButtons(product, i));
+    // append summary markup
+    fragment.appendChild(summary);
 
     if (i === 0 && this._options.markPreferred) {
       summary.classList.add('preferred');
