@@ -12,7 +12,7 @@ var CatalogEvent = require('CatalogEvent'),
     Xhr = require('util/Xhr');
 
 var DEFAULTS = {
-  detailsUrl: 'http://dev-earthquake.cr.usgs.gov/earthquakes/feed/v1.0/detail/'
+  SEARCH_STUB: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson'
 };
 
 var AssociateEventView = function (options) {
@@ -24,10 +24,10 @@ var AssociateEventView = function (options) {
       _associateEventId,
       _associateProducts = [],
       _associateProductText,
-      _detailsUrl,
       _dialog,
       _infoEl,
       _referenceEvent,
+      _searchStub,
 
       // methods
       _appendAssociationText,
@@ -47,7 +47,7 @@ var AssociateEventView = function (options) {
 
     _referenceEvent = options.referenceEvent;
     _associateEventId = options.associateEventId;
-    _detailsUrl = options.detailsUrl;
+    _searchStub = options.eventConfig.SEARCH_STUB || options.SEARCH_STUB;
 
     el.innerHTML = '<div class="associate-event"></div>';
     _infoEl = el.querySelector('.associate-event');
@@ -97,7 +97,7 @@ var AssociateEventView = function (options) {
    */
   _getContent = function () {
     Xhr.ajax({
-      url: _detailsUrl + _associateEventId + '.geojson',
+      url: _searchStub + '&eventid=' + _associateEventId,
       success: function (data) {
         var associateEvent = CatalogEvent(data).getSummary(),
             matchingEventSource = _findMatchingSource(associateEvent);
@@ -258,9 +258,9 @@ var AssociateEventView = function (options) {
     _associateEvent = null;
     _associateEventId = null;
     _associateProducts = null;
-    _detailsUrl = null;
     _infoEl = null;
     _referenceEvent = null;
+    _searchStub = null;
   }, _this.destroy);
 
   _initialize();
