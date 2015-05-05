@@ -7,9 +7,23 @@ var Product = require('Product');
  * A factory for product objects.
  */
 var ProductFactory = function (/*options*/) {
-  var _this;
+  var _this,
+      // methods
+      _getProduct;
 
   _this = {};
+
+
+  /**
+   * Get a product object.
+   */
+  _getProduct = function (product) {
+    if (typeof product.get === 'function') {
+      return product;
+    } else {
+      return Product(product);
+    }
+  };
 
 
   /**
@@ -21,10 +35,16 @@ var ProductFactory = function (/*options*/) {
    *         delete product.
    */
   _this.getDelete = function (product) {
-    var code = product.get('code'),
-        properties = product.get('properties'),
-        source = product.get('source'),
-        type = product.get('type');
+    var code,
+        properties,
+        source,
+        type;
+
+    product = _getProduct(product);
+    code = product.get('code');
+    properties = product.get('properties');
+    source = product.get('source');
+    type = product.get('type');
 
     return Product({
       source: source,
@@ -47,10 +67,16 @@ var ProductFactory = function (/*options*/) {
    *         trump product.
    */
   _this.getTrump = function (product) {
-    var code = product.get('code'),
-        properties = product.get('properties'),
-        source = product.get('source'),
-        type = product.get('type');
+    var code,
+        properties,
+        source,
+        type;
+
+    product = _getProduct(product);
+    code = product.get('code');
+    properties = product.get('properties');
+    source = product.get('source');
+    type = product.get('type');
 
     return Product({
       source: source,
