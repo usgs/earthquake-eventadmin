@@ -7,7 +7,7 @@ var EventModulePage = require('./AdminEventModulePage');
  * A summary/details view like object for Text based products, which are
  * not normally SummaryDetails type pages.
  */
-var TextHistoryView = function (/*options*/) {
+var TextSummaryDetailsView = function (/*options*/) {
   var _this;
 
   _this = {};
@@ -70,4 +70,4 @@ var TextHistoryView = function (/*options*/) {
 };
 
 
-module.exports = TextHistoryView;
+module.exports = TextSummaryDetailsView;
