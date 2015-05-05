@@ -106,13 +106,13 @@ AdminScientificSummaryPage.prototype.getAddClick = function () {
       time = new Date().getTime();
 
   return function () {
-  EditLinkView({
-    type: 'scitech-link',
-    source: 'admin',
-    code: props.net + '-' + props.code + '-' + props.url +'-'+ time,
-    eventSource: props.net,
-    eventSourceCode: props.code
-  }).show();
+    EditLinkView({
+      type: 'scitech-link',
+      source: 'admin',
+      code: props.net + '-' + props.code + '-' + props.url +'-'+ time,
+      eventSource: props.net,
+      eventSourceCode: props.code
+    }).show();
   };
 };
 
