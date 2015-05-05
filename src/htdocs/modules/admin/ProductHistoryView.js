@@ -6,29 +6,7 @@ var ModalView = require('mvc/ModalView'),
 
     Tensor = require('scientific/tensor/Tensor'),
 
-    CatalogEvent = require('CatalogEvent'),
-    EditProductView,
-    Product = require('Product'),
-    ProductDetailsView = require('admin/ProductDetailsView');
-
-
-EditProductView = function (options) {
-  var _this,
-      _modal;
-
-  _this = View(options);
-  _this.el.innerHTML = JSON.stringify(options.product);
-
-  _modal = ModalView(_this.el, {
-    closable: true,
-    title: 'Edit Product View'
-  });
-
-  _this.hide = _modal.hide;
-  _this.show = _modal.show;
-
-  return _this;
-};
+    CatalogEvent = require('CatalogEvent');
 
 
 var ProductHistoryView = function (options) {
@@ -36,18 +14,14 @@ var ProductHistoryView = function (options) {
       _initialize,
 
       // variables
+      _actionsView,
+      _actionViews,
       _dialog,
-      _editView,
       _el,
       _event,
       _page,
       _products = [],
-      _section,
-
-      // methods
-      _editProduct,
-      _getButtons,
-      _viewProductDetails;
+      _section;
 
   _this = View(options);
 
@@ -61,7 +35,8 @@ var ProductHistoryView = function (options) {
     _section.className = 'product-history';
     _el.appendChild(_section);
 
-    _editView = options.editView || EditProductView;
+    _actionViews = [];
+    _actionsView = options.actionsView;
 
     // get event
     _event = CatalogEvent(options.eventDetails);
@@ -86,58 +61,9 @@ var ProductHistoryView = function (options) {
     options = null;
   };
 
-
-  _getButtons = function (product, dataid) {
-    var buttons = document.createElement('div'),
-        editButton,
-        editProduct;
-
-    // button group
-    buttons.classList.add('button-group');
-    buttons.classList.add('summary-actions');
-    buttons.setAttribute('data-id', dataid);
-
-    // add button
-    editButton = document.createElement('button');
-    editButton.innerHTML = 'Edit Product';
-    buttons.appendChild(editButton);
-
-    editProduct = _editProduct.bind(this);
-    editButton.addEventListener('click', editProduct);
-
-    buttons.destroy = function () {
-      editButton.removeEventListener('click', editProduct);
-      editProduct = null;
-      editButton = null;
-      buttons = null;
-    };
-
-    return buttons;
-  };
-
-  _editProduct = function (e) {
-    var product = _products[e.currentTarget.parentElement.getAttribute('data-id')];
-
-    _editView({
-      product: Product(product)
-    }).show();
-  };
-
-  _viewProductDetails = function (e) {
-    var dataid = e.currentTarget.getAttribute('data-id');
-
-    // keep the hash from updating
-    e.preventDefault();
-
-    ProductDetailsView({
-      editView: _editView,
-      page: _page,
-      product: _products[dataid]
-    });
-  };
-
   _this.render = function () {
-    var el,
+    var actionView,
+        el,
         product;
 
     for (var i = 0; i < _products.length; i++) {
@@ -146,17 +72,26 @@ var ProductHistoryView = function (options) {
       if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
         product = Tensor.fromProduct(product);
       }
-      // append buttons
-      _section.appendChild(_getButtons(product, i));
 
       // call buildSummaryMarkup and append the content to the modal dialog
       el = _page.buildSummaryMarkup(product);
-      el.setAttribute('data-id', i);
-      el.addEventListener('click', _viewProductDetails);
-      _section.appendChild(el);
       if (i !== 0) {
         el.classList.add('superseded');
       }
+
+      // prepend buttons
+      actionView = _actionsView.newActionsView({
+        product: product,
+        viewHistory: false,
+        deleteProduct: false,
+        trumpProduct: false,
+      });
+      el.insertBefore(actionView.el, el.firstChild);
+      actionView._summaryEl = el;
+      el.addEventListener('click', actionView.onViewDetails);
+      _actionViews.push(actionView);
+
+      _section.appendChild(el);
     }
   };
 
@@ -164,31 +99,31 @@ var ProductHistoryView = function (options) {
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
-
-    var buttons = [],
-        summaries = [];
-
-    // unbind all buttons
-    buttons = _section.querySelectorAll('.button-group');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i]._destroy();
-    }
-
-    summaries = _section.querySelectorAll('.summary');
-    for (i = 0; i < summaries.length; i ++) {
-      summaries[i].removeEventListener('click', _viewProductDetails);
-    }
-
-    // variables
     if (_dialog !== null) {
+      _dialog.off();
+      _dialog.hide();
       _dialog.destroy();
       _dialog = null;
     }
-      _el = null;
-      _event = null;
-      _page = null;
-      _products = null;
-      _section = null;
+
+    if (_this === null) {
+      return;
+    }
+
+    _actionViews.forEach(function (view) {
+      if (view._summaryEl) {
+        view._summaryEl.removeEventListener('click', view.onViewDetails);
+        view._summaryEl = null;
+      }
+      view.destroy();
+    });
+
+    _actionViews = null;
+    _event = null;
+    _page = null;
+    _products = null;
+    _section = null;
+    _this = null;
   }, _this.destroy);
 
   _initialize();

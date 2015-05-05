@@ -267,6 +267,7 @@ var ProductActionsView = function (options) {
     }
 
     ProductHistoryView({
+      actionsView: _this,
       editView: _editView,
       eventDetails: _event,
       page: _page,
