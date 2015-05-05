@@ -36,6 +36,7 @@ var DEFAULTS = {
   editProduct: true,
   editProductView: EditProductView,
   trumpProduct: true,
+  viewDetails: false,
   viewHistory: true,
   viewHistoryPage: null
 };
@@ -94,7 +95,7 @@ var ProductActionsView = function (options) {
     options = Util.extend({}, DEFAULTS, options);
     _deleteProduct = options.deleteProduct;
     _editProduct = options.editProduct;
-    _editView = options.editView;
+    _editView = options.editView || EditProductView;
     _event = options.event;
     _page = options.page;
     _products = options.products;
@@ -192,7 +193,11 @@ var ProductActionsView = function (options) {
   /**
    * Edit Product button click handler.
    */
-  _this.onEditProduct = function () {
+  _this.onEditProduct = function (e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     _editView({
       product: Product(_products[0])
     }).show();
@@ -201,10 +206,15 @@ var ProductActionsView = function (options) {
   /**
    * Delete Product button click handler.
    */
-  _this.onDeleteProduct = function () {
+  _this.onDeleteProduct = function (e) {
     var deleteProducts,
         deleteText,
         deleteTitle;
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     deleteProducts = _products.map(_productFactory.getDelete);
     // Set modal title and text
     deleteText = 'The following DELETE product(s) will be sent. ' +
@@ -217,10 +227,15 @@ var ProductActionsView = function (options) {
   /**
    * Trump Product button click handler.
    */
-  _this.onTrumpProduct = function () {
+  _this.onTrumpProduct = function (e) {
     var trumpProducts,
         trumpText,
         trumpTitle;
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     trumpProducts = _products.map(_productFactory.getTrump);
     trumpText = 'The following TRUMP product(s) will be sent. ' +
         'Click a product below for more details.';
@@ -231,7 +246,11 @@ var ProductActionsView = function (options) {
   /**
    * View Details button click handler.
    */
-  _this.onViewDetails = function () {
+  _this.onViewDetails = function (e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     ProductDetailsView({
       editView: _editView,
       page: _page,
@@ -242,7 +261,11 @@ var ProductActionsView = function (options) {
   /**
    * View History button click handler.
    */
-  _this.onViewHistory = function () {
+  _this.onViewHistory = function (e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     ProductHistoryView({
       editView: _editView,
       eventDetails: _event,
