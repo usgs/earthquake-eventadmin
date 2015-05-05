@@ -14,6 +14,7 @@ var compass = {
       environment: 'development',
       importPath: [
         NODE_MODULES,
+        config.src + '/htdocs/css',
         NODE_MODULES + '/earthquake-eventpages/src/htdocs/',
         NODE_MODULES + '/hazdev-accordion/src',
         NODE_MODULES + '/hazdev-cache-invalidator/src/htdocs/css',
