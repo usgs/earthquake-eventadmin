@@ -2,6 +2,7 @@
 
 var CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
+    ProductContent = require('ProductContent'),
     SendProductView = require('admin/SendProductView'),
 
     ModalView = require('mvc/ModalView'),
@@ -28,7 +29,8 @@ var AssociateEventView = function (options) {
       _infoEl,
       _referenceEvent,
 
-      // methods 
+      // methods
+      _appendAssociationText,
       _createSendProductView,
       _findMatchingSource,
       _generateAssociateProducts,
@@ -75,6 +77,7 @@ var AssociateEventView = function (options) {
   };
 
   _onConfirm = function () {
+    _appendAssociationText();
     _createSendProductView();
   };
 
@@ -121,7 +124,6 @@ var AssociateEventView = function (options) {
             'not associate:</p>' +
             '<textarea class="textproduct-text">' + _associateProductText +
                 '</textarea>';
-
       },
       error: function (e) {
         console.log(e.message);
@@ -131,12 +133,28 @@ var AssociateEventView = function (options) {
 
 
   /**
+   * Adds association logic text as inline product content from
+   * the textarea input
+   */
+  _appendAssociationText = function () {
+    var text = _infoEl.querySelector('.textproduct-text').value;
+
+    for (var i = 0; i < _associateProducts.length; i++) {
+      _associateProducts[i].set({
+        'contents': {
+          '': ProductContent({bytes: text, length: text.length})
+        }
+      });
+    }
+  };
+
+
+  /**
    * Display associate products in SendProductView
    */
   _createSendProductView = function () {
     var sendProductView = SendProductView({
       modalTitle: 'Associate Product(s)',
-      modalText: _associateProductText,
       products: _associateProducts,
       formatProduct: function (products) {
         // format product being sent
