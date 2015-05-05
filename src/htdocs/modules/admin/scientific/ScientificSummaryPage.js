@@ -47,6 +47,7 @@ AdminScientificSummaryPage.prototype.getLinks = function () {
   button = el.querySelector('.create-link-button');
   button.addEventListener('click', this.onAddClick);
   this.onAddButton = button;
+  this._productButtons.push(button);
   fragment.appendChild(el);
 
   return fragment;
