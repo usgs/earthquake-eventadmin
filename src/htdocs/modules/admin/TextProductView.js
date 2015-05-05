@@ -69,9 +69,9 @@ var TextProductView = function (options) {
           eventsourcecode: options.eventSourceCode,
           'review-status': 'Reviewed',
         },
-        contents: {
-          '': ProductContent({path: '', bytes: ''})
-        }
+        contents: [
+          ProductContent({path: '', bytes: ''})
+        ]
       });
     }
 

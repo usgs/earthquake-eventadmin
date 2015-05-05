@@ -1,6 +1,7 @@
 'use strict';
 
-var ProductSender = require('ProductSender'),
+var Product = require('Product'),
+    ProductSender = require('ProductSender'),
 
     Accordion = require('accordion/Accordion'),
 
@@ -41,6 +42,10 @@ var prettySize = function (size) {
 
 
 var getProductIdentifier = function (product) {
+  if (!product.get) {
+    product = Product(product);
+  }
+
   return product.get('id') || [
     product.get('source'),
     product.get('type'),
@@ -194,7 +199,7 @@ var SendProductView = function (options) {
     doneButton.classList.remove('hidden');
 
     _products.forEach(function (product) {
-      _sender.sendProduct(product, _sendCallback);
+      _sender.sendProduct(product.toJSON(), _sendCallback);
       _sendCount += 1;
     });
   };
@@ -362,7 +367,7 @@ var SendProductView = function (options) {
     contents = product.get('contents').data();
     buf.push('<dt>Contents</dt><dd><ul>');
     contents.forEach(function (content) {
-      p = content.get('path');
+      p = content.get('id');
       type = content.get('contentType');
 
       if (p === '') {
