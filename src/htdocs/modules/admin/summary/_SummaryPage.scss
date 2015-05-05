@@ -3,6 +3,10 @@
   margin: 1em 0;
   border: 1px solid #ddd;
   padding: 16px;
+
+  > .product-action-view {
+    margin: 0;
+  }
 }
 
 .add-product-button {
