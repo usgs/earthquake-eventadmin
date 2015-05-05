@@ -2,6 +2,7 @@
 
 var ScientificSummaryPage = require('scientific/ScientificSummaryPage'),
     EditLinkView = require('admin/EditLinkView'),
+
     Product = require('Product');
 
 
@@ -11,9 +12,6 @@ var ScientificSummaryPage = require('scientific/ScientificSummaryPage'),
  *        module options.
  */
 var AdminScientificSummaryPage = function (options) {
-  this.onAddClick = this.onAddClick.bind(this);
-  this.onEditClick = this.onEditClick.bind(this);
-  this.onAddButton = null;
   this._productButtons = [];
   ScientificSummaryPage.call(this, options);
 };
@@ -45,8 +43,8 @@ AdminScientificSummaryPage.prototype.getLinks = function () {
       '</p>';
 
   button = el.querySelector('.create-link-button');
-  button.addEventListener('click', this.onAddClick);
-  this.onAddButton = button;
+  button._clickHandler = this.getAddClick();
+  button.addEventListener('click', button._clickHandler);
   this._productButtons.push(button);
   fragment.appendChild(el);
 
@@ -76,7 +74,8 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
   editButton.classList.add('edit-link-button');
   editButton.innerHTML = 'Edit Link';
   editButton.setAttribute('data-product-id', product.id);
-  editButton.addEventListener('click', this.onEditClick);
+  editButton._clickHandler = this.getEditClick(product);
+  editButton.addEventListener('click', editButton._clickHandler);
   this._productButtons.push(editButton);
   fragment.appendChild(editButton);
 
@@ -90,37 +89,23 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
  * @param evt (event)
  *        button click event
  */
-AdminScientificSummaryPage.prototype.onEditClick = function (evt) {
-  var button,
-      id,
-      product;
-
-  button = evt.target;
-  id = button.getAttribute('data-product-id');
-
-  this._event.properties.products['scitech-link'].some(function (p) {
-    if (p.id === id) {
-      product = Product(p);
-      return true;
-    }
-  });
-
-  if (product) {
+AdminScientificSummaryPage.prototype.getEditClick = function (product) {
+  return function () {
     EditLinkView({
-      product: product
+      product: Product(product)
     }).show();
-  }
+  };
 };
 
 
 /**
 * Calls EditLinkView Modal
 */
-AdminScientificSummaryPage.prototype.onAddClick = function () {
+AdminScientificSummaryPage.prototype.getAddClick = function () {
   var props = this._event.properties,
       time = new Date().getTime();
 
-  //calls modal view
+  return function () {
   EditLinkView({
     type: 'scitech-link',
     source: 'admin',
@@ -128,7 +113,9 @@ AdminScientificSummaryPage.prototype.onAddClick = function () {
     eventSource: props.net,
     eventSourceCode: props.code
   }).show();
+  };
 };
+
 
 /**
  * Removed event listeners and sets valuse to null
@@ -137,8 +124,8 @@ AdminScientificSummaryPage.prototype.destroy = function () {
   ScientificSummaryPage.prototype.destroy.apply(this);
 
   this._productButtons.forEach(function (button) {
-    button.removeEventListener('click', this.onAddClick);
-    button.removeEventListener('click', this.onEditClick);
+    button.removeEventListener('click', button._clickHandler);
+    button._clickHandler = null;
   }, this);
 
   this._productButtons = null;
