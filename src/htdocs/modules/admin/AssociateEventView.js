@@ -2,6 +2,7 @@
 
 var CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
+    SendProductView = require('admin/SendProductView'),
 
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
@@ -21,12 +22,14 @@ var AssociateEventView = function (options) {
       _associateEvent,
       _associateEventId,
       _associateProducts = [],
+      _associateProductText,
       _detailsUrl,
       _dialog,
       _infoEl,
       _referenceEvent,
 
-      // methods
+      // methods 
+      _createSendProductView,
       _findMatchingSource,
       _generateAssociateProducts,
       _getContent,
@@ -72,7 +75,7 @@ var AssociateEventView = function (options) {
   };
 
   _onConfirm = function () {
-    _dialog.hide();
+    _createSendProductView();
   };
 
   _onCancel = function () {
@@ -94,9 +97,12 @@ var AssociateEventView = function (options) {
         // check if there is a matching event source
         if (matchingEventSource !== null) {
           // build an associate product for each id with the matching source
+          _associateProductText = 'multiple event ids for same event from ' +
+              'same source';
           _associateProducts = _generateAssociateProducts(matchingEventSource, associateEvent);
         } else {
-          // TODO, associate the preferred eventsource and eventsourcecode
+          // associate the preferred eventsource and eventsourcecode
+          _associateProductText = 'outside association window';
           _associateProducts.push(Product({
             source: 'admin',
             type: 'associate',
@@ -111,17 +117,11 @@ var AssociateEventView = function (options) {
           }));
         }
 
-        // TODO, DELETE with modal dialog and actually present the products
-        // in the SendProductView
-        for (var i = 0; i < _associateProducts.length; i++) {
-          _infoEl.innerHTML = '<h4>Associate Product</h4><pre><code>' + JSON.stringify(_associateProducts[i].get(), null, '  ') + '</code></pre></div>';
-        }
+        _infoEl.innerHTML = '<p>These are the reasons that the events did ' +
+            'not associate:</p>' +
+            '<textarea class="textproduct-text">' + _associateProductText +
+                '</textarea>';
 
-        _infoEl.innerHTML +=
-            '<div class="row">' +
-            '<div class="column one-of-two"><h4>Reference Event</h4><pre><code>' + JSON.stringify(_referenceEvent, null, '  ') + '</code></pre></div>' +
-            '<div class="column one-of-two"><h4>Event to Associate</h4><pre><code>' + JSON.stringify(associateEvent, null, '  ') + '</code></pre></div>' +
-            '</div>';
       },
       error: function (e) {
         console.log(e.message);
@@ -129,6 +129,22 @@ var AssociateEventView = function (options) {
     });
   };
 
+
+  /**
+   * Display associate products in SendProductView
+   */
+  _createSendProductView = function () {
+    var sendProductView = SendProductView({
+      modalTitle: 'Associate Product(s)',
+      modalText: _associateProductText,
+      products: _associateProducts,
+      formatProduct: function (products) {
+        // format product being sent
+        return sendProductView.formatProduct(products);
+      }
+    });
+    sendProductView.show();
+  };
 
   /**
    * Builds an array of associate products when the two events that are being
