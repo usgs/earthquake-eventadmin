@@ -10,7 +10,7 @@ var AssociateEventView = require('admin/AssociateEventView'),
 
 
 var DEFAULTS = {
-  searchUrl: 'http://dev-earthquake.cr.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time-asc'
+  SEARCH_STUB: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson'
 };
 
 
@@ -24,6 +24,7 @@ var EventsNearbyView = function (options) {
       _event,
       _nearbyEventsEl,
       _searchStub,
+      _eventConfig,
 
       // methods
       _associateCallback,
@@ -38,7 +39,9 @@ var EventsNearbyView = function (options) {
 
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
-    _searchStub = options.searchUrl;
+    _searchStub = options.eventConfig.SEARCH_STUB || options.SEARCH_STUB;
+    _eventConfig = options.eventConfig;
+    _associateEventView = null;
 
     section.classname = 'nearby-event-view';
     section.innerHTML = '<h3>Events Within 15 Minutes</h3>' +
@@ -107,7 +110,8 @@ var EventsNearbyView = function (options) {
   _associateCallback = function (eventSummary) {
     _associateEventView = AssociateEventView({
       'referenceEvent' : _event.getSummary(),
-      'associateEvent': eventSummary
+      'associateEventId': eventSummary.id,
+      'eventConfig': _eventConfig
     });
   };
 
@@ -131,6 +135,7 @@ var EventsNearbyView = function (options) {
     starttime = new Date(time.getTime() - 900000);
     endtime = new Date(time.getTime() + 900000);
     url = _searchStub +
+        '&orderby=time-asc' +
         '&starttime=' + starttime.toISOString() +
         '&endtime=' + endtime.toISOString();
 

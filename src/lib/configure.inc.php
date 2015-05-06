@@ -70,15 +70,9 @@ $prompts = array(
     'secure' => false
   ),
 
-  'DETAILS_STUB' => array(
-    'prompt' => 'Site-relative path stub for GeoJSON detail content',
-    'default' => '/fdsnws/event/1/query?format=geojson&includesuperseded=true&eventid=%s',
-    'secure' => false
-  ),
-
   'SEARCH_STUB' => array(
-    'prompt' => 'Site-relative path stub for GeoJSON nearby events summary',
-    'default' => '/fdsnws/event/1/query?format=geojson&orderby=time-asc',
+    'prompt' => 'Site-relative path stub for GeoJSON content',
+    'default' => '/fdsnws/event/1/query?format=geojson',
     'secure' => false
   ),
 

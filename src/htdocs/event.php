@@ -16,9 +16,10 @@ if (!isset($TEMPLATE)) {
     $OFFSITE_HOST = 'http://' . $_SERVER['HTTP_HOST'];
   }
 
-  $STUB = $OFFSITE_HOST . $CONFIG['DETAILS_STUB'];
+  $SEARCH_URL = $OFFSITE_HOST . $CONFIG['SEARCH_STUB'] .
+      '&includesuperseded=true&eventid=' . $eventid;
 
-  $ch = curl_init(sprintf($STUB, $eventid));
+  $ch = curl_init($SEARCH_URL);
   curl_setopt_array($ch, array(
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_RETURNTRANSFER => true));
@@ -66,7 +67,7 @@ if (!isset($TEMPLATE)) {
     'KML_STUB' => isset($CONFIG['KML_STUB']) ? $CONFIG['KML_STUB'] : null,
     'DYFI_RESPONSE_URL' => $CONFIG['DYFI_RESPONSE_URL'],
     'OFFSITE_HOST' => $CONFIG['OFFSITE_HOST'],
-    'SEARCH_STUB' => $CONFIG['SEARCH_STUB']
+    'SEARCH_STUB' => $SEARCH_STUB
   );
 
   $HEAD = '<link rel="stylesheet" href="css/event.css"/>';

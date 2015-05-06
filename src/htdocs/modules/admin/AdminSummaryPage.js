@@ -13,9 +13,7 @@ var AdminSummaryPage = function (options) {
   options = Util.extend({}, options || {});
 
   this._actions = null;
-
-  this._searchUrl = 'http://' + options.eventConfig.OFFSITE_HOST +
-      options.eventConfig.SEARCH_STUB;
+  this._eventConfig = options.eventConfig;
 
   EventModulePage.call(this, options);
 };
@@ -46,7 +44,7 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
   this._eventsNearby = EventsNearbyView({
     el: content.querySelector('.events-nearby'),
     eventDetails: this._event,
-    searchUrl: this._searchUrl
+    eventConfig: this._eventConfig
   });
 
 };
