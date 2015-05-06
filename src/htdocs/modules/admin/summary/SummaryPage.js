@@ -5,6 +5,8 @@ var TextProductView = require('admin/TextProductView'),
     SummaryPage = require('summary/SummaryPage'),
 
     CatalogEvent = require('CatalogEvent'),
+    EditLinkView = require('admin/EditLinkView'),
+    LinkSummaryDetailsView = require('admin/LinkSummaryDetailsView'),
     ProductActionsView = require('admin/ProductActionsView'),
     TextSummaryDetailsView = require('admin/TextSummaryDetailsView'),
     TextProductView = require('admin/TextProductView');
@@ -23,7 +25,7 @@ var __type_to_display = function (type) {
 
 
 var AdminSummaryPage = function (options) {
-  this._textProductButtons = [];
+  this._productButtons = [];
   this._actionViews = [];
 
   SummaryPage.call(this, options);
@@ -55,7 +57,7 @@ AdminSummaryPage.prototype._getTexts = function (type) {
   button = el.querySelector('button');
   button._clickHandler = this._getAddTextClick();
   button.addEventListener('click', button._clickHandler);
-  this._textProductButtons.push(button);
+  this._productButtons.push(button);
 
   fragment = document.createDocumentFragment();
   fragment.appendChild(el);
@@ -101,6 +103,105 @@ AdminSummaryPage.prototype._getText = function (product) {
 
 
 /**
+ * Get For More Information links.
+ *
+ * @return {DocumentFragment}
+ *         Fragment with links, or empty if no information present.
+ */
+AdminSummaryPage.prototype._getLinks = function () {
+  var button,
+      el,
+      links,
+      list;
+
+  el = document.createElement('div');
+  el.classList.add('general-link');
+  el.innerHTML = '<h3>For More Information</h3>' +
+      '<ul></ul>';
+  list = el.querySelector('ul');
+
+  // add "add" list item
+  button = document.createElement('li');
+  button.innerHTML = '<div class="alert info">' +
+      '<button class="add-product-button">' +
+        'Add General Link (general-link) product' +
+      '</button>' +
+      '</div>';
+  list.appendChild(button);
+
+  // add click handler
+  button = button.querySelector('button');
+  button._clickHandler = this._getAddLinkClick();
+  button.addEventListener('click', button._clickHandler);
+  this._productButtons.push(button);
+
+  // add link products
+  links = this._event.properties.products['general-link'];
+  if (links) {
+    links = CatalogEvent.getWithoutSuperseded(links);
+    links.forEach(function (product) {
+      var el = document.createElement('li');
+      el.appendChild(this._getLink(product));
+      list.appendChild(el);
+    }, this);
+  }
+
+  return el;
+};
+
+
+/**
+ * Create an anchor element from a link product.
+ *
+ * @param product {Object}
+ *        The link product.
+ * @return {DocumentFragment}
+ *         fragment element.
+ */
+AdminSummaryPage.prototype._getLink = function (product) {
+  var actionsView,
+      el;
+
+  el = document.createElement('div');
+  el.classList.add('edit-link');
+
+  actionsView = ProductActionsView({
+    editView: EditLinkView,
+    event: this._event,
+    page: LinkSummaryDetailsView(),
+    products: [product]
+  });
+  this._actionViews.push(actionsView);
+
+  el.appendChild(actionsView.el);
+  el.appendChild(
+    SummaryPage.prototype._getLink.call(this, product)
+  );
+
+  return el;
+};
+
+
+/**
+* Calls EditLinkView Modal
+*/
+AdminSummaryPage.prototype._getAddLinkClick = function () {
+  var id = this._event.id,
+      props = this._event.properties;
+
+  return function () {
+    EditLinkView({
+      type: 'general-link',
+      source: 'admin',
+      code: 'eventadmin-' + id + '-' + new Date().getTime(),
+      eventSource: props.net,
+      eventSourceCode: props.code
+    }).show();
+  };
+};
+
+
+/**
  * Override parent method to additionally clean up resources/references added
  * by this subclass.
  *
@@ -109,11 +210,11 @@ AdminSummaryPage.prototype._getText = function (product) {
 AdminSummaryPage.prototype.destroy = function () {
   SummaryPage.prototype.destroy.apply(this);
 
-  this._textProductButtons.forEach(function (button) {
+  this._productButtons.forEach(function (button) {
     button.removeEventListener('click', button._clickHandler);
     button._clickHandler = null;
   }, this);
-  this._textProductButtons = null;
+  this._productButtons = null;
 
   this._actionViews.forEach(function (view) {
     view.destroy();
