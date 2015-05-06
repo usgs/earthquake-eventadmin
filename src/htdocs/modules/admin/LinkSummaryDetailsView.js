@@ -22,7 +22,10 @@ var LinkSummaryDetailsView = function (/*options*/) {
   _formatLink = function (product) {
     var props = product.properties;
 
-    return props.text + '<br/>' + props.url;
+    return '<dl class="vertical">' +
+        '<dt>Text</dt><dd>' + props.text + '</dd>' +
+        '<dt>URL</dt><dd>' + props.url + '</dd>' +
+        '</dl>';
   };
 
   /**
