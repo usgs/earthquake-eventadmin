@@ -37,6 +37,7 @@ var EditLinkView = function (options) {
     var title;
 
     _product = options.product;
+    title = 'Edit Link';
 
     if (!_product) {
       if (!options.type || !options.source || !options.code ||
@@ -54,6 +55,8 @@ var EditLinkView = function (options) {
           eventsourcecode: options.eventSourceCode
         }
       });
+
+      title = 'Add Link';
     }
 
     _sendProductView = SendProductView({
