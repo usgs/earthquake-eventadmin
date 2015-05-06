@@ -47,6 +47,17 @@ var ProductDetailsView = function (options) {
   _this.render = function () {
     var el = _page.getDetailsContent(_product);
 
+    _section.innerHTML = '<dl class="vertical">' +
+        '<dt>Source</dt><dd>' + _product.source + '</dd>' +
+        '<dt>Type</dt><dd>' + _product.type + '</dd>' +
+        '<dt>Code</dt><dd>' + _product.code + '</dd>' +
+        '<dt>Update Time</dt><dd>' +
+            new Date(_product.updateTime).toISOString()
+                .replace('T', ' ')
+                .replace(/\.[\d]+Z/, ' UTC') +
+        '</dd>' +
+        '</dl>';
+
     // call getSummaryContent and append the content to the modal dialog
     _section.appendChild(_actionsView.el);
     _section.appendChild(el);

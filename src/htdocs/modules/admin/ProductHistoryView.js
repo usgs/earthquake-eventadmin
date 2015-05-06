@@ -54,7 +54,7 @@ var ProductHistoryView = function (options) {
 
     _dialog = ModalView(_section, {
       title: 'Product History',
-      closable: true
+      closable: true,
     });
     _dialog.show();
 
@@ -64,11 +64,22 @@ var ProductHistoryView = function (options) {
   _this.render = function () {
     var actionView,
         el,
+        metaEl,
         product,
-        summary;
+        summary,
+        updateTime;
+
+    product = _products[0];
+    _section.innerHTML = '<dl class="vertical">' +
+        '<dt>Source</dt><dd>' + product.source + '</dd>' +
+        '<dt>Type</dt><dd>' + product.type + '</dd>' +
+        '<dt>Code</dt><dd>' + product.code + '</dd>' +
+        '</dl>';
 
     for (var i = 0; i < _products.length; i++) {
       product = _products[i];
+      updateTime = new Date(product.updateTime);
+
       // get tensor information for MT and FM
       if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
         product = Tensor.fromProduct(product);
@@ -76,6 +87,13 @@ var ProductHistoryView = function (options) {
 
       el = document.createElement('div');
       el.classList.add('alert');
+
+      metaEl = document.createElement('div');
+      metaEl.classList.add('metadata');
+      metaEl.innerHTML = updateTime.toISOString()
+          .replace('T', ' ')
+          .replace(/\.[\d]+Z/, ' UTC');
+      el.appendChild(metaEl);
 
       actionView = _actionsView.newActionsView({
         product: product,
@@ -94,7 +112,7 @@ var ProductHistoryView = function (options) {
       actionView._summaryEl = el;
       summary.addEventListener('click', actionView.onViewDetails);
       el.appendChild(summary);
-      
+
       _section.appendChild(el);
     }
   };
