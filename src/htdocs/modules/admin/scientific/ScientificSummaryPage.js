@@ -1,6 +1,7 @@
 'use strict';
 
 var ScientificSummaryPage = require('scientific/ScientificSummaryPage'),
+    CatalogEvent = require('CatalogEvent'),
     EditLinkView = require('admin/EditLinkView'),
     LinkSummaryDetailsView = require('admin/LinkSummaryDetailsView'),
     ProductActionsView = require('admin/ProductActionsView');
@@ -32,34 +33,42 @@ AdminScientificSummaryPage.prototype = Object.create(ScientificSummaryPage.proto
 AdminScientificSummaryPage.prototype.getLinks = function () {
   var button,
       el,
-      fragment,
+      links,
       list;
 
-  fragment = ScientificSummaryPage.prototype.getLinks.call(this);
-  list = fragment.querySelector('ul');
-  if (list === null) {
-    list = document.createElement('div');
-    list.classList.add('scitech-links');
-    list.innerHTML = '<h3>Scientific and Technical Links</h3>' +
-        '<ul></ul>';
-    fragment.appendChild(list);
-    list = list.querySelector('ul');
-  }
+  el = document.createElement('div');
+  el.classList.add('scitech-links');
+  el.innerHTML = '<h3>Scientific and Technical Links</h3>' +
+      '<ul></ul>';
+  list = el.querySelector('ul');
 
-  el = document.createElement('li');
-  el.innerHTML = '<div class="alert info">' +
-      '<button class="create-link-button">' +
+  // add "add" list item
+  button = document.createElement('li');
+  button.innerHTML = '<div class="alert info">' +
+      '<button class="add-product-button">' +
         'Add Scitech Link (scitech-link) product' +
       '</button>' +
       '</div>';
-  list.insertBefore(el, list.firstChild);
+  list.appendChild(button);
 
-  button = el.querySelector('.create-link-button');
+  // add click handler
+  button = button.querySelector('button');
   button._clickHandler = this._getAddClick();
   button.addEventListener('click', button._clickHandler);
   this._productButtons.push(button);
 
-  return fragment;
+  // add link products
+  links = this._event.properties.products['scitech-link'];
+  if (links) {
+    links = CatalogEvent.getWithoutSuperseded(links);
+    links.forEach(function (product) {
+      var el = document.createElement('li');
+      el.appendChild(this.getLink(product));
+      list.appendChild(el);
+    }, this);
+  }
+
+  return el;
 };
 
 
