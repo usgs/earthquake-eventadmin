@@ -66,7 +66,18 @@ var copy = {
       '!**/*.orig'
     ],
     filter: 'isFile'
+  },
+
+  invalidator: {
+    expand: true,
+    cwd: 'node_modules/hazdev-cache-invalidator/src',
+    dest: config.build + '/' + config.src,
+    src: [
+      'lib/classes/CacheInvalidator.php',
+      'htdocs/invalidate_url.php'
+    ]
   }
+
 };
 
 module.exports = copy;
