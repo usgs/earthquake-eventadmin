@@ -16,8 +16,8 @@ if (!isset($TEMPLATE)) {
     $OFFSITE_HOST = 'http://' . $_SERVER['HTTP_HOST'];
   }
 
-  $SEARCH_URL = $OFFSITE_HOST . $CONFIG['SEARCH_STUB'] .
-      '&includesuperseded=true&eventid=' . $eventid;
+  $SEARCH_STUB = $OFFSITE_HOST . $CONFIG['SEARCH_STUB'];
+  $SEARCH_URL = $SEARCH_STUB . '&includesuperseded=true&eventid=' . $eventid;
 
   $ch = curl_init($SEARCH_URL);
   curl_setopt_array($ch, array(
