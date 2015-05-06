@@ -7,6 +7,8 @@ var ContentsManagerView = require('ContentsManagerView'),
 
     SendProductView = require('admin/SendProductView'),
 
+    EventModulePage = require('base/EventModulePage'),
+
     Collection = require('mvc/Collection'),
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
@@ -121,11 +123,11 @@ var TextProductView = function (options) {
             'class="textproduct-text"></textarea>',
         '<div class="textproduct-preview hidden"></div>',
         '<h3>Attach Files</h3>',
-        '<p>',
+        '<p class="text-product-view-attach-help">',
           'Typically attached files are resources which you might reference ',
-          'in the text product (above). You can reference these resources as ',
-          'links (&lt;a&gt; tags) or images (&lt;img&gt; tags) etc&hellip; ',
-          'You can use the file name as the &ldquo;href&rdquo; or ',
+          'in the text product (above). You can reference these resources ',
+          'with links (&lt;a&gt; tags) or images (&lt;img&gt; tags) ',
+          'etc&hellip; You can use the file name as the &ldquo;href&rdquo; or ',
           '&ldquo;src&rdquo; attributes respectively. Use the ',
           '&ldquo;preview&rdquo; feature to verify proper usage.',
         '</p>',
@@ -206,11 +208,12 @@ var TextProductView = function (options) {
   _onToggleClick = function () {
     if (_toggleButton.innerHTML === 'Preview') {
       _toggleButton.innerHTML = 'Edit';
+      _previewEl.innerHTML = EventModulePage.prototype._replaceRelativePaths(
+          _textEl.value, _product.toJSON().contents);
     } else {
       _toggleButton.innerHTML = 'Preview';
     }
 
-    _previewEl.innerHTML = _textEl.value;
 
     _textEl.classList.toggle('hidden');
     _previewEl.classList.toggle('hidden');

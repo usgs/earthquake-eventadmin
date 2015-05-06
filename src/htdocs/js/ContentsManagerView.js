@@ -3,7 +3,7 @@
 
 var FileUploadView = require('FileUploadView'),
     ProductContent = require('ProductContent'),
-    ProductContentView = require('mvc/View'), // Replace with actual ProductContentView once merged
+    ProductContentView = require('ProductContentView'),
 
     Collection = require('mvc/Collection'),
     CollectionView = require('mvc/CollectionView'),
@@ -49,7 +49,7 @@ var ContentsManagerView = function (params) {
         ids;
 
     id = content.get('id');
-    ids = _collection.ids(true);
+    ids = _collection.getIds(true);
 
     if (ids.hasOwnProperty(id)) {
       Message({
@@ -70,7 +70,7 @@ var ContentsManagerView = function (params) {
    * @see ContentsManagerView#_createViewSkeleton
    */
   _createSubViews = function () {
-    _errorsEl = _this.el.querySelector('contents-manager-view-errors');
+    _errorsEl = _this.el.querySelector('.contents-manager-view-errors');
 
     _fileUploadView = FileUploadView({
       el: _this.el.querySelector('.contents-manager-view-upload-view'),
@@ -89,9 +89,9 @@ var ContentsManagerView = function (params) {
 
   _createViewSkeleton = function () {
     _this.el.innerHTML = [
+      '<div class="contents-manager-view-contents-view"></div>',
       '<div class="contents-manager-view-errors"></div>',
-      '<div class="contents-manager-view-upload-view"></div>',
-      '<div class="contents-manager-view-contents-view"></div>'
+      '<div class="contents-manager-view-upload-view"></div>'
     ].join('');
   };
 

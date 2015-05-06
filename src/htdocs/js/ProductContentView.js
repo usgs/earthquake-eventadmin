@@ -70,7 +70,7 @@ var ProductContentView = function (options) {
   };
 
 
-  _this.destroy = Util.compose(_this.destroy, function () {
+  _this.destroy = Util.compose(function () {
     _this.model.off('change:id', _updateId);
     _this.el.removeEventListener('click', _onClick);
 
@@ -86,19 +86,26 @@ var ProductContentView = function (options) {
 
     _initialize = null;
     _this = null;
-  });
+  }, _this.destroy);
 
   _this.render = function () {
-    var date = _this.model.get('lastModified');
+    var date,
+        title;
 
+    date = _this.model.get('lastModified');
     if (date || date === 0) {
       date = _formatter.date(new Date(date));
     } else {
       date = '&ndash;';
     }
 
+    title = _this.model.get('id');
+    if (title === '') {
+      title = '<em>&lt;inline&gt;</em>';
+    }
+
     _this.el.innerHTML = [
-      '<span class="title">', _this.model.get('id'), '</span>',
+      '<span class="title">', title, '</span>',
       '<span class="subtitle">',
         '<span class="date">', date, '</span>',
         ' <span class="size">',
