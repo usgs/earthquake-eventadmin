@@ -4,6 +4,7 @@
 var TextProductView = require('admin/TextProductView'),
     SummaryPage = require('summary/SummaryPage'),
 
+    CatalogEvent = require('CatalogEvent'),
     Product = require('Product'),
     ProductActionsView = require('admin/ProductActionsView'),
     TextSummaryDetailsView = require('admin/TextSummaryDetailsView'),
@@ -42,27 +43,30 @@ AdminSummaryPage.prototype._getTexts = function (type) {
   var button,
       buttonTitle,
       el,
-      fragment;
+      fragment,
+      texts;
 
-  fragment = SummaryPage.prototype._getTexts.call(this, type);
-
-  // Create a button to add another
   buttonTitle = __type_to_display(type);
-  button = document.createElement('button');
-  button.classList.add('add-product-button');
-  button.setAttribute('product-type', type);
-  button.innerHTML = 'Add ' + buttonTitle + ' (' + type + ') ' + ' Product';
-
+  el = document.createElement('div');
+  el.innerHTML = '<p class="alert info">' +
+      '<button class="add-product-button" product-type="' + type + '">' +
+        'Add ' + buttonTitle + ' (' + type + ') product' +
+      '</button>' +
+      '</p>';
+  button = el.querySelector('button');
   button._clickHandler = this._getAddTextClick();
   button.addEventListener('click', button._clickHandler);
   this._textProductButtons.push(button);
 
-  el = document.createElement('p');
-  el.classList.add('alert');
-  el.classList.add('info');
-  el.appendChild(button);
-  fragment.insertBefore(el, fragment.firstChild);
-
+  fragment = document.createDocumentFragment();
+  fragment.appendChild(el);
+  texts = this._event.properties.products[type];
+  if (texts) {
+    texts = CatalogEvent.getWithoutSuperseded(texts);
+    texts.forEach(function (product) {
+      fragment.appendChild(this._getText(product));
+    }, this);
+  }
   return fragment;
 };
 
@@ -78,7 +82,6 @@ AdminSummaryPage.prototype._getText = function (product) {
       el;
 
   el = document.createElement('div');
-  el.classList.add('alert');
   el.classList.add('edit-text');
 
   // add buttons
