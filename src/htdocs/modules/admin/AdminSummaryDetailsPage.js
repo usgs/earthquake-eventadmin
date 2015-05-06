@@ -64,6 +64,10 @@ SummaryDetailsPage.prototype.getSummaryContent = function (products) {
     if (i === 0 && this._options.markPreferred) {
       summary.classList.add('preferred');
     }
+
+    if (product.status.toUpperCase() === 'DELETE') {
+      summary.classList.add('deleted');
+    }
   }
   return fragment;
 };
