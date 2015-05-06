@@ -32,6 +32,7 @@ var EventsAssociatedView = function (options) {
   _initialize = function () {
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
+    _sendProductView = null;
 
     _el.innerHTML = '<h3>Associated Events</h3>' +
         '<div class="associated-events"></div>';

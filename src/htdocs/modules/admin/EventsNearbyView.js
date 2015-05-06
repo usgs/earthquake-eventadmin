@@ -41,6 +41,7 @@ var EventsNearbyView = function (options) {
     _event = CatalogEvent(options.eventDetails);
     _searchStub = options.eventConfig.SEARCH_STUB || options.SEARCH_STUB;
     _eventConfig = options.eventConfig;
+    _associateEventView = null;
 
     section.classname = 'nearby-event-view';
     section.innerHTML = '<h3>Events Within 15 Minutes</h3>' +
