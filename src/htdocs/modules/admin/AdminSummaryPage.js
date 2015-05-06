@@ -1,10 +1,12 @@
 'use strict';
 
-var EventsAssociatedView = require('admin/EventsAssociatedView'),
+var CatalogEvent = require('CatalogEvent'),
+    EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
-    EventModulePage = require('base/EventModulePage'),
+    EventModulePage = require('admin/AdminEventModulePage'),
     InvalidatorView = require('invalidator/InvalidatorView'),
     ModalView = require('mvc/ModalView'),
+    ProductFactory = require('admin/ProductFactory'),
     Util = require('util/Util');
 
 
@@ -14,6 +16,7 @@ var AdminSummaryPage = function (options) {
 
   this._buttons = [];
   this._eventConfig = options.eventConfig;
+  this._productFactory = options.productFactory || ProductFactory();
 
   EventModulePage.call(this, options);
 };
@@ -26,8 +29,9 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
 
   content.innerHTML =
       '<div class="actions">' +
-        '<button class="invalidate">Invalidate Cache</button>' +
         '<button class="viewevent">View Event Page</button>' +
+        '<button class="invalidate">Invalidate Cache</button>' +
+        '<button class="deleteevent">Delete Event</button>' +
       '</div>' +
       '<div class="events-associated"></div>' +
       '<div class="events-nearby"></div>';
@@ -42,6 +46,11 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
   button.addEventListener('click', button._clickHandler);
   this._buttons.push(button);
 
+  button = content.querySelector('.deleteevent');
+  button._clickHandler = this._onDeleteEventClick.bind(this);
+  button.addEventListener('click', button._clickHandler);
+  this._buttons.push(button);
+
   this._eventsAssociated = EventsAssociatedView({
     el: content.querySelector('.events-associated'),
     eventDetails: this._event
@@ -53,6 +62,27 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
     eventConfig: this._eventConfig
   });
 
+};
+
+/**
+ * Delete Event button click handler.
+ */
+AdminSummaryPage.prototype._onDeleteEventClick = function () {
+  var products;
+
+  if (!this._event.properties.products.origin) {
+    return;
+  }
+
+  // origin products, TODO: other products too?
+  products = CatalogEvent.getWithoutDeleted(
+      CatalogEvent.getWithoutSuperseded(
+        this._event.properties.products.origin));
+  // create delete products
+  products = products.map(this._productFactory.getDelete);
+  // send products
+  this._sendProduct(products, 'Delete Event',
+      '<h4>The following products will be deleted</h4>');
 };
 
 /**

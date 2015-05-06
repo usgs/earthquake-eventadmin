@@ -69,14 +69,14 @@ var EventsAssociatedView = function (options) {
       collection: Collection(events),
       buttons: [
         {
-          title: 'Delete',
-          className: 'delete',
-          callback: _deleteCallback
-        },
-        {
           title: 'Disassociate',
           className: 'disassociate',
           callback: _disassociateCallback
+        },
+        {
+          title: 'Delete',
+          className: 'delete',
+          callback: _deleteCallback
         }
       ]
     });
@@ -96,9 +96,8 @@ var EventsAssociatedView = function (options) {
     subEvent = _subEvents[eventSummary.id];
     products = CatalogEvent.productMapToList(subEvent.getProducts());
     // ignore superseded
-    products = CatalogEvent.getWithoutSuperseded(products);
-    // ignore deleted
-    products = CatalogEvent.getWithoutDeleted(products);
+    products = CatalogEvent.getWithoutDeleted(
+        CatalogEvent.getWithoutSuperseded(products));
     // create delete products
     products = products.map(_productFactory.getDelete);
     // send products
