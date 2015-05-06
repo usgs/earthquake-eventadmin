@@ -1,12 +1,13 @@
 'use strict';
 
-var EventComparisonView = require('admin/EventComparisonView'),
+var EventModulePage = require('admin/AdminEventModulePage'),
+    EventComparisonView = require('admin/EventComparisonView'),
     CatalogEvent = require('CatalogEvent'),
     Collection = require('mvc/Collection'),
     Util = require('util/Util'),
     View = require('mvc/View'),
     Product = require('Product'),
-    SendProductView = require('admin/SendProductView');
+    ProductFactory = require('./ProductFactory');
 
 
 var EventsAssociatedView = function (options) {
@@ -18,12 +19,15 @@ var EventsAssociatedView = function (options) {
       _associatedEventsEl,
       _el,
       _event,
+      _productFactory,
       _sendProductView,
       _subEvents,
 
       // methods
+      _deleteCallback,
       _disassociateCallback,
-      _createView;
+      _createView,
+      _sendProduct;
 
   options = Util.extend({}, options);
   _this = View(options);
@@ -33,6 +37,8 @@ var EventsAssociatedView = function (options) {
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
     _sendProductView = null;
+
+    _productFactory = options.productFactory || ProductFactory();
 
     _el.innerHTML = '<h3>Associated Events</h3>' +
         '<div class="associated-events"></div>';
@@ -63,6 +69,11 @@ var EventsAssociatedView = function (options) {
       collection: Collection(events),
       buttons: [
         {
+          title: 'Delete',
+          className: 'delete',
+          callback: _deleteCallback
+        },
+        {
           title: 'Disassociate',
           className: 'disassociate',
           callback: _disassociateCallback
@@ -72,15 +83,40 @@ var EventsAssociatedView = function (options) {
   };
 
   /**
+   * Deletes all subevent products.
+   *
+   * @param  {Object} eventSummary,
+   *         summary of the event to be deleted.
+   */
+  _deleteCallback = function (eventSummary) {
+    var products,
+        subEvent;
+
+    // get all products in sub event
+    subEvent = _subEvents[eventSummary.id];
+    products = CatalogEvent.productMapToList(subEvent.getProducts());
+    // ignore superseded
+    products = CatalogEvent.getWithoutSuperseded(products);
+    // ignore deleted
+    products = CatalogEvent.getWithoutDeleted(products);
+    // create delete products
+    products = products.map(_productFactory.getDelete);
+    // send products
+    _sendProduct(products, 'Delete Event ' + eventSummary.id,
+        '<h4>These products will be deleted</h4>');
+  };
+
+  /**
    * Disassociates a subevent from the event.
    *
-   * @param  {object} eventSummary,
-   *         summary of the event to be removed
+   * @param  {Object} eventSummary,
+   *         summary of the event to be disassociated.
    */
   _disassociateCallback = function (eventSummary) {
-    var referenceEvent = _event.getSummary(),
-        product,
-        productSent;
+    var product,
+        products,
+        referenceEvent = _event.getSummary(),
+        subEvent;
 
     // create disassociate product
     product = Product({
@@ -95,43 +131,23 @@ var EventsAssociatedView = function (options) {
       }
     });
 
-    // send product
-    _sendProductView = SendProductView({
-      product: product,
-      formatProduct: function (product) {
-        // show products that will be disassociated
-        var subEvent,
-            products;
+    subEvent = _subEvents[eventSummary.id];
+    products = CatalogEvent.productMapToList(subEvent.getProducts());
 
-        subEvent = _subEvents[eventSummary.id];
-        products = CatalogEvent.productMapToList(subEvent.getProducts());
-        return _sendProductView.formatProduct(product) +
-            '<h4>These products will be disassociated</h4>' +
-            '<ul>' +
-            products.map(function (p) {
-              return '<li>' + p.id + '</li>';
-            }).join('') +
-            '</ul>';
-      }
-    });
-    _sendProductView.on('success', function () {
-      // track that product was sent
-      productSent = true;
-    });
-    _sendProductView.on('cancel', function () {
-      if (productSent) {
-        // product was sent, which will modify the event
-        // reload page to see update
-        window.location.reload();
-      } else {
-        // product not sent, cleanup
-        product = null;
-        _sendProductView.destroy();
-        _sendProductView = null;
-      }
-    });
-    _sendProductView.show();
+    // send product
+    _sendProduct([product], 'Disassociate Event ' + eventSummary.id,
+        '<h4>These products will be disassociated</h4>' +
+        '<ul>' +
+          products.map(function (p) {
+            return '<li>' + p.id + '</li>';
+          }).join('') +
+        '</ul>');
   };
+
+  /**
+   * Reference to EventModulePage sendProduct.
+   */
+  _sendProduct = EventModulePage.prototype._sendProduct;
 
   /**
    * Clean up private variables, methods, and remove event listeners.
