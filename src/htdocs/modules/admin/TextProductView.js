@@ -1,11 +1,13 @@
 'use strict';
 
 
-var Product = require('Product'),
+var ContentsManagerView = require('ContentsManagerView'),
+    Product = require('Product'),
     ProductContent = require('ProductContent'),
 
     SendProductView = require('admin/SendProductView'),
 
+    Collection = require('mvc/Collection'),
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
 
@@ -25,6 +27,7 @@ var TextProductView = function (options) {
   var _this,
       _initialize,
 
+      _contentsManagerView,
       _dialog,
       _previewEl,
       _product,
@@ -69,9 +72,9 @@ var TextProductView = function (options) {
           eventsourcecode: options.eventSourceCode,
           'review-status': 'Reviewed',
         },
-        contents: [
-          ProductContent({path: '', bytes: ''})
-        ]
+        contents: Collection([
+          ProductContent({id: '', bytes: ''})
+        ])
       });
     }
 
@@ -117,12 +120,27 @@ var TextProductView = function (options) {
         '<textarea id="textproduct-text" ',
             'class="textproduct-text"></textarea>',
         '<div class="textproduct-preview hidden"></div>',
+        '<h3>Attach Files</h3>',
+        '<p>',
+          'Typically attached files are resources which you might reference ',
+          'in the text product (above). You can reference these resources as ',
+          'links (&lt;a&gt; tags) or images (&lt;img&gt; tags) etc&hellip; ',
+          'You can use the file name as the &ldquo;href&rdquo; or ',
+          '&ldquo;src&rdquo; attributes respectively. Use the ',
+          '&ldquo;preview&rdquo; feature to verify proper usage.',
+        '</p>',
+        '<div class="contents-manager-view"></div>',
       '</div>'
     ].join('');
 
     _textEl = _this.el.querySelector('.textproduct-text');
     _previewEl = _this.el.querySelector('.textproduct-preview');
     _toggleButton = _this.el.querySelector('.textproduct-toggle');
+
+    _contentsManagerView = ContentsManagerView({
+      el: _this.el.querySelector('.contents-manager-view'),
+      model: _product
+    });
   };
 
   /**
@@ -167,7 +185,6 @@ var TextProductView = function (options) {
     _sendProductView.show();
   };
 
-
   /**
    * Called after user attempts to send product and acknowledges the success
    * and/or error message from the sender view. In this case, we're done, so
@@ -206,7 +223,7 @@ var TextProductView = function (options) {
    *
    */
   _this.destroy = Util.compose(function () {
-
+    _contentsManagerView.destroy();
     _toggleButton.removeEventListener('click', _onToggleClick);
 
     _sendProductView.off('done', _onSendProductDone);
@@ -215,6 +232,7 @@ var TextProductView = function (options) {
     _dialog.hide();
     _dialog.destroy();
 
+    _contentsManagerView = null;
     _dialog = null;
     _previewEl = null;
     _product = null;
