@@ -1,19 +1,20 @@
 
 .edit-text {
   margin-top: 1em;
+  padding: 1em;
+  border: 1px solid #ddd;
 
   > .product-action-view {
-    margin-top: 0;
-  }
-
-  > section {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 1em;
+    margin: 0;
   }
 }
 
 .add-product-button {
-  color: #090;
-  display: block;
+  border-left: 5px solid #3c3;
+
+  @media screen and (max-width: 767px) {
+    font-size: .8125em;
+    line-height: 3rem;
+    height: 3rem;
+  }
 }

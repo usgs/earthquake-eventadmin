@@ -2,18 +2,17 @@
 .product-history {
 
   > .alert {
-    margin-bottom: 1em;
+    background-color: #fff;
+    margin: 1em 0;
+
+    > .metadata {
+      color: #666;
+      float: right;
+      font-size: .9em;
+    }
 
     > .product-action-view {
       margin: 0;
-    }
-
-    > .summary {
-      background-color: #fff;
-
-      &:hover {
-        background-color: inherit;
-      }
     }
   }
 

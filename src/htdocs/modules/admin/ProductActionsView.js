@@ -81,7 +81,6 @@ var ProductActionsView = function (options) {
       _products,
       _productFactory,
       _trumpProduct,
-      _viewDetails,
       _viewHistory,
       // methods
       _addButton,
@@ -101,20 +100,18 @@ var ProductActionsView = function (options) {
     _products = options.products;
     _productFactory = options.productFactory || ProductFactory();
     _trumpProduct = options.trumpProduct;
-    _viewDetails = options.viewDetails;
     _viewHistory = options.viewHistory;
 
     el = _this.el;
     el.classList.add('product-action-view');
-    el.classList.add('button-group');
 
     _buttons = [];
 
-    if (_viewDetails) {
+    if (_editProduct) {
       _addButton({
-        className: 'details',
-        handler: _this.onViewDetails,
-        text: 'View Details'
+        className: 'edit',
+        handler: _this.onEditProduct,
+        text: 'Edit Product'
       });
     }
 
@@ -126,11 +123,11 @@ var ProductActionsView = function (options) {
       });
     }
 
-    if (_editProduct) {
+    if (_trumpProduct) {
       _addButton({
-        className: 'edit',
-        handler: _this.onEditProduct,
-        text: 'Edit Product'
+        className: 'trump',
+        handler: _this.onTrumpProduct,
+        text: 'Trump Product'
       });
     }
 
@@ -139,14 +136,6 @@ var ProductActionsView = function (options) {
         className: 'delete',
         handler: _this.onDeleteProduct,
         text: 'Delete Product'
-      });
-    }
-
-    if (_trumpProduct) {
-      _addButton({
-        className: 'trump',
-        handler: _this.onTrumpProduct,
-        text: 'Trump Product'
       });
     }
   };
