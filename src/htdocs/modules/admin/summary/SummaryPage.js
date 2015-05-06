@@ -5,7 +5,6 @@ var TextProductView = require('admin/TextProductView'),
     SummaryPage = require('summary/SummaryPage'),
 
     CatalogEvent = require('CatalogEvent'),
-    Product = require('Product'),
     ProductActionsView = require('admin/ProductActionsView'),
     TextSummaryDetailsView = require('admin/TextSummaryDetailsView'),
     TextProductView = require('admin/TextProductView');
@@ -142,62 +141,6 @@ AdminSummaryPage.prototype._getAddTextClick = function () {
       eventSourceCode: eventDetails.properties.code,
       modalTitle: button.innerHTML
     }).show();
-  };
-};
-
-/**
- * Create an edit text callback.
- *
- * @param product {Product}
- *        the product to edit.
- * @return {Function}
- *         click event handler to edit a text product.
- */
-AdminSummaryPage.prototype._getEditTextClick = function (product) {
-  return function (e) {
-    var button = e.target;
-
-    TextProductView({
-      modalTitle: button.innerHTML,
-      product: Product(product)
-    }).show();
-  };
-};
-
-/**
- * Create an delete text callback.
- *
- * @param product {Product}
- *        the product to edit.
- * @return {Function}
- *         click event handler to edit a text product.
- */
-AdminSummaryPage.prototype._getDeleteTextClick = function (product) {
-  var _this = this;
-  return function () {
-    var properties,
-        deleteProduct,
-        deleteText,
-        deleteTitle;
-
-    properties = product.properties;
-    deleteProduct = Product({
-      source: product.source,
-      type: product.type,
-      status: Product.STATUS_DELETE,
-      code: product.code,
-      properties: {
-        eventsource: properties.eventsource,
-        eventsourcecode: properties.eventsourcecode
-      }
-    });
-
-    // Set modal title and text
-    deleteText = 'The following DELETE product(s) will be sent. ' +
-        'Click a product below for more details.';
-    deleteTitle = 'Delete Product(s)';
-    // Send delete product
-    _this._sendProduct([deleteProduct], deleteTitle, deleteText);
   };
 };
 
