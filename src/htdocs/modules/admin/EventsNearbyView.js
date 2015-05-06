@@ -94,7 +94,8 @@ var EventsNearbyView = function (options) {
               className: 'associate',
               callback: _associateCallback
             }
-          ]
+          ],
+          eventLink: '?eventid={eventid}'
         });
 
       },
