@@ -104,12 +104,11 @@ var AssociateEventView = function (options) {
 
         // check if there is a matching event source
         if (matchingEventSource !== null) {
-          _associateProductText = 'multiple event ids for same event from ' +
-              'same source';
+          _associateProductText = 'multiple event ids from same source';
           // build an associate product for each id with the matching source
           _associateProducts = _generateAssociateProducts(matchingEventSource, associateEvent);
         } else {
-          _associateProductText = 'outside association window';
+          _associateProductText = 'outside automatic association window';
           // associate using the preferred eventsource and eventsourcecode
           _associateProducts.push(Product({
             source: 'admin',
@@ -126,13 +125,17 @@ var AssociateEventView = function (options) {
         }
 
         // textarea where the user can update the inline text product content
-        _infoEl.innerHTML = '<p>These are the reasons that the events did ' +
-            'not associate:</p>' +
-            '<textarea class="textproduct-text">' + _associateProductText +
-                '</textarea>';
+        _infoEl.classList.add('vertical');
+        _infoEl.innerHTML =
+            '<label for="associate-reason">' +
+              'Associate Reason' +
+            '</label>' +
+            '<textarea id="associate-reason" class="textproduct-text">' +
+              _associateProductText +
+            '</textarea>';
       },
       error: function () {
-        _infoEl.innerHTML = '<p class="alert error">Unable to request the ' +
+        _infoEl.innerHTML = '<p class="alert error">Unable to request ' +
             'detail feed for event: ' + _associateEventId + '</p>';
       }
     });
