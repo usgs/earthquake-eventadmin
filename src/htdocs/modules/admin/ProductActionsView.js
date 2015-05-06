@@ -3,32 +3,12 @@
 var Util = require('util/Util'),
     View = require('mvc/View'),
 
-    EditProductView,
+    EditProductView = require('./EditProductView'),
     EventModulePage = require('./AdminEventModulePage'),
     Product = require('Product'),
     ProductFactory = require('./ProductFactory'),
     ProductDetailsView = require('./ProductDetailsView'),
     ProductHistoryView = require('./ProductHistoryView');
-
-
-var ModalView = require('mvc/ModalView');
-EditProductView = function (options) {
-  var _this,
-      _modal;
-
-  _this = View(options);
-  _this.el.innerHTML = JSON.stringify(options.product);
-
-  _modal = ModalView(_this.el, {
-    closable: true,
-    title: 'Edit Product View'
-  });
-
-  _this.hide = _modal.hide;
-  _this.show = _modal.show;
-
-  return _this;
-};
 
 
 var DEFAULTS = {
