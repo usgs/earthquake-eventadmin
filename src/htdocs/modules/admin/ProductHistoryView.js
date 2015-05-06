@@ -109,6 +109,9 @@ var ProductHistoryView = function (options) {
       if (i !== 0) {
         summary.classList.add('superseded');
       }
+      if (product.status.toUpperCase() === 'DELETE') {
+        summary.classList.add('deleted');
+      }
       actionView._summaryEl = el;
       summary.addEventListener('click', actionView.onViewDetails);
       el.appendChild(summary);
