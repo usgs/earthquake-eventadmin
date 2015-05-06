@@ -1,6 +1,7 @@
 'use strict';
 
-var ProductSender = require('ProductSender'),
+var Product = require('Product'),
+    ProductSender = require('ProductSender'),
 
     Accordion = require('accordion/Accordion'),
 
@@ -23,7 +24,28 @@ var DEFAULTS = {
   modalTitle: 'Products to Send'
 };
 
+var prettySize = function (size) {
+  var suffixes = ['B', 'KB', 'MB', 'GB'],
+      suffixIdx = 0;
+
+  size = parseFloat(size);
+
+  while (size > 1024) {
+    size /= 1024;
+    suffixIdx++;
+  }
+
+  suffixIdx = Math.min(suffixIdx, suffixes.length - 1);
+
+  return size.toFixed(1) + suffixes[suffixIdx];
+};
+
+
 var getProductIdentifier = function (product) {
+  if (!product.get) {
+    product = Product(product);
+  }
+
   return product.get('id') || [
     product.get('source'),
     product.get('type'),
@@ -177,7 +199,7 @@ var SendProductView = function (options) {
     doneButton.classList.remove('hidden');
 
     _products.forEach(function (product) {
-      _sender.sendProduct(product, _sendCallback);
+      _sender.sendProduct(product.toJSON(), _sendCallback);
       _sendCount += 1;
     });
   };
@@ -256,7 +278,10 @@ var SendProductView = function (options) {
    */
   _this.render = function () {
     var accordionContent,
-        format;
+        format,
+        isClosed;
+
+    isClosed = (_products.length > 1) ? ' accordion-closed' : '';
 
     if (typeof _formatProduct === 'function') {
       format = _formatProduct;
@@ -268,7 +293,7 @@ var SendProductView = function (options) {
       return {
         toggleText: getProductIdentifier(product),
         toggleElement: 'h5',
-        classes: 'accordion-standard accordion-closed',
+        classes: 'accordion-standard' + isClosed,
         contentText: format(product)
       };
     });
@@ -276,7 +301,12 @@ var SendProductView = function (options) {
     if (_accordion !== null && _accordion.destroy) {
       _accordion.destroy();
     }
-    _this.el.innerHTML = '<p>' + _modalText + '</p>';
+
+    if (isClosed) {
+      _this.el.innerHTML = '<p>' + _modalText + '</p>';
+    } else {
+      _this.el.innerHTML = '';
+    }
 
     _accordion = Accordion({
       el: _this.el,
@@ -298,10 +328,11 @@ var SendProductView = function (options) {
         props,
         p,
         links,
+        name,
         r,
         l,
         contents,
-        content;
+        type;
 
     buf.push('<dl>');
 
@@ -315,7 +346,7 @@ var SendProductView = function (options) {
         '</dd>');
 
     props = product.get('properties');
-    buf.push('<dt>Properties</dt><dd><dl>');
+    buf.push('<dt>Properties</dt><dd class="horizontal"><dl>');
     for (p in props) {
       buf.push('<dt>' + p + '</dt><dd>' + props[p] + '</dd>');
     }
@@ -333,22 +364,22 @@ var SendProductView = function (options) {
     }
     buf.push('</dl></dd>');
 
-    contents = product.get('contents');
-    buf.push('<dt>Contents</dt><dd><dl>');
-    for (p in contents) {
-      content = contents[p];
-      buf.push('<dt>&ldquo;' + p + '&rdquo;</dt><dd>' +
-          '<dl>' +
-            '<dt>Type</dt><dd>' + content.get('contentType') + '</dd>' +
-            '<dt>Content</dt><dd>' +
-              (content.get('bytes')) ?
-                content.get('bytes') :
-                content.get('url') +
-            '</dd>' +
-          '</dl>' +
-          '</dd>');
-    }
-    buf.push('</dl></dd>');
+    contents = product.get('contents').data();
+    buf.push('<dt>Contents</dt><dd><ul>');
+    contents.forEach(function (content) {
+      p = content.get('id');
+      type = content.get('contentType');
+
+      if (p === '') {
+        name = '<em>inline</em>';
+      } else {
+        name = p;
+      }
+
+      buf.push('<li>' + name + ' (' + prettySize(content.get('length')) +
+          ') ' + type + '</li>');
+    });
+    buf.push('</ul></dd>');
 
     buf.push('</dl>');
     return buf.join('');

@@ -1,0 +1,24 @@
+@import '_ProductContentEditView';
+
+.product-content-view {
+  margin-top: .5em;
+  position: relative;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  > .title {
+
+  }
+
+  > .subtitle {
+    color: #666;
+    display: block;
+    font-size: smaller;
+  }
+
+  > .buttons > .delete {
+    color: #E46554;
+  }
+}

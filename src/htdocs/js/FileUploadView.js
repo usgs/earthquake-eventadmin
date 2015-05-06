@@ -7,7 +7,8 @@ var View = require('mvc/View'),
 
 
 var DEFAULTS = {
-  url: 'file_upload.php'
+  url: 'file_upload.php',
+  hideOnSuccess: false
 };
 
 
@@ -41,6 +42,7 @@ var FileUploadView = function (options) {
       _inputEl,
       _uploadEl,
       _url,
+      _hideOnSuccess,
       // methods
       _onFile,
       _onDragLeave,
@@ -54,7 +56,10 @@ var FileUploadView = function (options) {
     var el = _this.el;
 
     options = Util.extend({}, DEFAULTS, options);
+
     _url = options.url;
+    _hideOnSuccess = options.hideOnSuccess;
+
     options = null;
 
     el.innerHTML =
@@ -92,6 +97,7 @@ var FileUploadView = function (options) {
    */
   _onFile = function (f) {
     var data,
+        statusView,
         xhr;
 
     data = new FormData();
@@ -101,19 +107,22 @@ var FileUploadView = function (options) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', _url);
 
+    statusView = FileUploadStatusView({
+      el: _uploadEl.appendChild(document.createElement('div')),
+      file: f,
+      xhr: xhr
+    });
+
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
+        if (_hideOnSuccess) {
+          statusView.destroy();
+        }
         _this.trigger('upload', JSON.parse(xhr.response));
       } else {
         _this.trigger('uploaderror', xhr);
       }
       xhr = null;
-    });
-
-    FileUploadStatusView({
-      el: _uploadEl.appendChild(document.createElement('div')),
-      file: f,
-      xhr: xhr
     });
 
     xhr.send(data);

@@ -23,6 +23,34 @@ var Formatter = function (options) {
     _round = options.round;
   };
 
+
+  /**
+   * Formats a given date to an ISO8601 format.
+   *
+   * @param value {Date}
+   *      The date object to format
+   * @return {String}
+   *      The formatted date/time
+   */
+  _this.date = function (value) {
+    var d,
+        m,
+        y;
+
+    if (value === null || typeof value === 'undefined') {
+      return _empty;
+    }
+
+    y = value.getUTCFullYear();
+    m = value.getUTCMonth() + 1;
+    d = value.getUTCDate();
+
+    return y + '-' +
+        (m < 10 ? '0' : '') + m + '-' +
+        (d < 10 ? '0' : '') + d + ' ' +
+        _this.time(value);
+  };
+
   /**
    * Format a difference between two values.
    *
@@ -89,6 +117,20 @@ var Formatter = function (options) {
         (m !== null ? m + 'm' : '') +
         (s !== null ? s + 's' : '');
     return formatted;
+  };
+
+  _this.fileSize = function (size) {
+    var i,
+        suffix;
+
+    size = size || 0;
+    suffix = ['B', 'KB', 'MB', 'GB'];
+
+    for (i = 0; i < suffix.length && size > 1024; i++) {
+      size = size / 1024;
+    }
+
+    return _this.round(size) + suffix[i];
   };
 
   /**
