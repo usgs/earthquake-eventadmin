@@ -37,7 +37,6 @@ var ContentsManagerView = function (params) {
       _createSubViews,
       _createViewSkeleton,
       _onFileUpload,
-      _onInlineContentChange,
       _onInlineEditChange,
       _onToggleClick;
 
@@ -45,11 +44,13 @@ var ContentsManagerView = function (params) {
   _this = View(params);
 
   _initialize = function (/*params*/) {
+    var inline;
+
     _id = 'contents-manager-view-' + (_ID_SEQUENCE++);
     _collection = _this.model.get('contents');
 
-    _collection.on('add', _onInlineContentChange);
-    _collection.on('remove', _onInlineContentChange);
+    _collection.on('add', 'render', _this);
+    _collection.on('remove', 'render', _this);
 
     if (!_collection) {
       _collection = Collection([]);
@@ -58,6 +59,11 @@ var ContentsManagerView = function (params) {
 
     _createViewSkeleton();
     _createSubViews();
+
+    inline = _collection.get('');
+    if (inline) {
+      _this.render();
+    }
   };
 
 
@@ -100,10 +106,10 @@ var ContentsManagerView = function (params) {
 
     _inlineEditEl = _this.el.querySelector(
         '.contents-manager-view-inline-content-edit');
-    _inlineEditEl.addEventListener('change', _onInlineEditChange);
+    _inlineEditEl.addEventListener('change', _this.render);
     inline = _collection.get('');
     if (inline) {
-      inline.on('change', _onInlineContentChange);
+      inline.on('change', 'render', _this);
     }
 
     _inlinePreviewEl = _this.el.querySelector(
@@ -199,6 +205,7 @@ var ContentsManagerView = function (params) {
 
       if (!inline) {
         inline = ProductContent(attributes);
+        inline.on('change', 'render', _this);
         _collection.add(inline);
       } else {
         inline.set(attributes);
@@ -206,26 +213,9 @@ var ContentsManagerView = function (params) {
     } else {
       // We do not have contentm remove the '' ProductContent from collection
       if (inline) {
+        inline.off('change', 'render', _this);
         _collection.remove(inline);
       }
-    }
-  };
-
-  _onInlineContentChange = function () {
-    var bytes,
-        inline;
-
-    inline = _collection.get('');
-
-    if (inline) {
-      bytes = inline.get('bytes');
-      _inlineEditEl.value = bytes;
-      _inlinePreviewEl.innerHTML =
-          EventModulePage.prototype._replaceRelativePaths(
-              bytes, _this.model.toJSON().contents);
-    } else {
-      _inlineEditEl.value = '';
-      _inlinePreviewEl.innerHTML = '';
     }
   };
 
@@ -243,12 +233,12 @@ var ContentsManagerView = function (params) {
   _this.destroy = Util.compose(function () {
     var inline;
 
-    _collection.off('add', _onInlineContentChange);
-    _collection.off('remove', _onInlineContentChange);
+    _collection.off('add', 'render', _this);
+    _collection.off('remove', 'render', _this);
 
     inline = _collection.get('');
     if (inline) {
-      inline.off('change', _onInlineContentChange);
+      inline.off('change', 'render', _this);
     }
 
     if (_destroyCollection) {
@@ -260,7 +250,7 @@ var ContentsManagerView = function (params) {
     _fileUploadView.off('upload', _onFileUpload);
     _fileUploadView.destroy();
 
-    _inlineEditEl.removeEventListener('change', _onInlineEditChange);
+    _inlineEditEl.removeEventListener('change', _this.render);
 
     _toggleEl.removeEventListener('click', _onToggleClick);
 
@@ -281,13 +271,31 @@ var ContentsManagerView = function (params) {
     _createSubViews = null;
     _createViewSkeleton = null;
     _onFileUpload = null;
-    _onInlineContentChange = null;
     _onInlineEditChange = null;
     _onToggleClick = null;
 
     _initialize = null;
     _this = null;
   }, _this.destroy);
+
+  _this.render = function () {
+    var bytes,
+        inline;
+
+    inline = _collection.get('');
+
+    if (inline) {
+      bytes = inline.get('bytes');
+      _inlineEditEl.value = bytes;
+      _inlinePreviewEl.innerHTML =
+          EventModulePage.prototype._replaceRelativePaths(
+              bytes, _this.model.toJSON().contents);
+    } else {
+      _inlineEditEl.value = '';
+      _inlinePreviewEl.innerHTML = '';
+    }
+  };
+
 
   _initialize(params);
   params = null;
