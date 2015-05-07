@@ -1,21 +1,15 @@
 'use strict';
 
 var ContentsManagerView = require('ContentsManagerView'),
-    // FileUploadView = require('FileUploadView'),
     Product = require('Product'),
-    ProductContent = require('ProductContent'),
-    // ProductContentView = require('ProductContentView'),
-    ProductContentEditView = require('ProductContentEditView'),
 
     Accordion = require('accordion/Accordion'),
 
     SendProductView = require('admin/SendProductView'),
 
-    // CollectionView = require('mvc/CollectionView'),
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
 
-    Message = require('util/Message'),
     Util = require('util/Util');
 
 
@@ -150,16 +144,11 @@ var EditProductView = function (options) {
 
       _accordion,
       _codeInput,
-      _contentErrorsEl,
       _contentInput,
       _contentsManager,
-      _contentsView,
       _contentTypeInput,
       _dialog,
-      _fileUploadView,
       _linksInput,
-      _newContent,
-      _newContentView,
       _priorityInputs,
       _product,
       _propertiesInput,
@@ -169,7 +158,6 @@ var EditProductView = function (options) {
       _typeInput,
       _uploadView,
 
-      _addContent,
       _createInput,
       _createViewSkeleton,
       _createViewSkeletonBasic,
@@ -179,9 +167,6 @@ var EditProductView = function (options) {
       _createViewSkeletonProperties,
       _onCancel,
       _onCreate,
-      _onFileUpload,
-      _onNewContentClick,
-      _onNewContentViewHide,
       _parsePropertyInput,
       _renderBasic,
       _renderLinks,
@@ -227,26 +212,6 @@ var EditProductView = function (options) {
     });
 
     _this.render();
-  };
-
-
-  _addContent = function (content) {
-    var contents,
-        ids;
-
-    contents = _product.get('contents');
-    ids = contents.getIds(true);
-
-    if (ids.hasOwnProperty(content.get('id'))) {
-      Message({
-        container: _contentErrorsEl,
-        content: 'Can not add content with duplicate path. Offending path ' +
-            'was: &ldquo;' + content.get('id') + '&rdquo;',
-        classes: ['error']
-      });
-    } else {
-     contents.add(content);
-    }
   };
 
   _createInput = function (key, info) {
@@ -374,47 +339,12 @@ var EditProductView = function (options) {
   };
 
   _createViewSkeletonContents = function () {
-    // var existing,
-        // fragment,
-        // header;
-
-    // fragment = document.createDocumentFragment();
-
-    // existing = fragment.appendChild(document.createElement('ul'));
-    // existing.classList.add('editproduct-files-existing');
-
-    // _contentsView = CollectionView({
-    //   collection: _product.get('contents'),
-    //   el: existing,
-    //   factory: ProductContentView
-    // });
-
-    // _contentErrorsEl = fragment.appendChild(document.createElement('div'));
-
-    // header = fragment.appendChild(document.createElement('h4'));
-    // header.innerHTML = 'Add New Content';
-
-    // _fileUploadView = FileUploadView({
-    //   el: fragment.appendChild(document.createElement('div')),
-    //   hideOnSuccess: true
-    // });
-
-    // _fileUploadView.on('upload', _onFileUpload);
-
-    // _newContent = fragment.appendChild(document.createElement('button'));
-    // _newContent.innerHTML = 'Create Inline Content';
-    // _newContent.classList.add('green');
-    // _newContent.classList.add('editproduct-new-content');
-    // _newContent.addEventListener('click', _onNewContentClick);
-
-    var container = document.createElement('div');
-
     _contentsManager = ContentsManagerView({
-      el: container,
+      el: document.createElement('div'),
       model: _product
     });
 
-    return container;
+    return _contentsManager.el;
   };
 
   _createViewSkeletonLinks = function () {
@@ -564,32 +494,6 @@ var EditProductView = function (options) {
     }
   };
 
-  _onFileUpload = function (fileInfo) {
-    _addContent(ProductContent({
-      id: fileInfo.name,
-      url: fileInfo.url,
-      length: fileInfo.length,
-      lastModified: fileInfo.lastModified,
-      contentType: fileInfo.contentType
-    }));
-  };
-
-  _onNewContentClick = function () {
-    _newContentView = ProductContentEditView({
-      model: ProductContent({bytes: ''})
-    });
-    _newContentView.on('hide', _onNewContentViewHide);
-    _newContentView.on('complete', _addContent);
-    _newContentView.show();
-  };
-
-  _onNewContentViewHide = function () {
-    if (_newContentView) {
-      _newContentView.destroy();
-      _newContentView = null;
-    }
-  };
-
   _parsePropertyInput = function () {
     var properties;
 
@@ -707,31 +611,9 @@ var EditProductView = function (options) {
   };
 
   _validateFiles = function () {
-    var contents,
-        errors;
-
-    errors = [];
-    contents = _product.get('contents');
-
-    try {
-      contents.getIds(true);
-    } catch (e) {
-      errors.push(e.getMessage());
-    }
-
-    // contents.data().forEach(function (content) {
-    //   try {
-    //     content.validate();
-    //   } catch (e) {
-    //     errors.push(e.getMessage());
-    //   }
-    // });
-
-    if (errors.length !== 0) {
-      throw errors;
-    }
-
-    return contents;
+    // The ContentsManagerView has already validated as the files were
+    // added/removed.
+    return _product.get('contents');
   };
 
   _validateLinks = function () {
@@ -855,36 +737,19 @@ var EditProductView = function (options) {
       _dialog.destroy();
     }
 
-    if (_fileUploadView) {
-      _fileUploadView.off();
-      _fileUploadView.destroy();
-    }
-
-    if (_newContent) {
-      _newContent.removeEventListener('click', _onNewContentClick);
-    }
-
     if (_sendProductView) {
       _sendProductView.off('done', _this.hide);
       _sendProductView.destroy();
     }
 
 
-    _onNewContentViewHide();
-
-
     _accordion = null;
     _codeInput = null;
-    _contentErrorsEl = null;
     _contentInput = null;
     _contentsManager = null;
-    _contentsView = null;
     _contentTypeInput = null;
     _dialog = null;
-    _fileUploadView = null;
     _linksInput = null;
-    _newContent = null;
-    _newContentView = null;
     _priorityInputs = null;
     _product = null;
     _propertiesInput = null;
@@ -894,7 +759,6 @@ var EditProductView = function (options) {
     _typeInput = null;
     _uploadView = null;
 
-    _addContent = null;
     _createInput = null;
     _createViewSkeleton = null;
     _createViewSkeletonBasic = null;
@@ -904,9 +768,6 @@ var EditProductView = function (options) {
     _createViewSkeletonProperties = null;
     _onCancel = null;
     _onCreate = null;
-    _onFileUpload = null;
-    _onNewContentClick = null;
-    _onNewContentViewHide = null;
     _parsePropertyInput = null;
     _renderBasic = null;
     _renderLinks = null;
