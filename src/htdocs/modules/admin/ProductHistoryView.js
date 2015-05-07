@@ -89,7 +89,7 @@ var ProductHistoryView = function (options) {
       el.appendChild(metaEl);
 
       actionView = _actionsView.newActionsView({
-        product: product,
+        products: [product],
         viewHistory: false,
         deleteProduct: false,
         trumpProduct: false,
