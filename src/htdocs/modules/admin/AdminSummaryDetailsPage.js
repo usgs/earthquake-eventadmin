@@ -8,6 +8,7 @@ var CatalogEvent = require('CatalogEvent'),
 
 SummaryDetailsPage.prototype._setContentMarkup = function () {
   var actionsView,
+      details,
       products = this.getProducts(),
       product;
 
@@ -27,7 +28,11 @@ SummaryDetailsPage.prototype._setContentMarkup = function () {
     });
     this._actionViews.push(actionsView);
     this._content.appendChild(actionsView.el);
-    this._content.appendChild(this.getDetailsContent(products[0]));
+    details = this.getDetailsContent(product);
+    if (product.status.toUpperCase() === 'DELETE') {
+      details.classList.add('deleted');
+    }
+    this._content.appendChild(details);
   } else {
     // there is more than one product display summary
     this._content.appendChild(this.getSummaryContent(products));
