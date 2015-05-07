@@ -3,8 +3,11 @@ table.event-comparison > tbody > tr > td {
 }
 
 td.actions > button {
-  display: block;
   margin: 4px auto;
+
+  & + button {
+    margin-left: 1em;
+  }
 }
 
 small.value-diff {

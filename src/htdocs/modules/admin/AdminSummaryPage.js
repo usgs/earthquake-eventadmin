@@ -1,10 +1,12 @@
 'use strict';
 
-var EventsAssociatedView = require('admin/EventsAssociatedView'),
+var CatalogEvent = require('CatalogEvent'),
+    EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
-    EventModulePage = require('base/EventModulePage'),
+    EventModulePage = require('admin/AdminEventModulePage'),
     InvalidatorView = require('invalidator/InvalidatorView'),
     ModalView = require('mvc/ModalView'),
+    ProductFactory = require('admin/ProductFactory'),
     Util = require('util/Util');
 
 
@@ -12,8 +14,9 @@ var AdminSummaryPage = function (options) {
 
   options = Util.extend({}, options || {});
 
-  this._actions = null;
+  this._buttons = [];
   this._eventConfig = options.eventConfig;
+  this._productFactory = options.productFactory || ProductFactory();
 
   EventModulePage.call(this, options);
 };
@@ -26,7 +29,9 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
 
   content.innerHTML =
       '<div class="actions">' +
+        '<button class="viewevent">View Event Page</button>' +
         '<button class="invalidate">Invalidate Cache</button>' +
+        '<button class="deleteevent">Delete Event</button>' +
       '</div>' +
       '<div class="events-associated"></div>' +
       '<div class="events-nearby"></div>';
@@ -34,7 +39,17 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
   button = content.querySelector('.invalidate');
   button._clickHandler = this._onInvalidateClick.bind(this);
   button.addEventListener('click', button._clickHandler);
-  this._invalidateButton = button;
+  this._buttons.push(button);
+
+  button = content.querySelector('.viewevent');
+  button._clickHandler = this._onViewEventClick.bind(this);
+  button.addEventListener('click', button._clickHandler);
+  this._buttons.push(button);
+
+  button = content.querySelector('.deleteevent');
+  button._clickHandler = this._onDeleteEventClick.bind(this);
+  button.addEventListener('click', button._clickHandler);
+  this._buttons.push(button);
 
   this._eventsAssociated = EventsAssociatedView({
     el: content.querySelector('.events-associated'),
@@ -49,6 +64,30 @@ AdminSummaryPage.prototype._setContentMarkup = function () {
 
 };
 
+/**
+ * Delete Event button click handler.
+ */
+AdminSummaryPage.prototype._onDeleteEventClick = function () {
+  var products;
+
+  if (!this._event.properties.products.origin) {
+    return;
+  }
+
+  // origin products, TODO: other products too?
+  products = CatalogEvent.getWithoutDeleted(
+      CatalogEvent.getWithoutSuperseded(
+        this._event.properties.products.origin));
+  // create delete products
+  products = products.map(this._productFactory.getDelete);
+  // send products
+  this._sendProduct(products, 'Delete Event',
+      '<h4>The following products will be deleted</h4>');
+};
+
+/**
+ * Invalidate Cache button click handler.
+ */
 AdminSummaryPage.prototype._onInvalidateClick = function () {
   var eventid = this._event.id,
       paths,
@@ -75,13 +114,22 @@ AdminSummaryPage.prototype._onInvalidateClick = function () {
   modal.show();
 };
 
-AdminSummaryPage.prototype.destroy = function () {
-  var button;
+/**
+ * View Event button click handler.
+ */
+AdminSummaryPage.prototype._onViewEventClick = function () {
+  var url = 'http://' + this._eventConfig.OFFSITE_HOST +
+      '/earthquakes/eventpage/' +
+      this._event.id;
+  window.open(url);
+};
 
-  button = this._invalidateButton;
-  button.removeEventListener('click', button._clickHandler);
-  button._clickHandler = null;
-  this._invalidateButton = null;
+AdminSummaryPage.prototype.destroy = function () {
+  this._buttons.forEach(function (button) {
+    button.removeEventListener('click', button._clickHandler);
+    button._clickHandler = null;
+  });
+  this._buttons = null;
 
   this._eventsAssociated.destroy();
   this._eventsAssociated = null;

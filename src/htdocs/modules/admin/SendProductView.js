@@ -302,11 +302,7 @@ var SendProductView = function (options) {
       _accordion.destroy();
     }
 
-    if (isClosed) {
-      _this.el.innerHTML = '<p>' + _modalText + '</p>';
-    } else {
-      _this.el.innerHTML = '';
-    }
+    _this.el.innerHTML = '<p>' + _modalText + '</p>';
 
     _accordion = Accordion({
       el: _this.el,
