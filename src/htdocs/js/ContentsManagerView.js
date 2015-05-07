@@ -106,7 +106,7 @@ var ContentsManagerView = function (params) {
 
     _inlineEditEl = _this.el.querySelector(
         '.contents-manager-view-inline-content-edit');
-    _inlineEditEl.addEventListener('change', _this.render);
+    _inlineEditEl.addEventListener('change', _onInlineEditChange);
     inline = _collection.get('');
     if (inline) {
       inline.on('change', 'render', _this);
@@ -175,6 +175,10 @@ var ContentsManagerView = function (params) {
       lastModified: file.lastModified,
       length: file.length
     };
+
+    if (document.activeElement === _inlineEditEl) {
+      _onInlineEditChange();
+    }
 
     if (file.hasOwnProperty('url') && file.url !== null) {
       params.url = file.url;

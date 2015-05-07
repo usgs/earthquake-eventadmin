@@ -1,12 +1,23 @@
 // this is from earthquake-eventpages
 @import 'css/index';
+
+// this is from hazdev-webutils
 @import 'mvc/ModalView';
+
+// this is from hazdev-webutils
+@import 'util/Message';
+
+// this is from hazdev-cache-invalidator
+@import 'hazdev-cache-invalidator/src/htdocs/css/InvalidatorView';
+
 @import 'htdocs/modules/admin/index';
 @import 'htdocs/modules/admin/scientific/index';
 @import 'htdocs/modules/admin/summary/index';
 
 @import 'FileUploadStatusView';
 @import 'ContentsManagerView';
+@import 'ProductContentEditView';
+@import 'ProductContentView';
 
 
 /* this supports both location view and dyfi-form */
