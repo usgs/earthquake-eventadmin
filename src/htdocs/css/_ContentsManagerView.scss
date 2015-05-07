@@ -1,3 +1,98 @@
-.contents-manager-view-errors > .webutils-message {
-  margin-top: 1em;
+.contents-manager-view {
+
+  > h3 {
+    margin-top: .5em;
+  }
+
+  > small {
+    color: #666;
+  }
+
+  &.drag-over {
+    .contents-manager-view-inline-content:after {
+      background: transparent;
+      border: 4px dashed #ccc;
+      bottom: 16px;
+      color: #ccc;
+      content: 'Drop files here';
+      display: block;
+      font-size: 4rem;
+      height: 212px;
+      left: 16px;
+      line-height: 212px;
+      pointer-events: none;
+      position: absolute;
+      right: 16px;
+      text-align: center;
+    }
+  }
+
+  > .contents-manager-view-inline-content {
+    margin-top: .5em;
+    position: relative;
+
+    > .contents-manager-view-inline-content-toggle {
+      display: block;
+
+      > .contents-manager-view-inline-content-toggle-edit,
+      > .contents-manager-view-inline-content-toggle-preview {
+        font-weight: bold;
+
+        &.link {
+          color: #00C;
+          cursor: pointer;
+          font-weight: normal;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    > .contents-manager-view-inline-content-edit {
+      font-family: monospace;
+    }
+
+    > .contents-manager-view-inline-content-preview {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    > .contents-manager-view-inline-content-edit,
+    > .contents-manager-view-inline-content-preview {
+      display: block;
+      height: 250px;
+      margin: 0;
+      overflow-y: auto;
+      width: 100%;
+
+      &.hidden {
+        display: none;
+      }
+    }
+  }
+
+  .contents-manager-view-errors > .webutils-message {
+    margin-top: .5em;
+  }
+
+  > .contents-manager-view-contents-view {
+    > ul {
+      display: flex;
+      flex-direction: column-reverse;
+      list-style: none;
+      margin-top: 0;
+      padding: 0;
+
+      > .product-content-inline {
+        display: none;
+      }
+    }
+  }
+
+  > .contents-manager-view-attach {
+    margin-top: 1em;
+
+    &:after {
+      content: '+';
+    }
+  }
 }

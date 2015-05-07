@@ -1,7 +1,9 @@
 @import '_ProductContentEditView';
 
 .product-content-view {
+  border: 1px solid #ddd;
   margin-top: .5em;
+  padding: 6px 6em 6px 6px;
   position: relative;
 
   &:first-child {
@@ -9,7 +11,10 @@
   }
 
   > .title {
-
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   > .subtitle {
@@ -18,7 +23,13 @@
     font-size: smaller;
   }
 
-  > .buttons > .delete {
-    color: #E46554;
+  > .buttons {
+    position: absolute;
+    right: 6px;
+    top: 11px;
+
+    > .delete {
+      color: #E46554;
+    }
   }
 }
