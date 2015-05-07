@@ -84,6 +84,9 @@ AdminSummaryPage.prototype._getText = function (product) {
 
   el = document.createElement('div');
   el.classList.add('edit-text');
+  if (product.status.toUpperCase() === 'DELETE') {
+    el.classList.add('deleted');
+  }
 
   // add buttons
   actionsView = ProductActionsView({
@@ -164,6 +167,9 @@ AdminSummaryPage.prototype._getLink = function (product) {
 
   el = document.createElement('div');
   el.classList.add('edit-link');
+  if (product.status.toUpperCase() === 'DELETE') {
+    el.classList.add('deleted');
+  }
 
   actionsView = ProductActionsView({
     editView: EditLinkView,

@@ -4,8 +4,6 @@ var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View'),
 
-    Tensor = require('scientific/tensor/Tensor'),
-
     CatalogEvent = require('CatalogEvent');
 
 
@@ -80,11 +78,6 @@ var ProductHistoryView = function (options) {
       product = _products[i];
       updateTime = new Date(product.updateTime);
 
-      // get tensor information for MT and FM
-      if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
-        product = Tensor.fromProduct(product);
-      }
-
       el = document.createElement('div');
       el.classList.add('alert');
 
@@ -108,6 +101,9 @@ var ProductHistoryView = function (options) {
       summary = _page.buildSummaryMarkup(product);
       if (i !== 0) {
         summary.classList.add('superseded');
+      }
+      if (product.status.toUpperCase() === 'DELETE') {
+        summary.classList.add('deleted');
       }
       actionView._summaryEl = el;
       summary.addEventListener('click', actionView.onViewDetails);

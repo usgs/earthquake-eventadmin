@@ -15,14 +15,15 @@
       margin: 0;
     }
   }
+}
 
-  .deleted > ul > li > span {
-    text-decoration: line-through;
-  }
 
-  .superseded > ul > li > span {
-    color: #999;
-    font-weight: 300;
-  }
+.deleted > td,
+.deleted > ul > li > span {
+  text-decoration: line-through;
+}
 
+.superseded > ul > li > span {
+  color: #999;
+  font-weight: 300;
 }

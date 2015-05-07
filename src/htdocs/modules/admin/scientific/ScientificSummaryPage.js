@@ -101,6 +101,9 @@ AdminScientificSummaryPage.prototype.getLink = function (product) {
 
   el = document.createElement('div');
   el.classList.add('edit-link');
+  if (product.status.toUpperCase() === 'DELETE') {
+    el.classList.add('deleted');
+  }
 
   actionsView = ProductActionsView({
     editView: EditLinkView,
@@ -195,6 +198,9 @@ AdminScientificSummaryPage.prototype._getAddLinkClick = function () {
 
   el = document.createElement('div');
   el.classList.add('edit-text');
+  if (product.status.toUpperCase() === 'DELETE') {
+    el.classList.add('deleted');
+  }
 
   // add buttons
   actionsView = ProductActionsView({

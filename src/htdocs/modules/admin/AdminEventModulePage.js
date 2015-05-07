@@ -8,16 +8,25 @@ EventModulePage.prototype.getPreferredSummaryMarkup = function (product, hash, n
   var preferredProductMarkup = document.createElement('section');
 
   this._options.module.getPage(hash, function (page) {
-    var products = CatalogEvent.removePhases(
-          CatalogEvent.getWithoutSuperseded(
-          page.getProducts())),
-        preferredLink = document.createElement('a');
+    var preferredLink,
+        product,
+        products,
+        summary;
+
+    products = CatalogEvent.removePhases(
+          CatalogEvent.getWithoutSuperseded(page.getProducts()));
+    product = products[0];
+    summary = page.buildSummaryMarkup(product);
+    if (product.status.toUpperCase() === 'DELETE') {
+      summary.classList.add('deleted');
+    }
 
     preferredProductMarkup.innerHTML = '<h3>' + name + '</h3>';
-    preferredProductMarkup.appendChild(page.buildSummaryMarkup(product));
+    preferredProductMarkup.appendChild(summary);
 
     // Add link to product-summary page when more than one product exists
     if (products.length > 1) {
+      preferredLink = document.createElement('a');
       preferredLink.href = '#' + hash;
       preferredLink.className = 'view-all';
       preferredLink.innerHTML = 'View all ' + name + 's (' + products.length +

@@ -49,7 +49,20 @@ var EventComparisonView = function (options) {
     // highlight current event in the comparison table
     referenceEventRow = _collectionTable.el.querySelector(
         '[data-id="' + _referenceEvent.id + '"]');
-    referenceEventRow.classList.add('reference-event');
+    if (referenceEventRow !== null) {
+      // null when reference event is deleted
+      referenceEventRow.classList.add('reference-event');
+    }
+
+    // label deleted events
+    _collection.data().forEach(function (evt) {
+      var row;
+      if (evt.isDeleted) {
+        row = _collectionTable.el.querySelector(
+            '[data-id="' + evt.id + '"]');
+        row.classList.add('deleted');
+      }
+    });
 
     // Build callback map, keys a button.classname with its callback parameter
     _callbackMap = {};
