@@ -17,7 +17,8 @@ var PRIORITY_PROPERTIES = {
   'region': {
     type: 'text',
     label: 'Region Name',
-    help: 'This is the event title on the web',
+    help: 'If this product&rsquo;s type is &ldquo;origin&rdquo; then this ' +
+        'value may be used as the event title on the web',
     placeholder: '',
     format: null,
     validate: null
