@@ -101,7 +101,7 @@ var Product = function (options) {
     json.contents.forEach(function (content) {
       objectContents[content.id] = {
         contentType: content.contentType,
-        length: content.legnth,
+        length: content.length,
         lastModified: content.lastModified
       };
 
