@@ -1,3 +1,9 @@
+.edit-link {
+  &.deleted > a {
+    text-decoration: line-through;
+  }
+}
+
 .edit-text {
   margin-top: 1em;
   padding: 1em;
@@ -5,6 +11,10 @@
 
   > .product-action-view {
     margin: 0;
+  }
+
+  &.deleted > section {
+    text-decoration: line-through;
   }
 }
 
