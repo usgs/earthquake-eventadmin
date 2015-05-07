@@ -31,10 +31,18 @@ var ProductContentView = function (options) {
   _this = View(options);
 
   _initialize = function (options) {
+    var path = _this.model.get('id');
+
+    if (path === '') {
+      path = 'inline';
+    }
+    path = path.replace(/\\/g, '-');
+
     _collection = options.collection;
     _formatter = options.formatter || Formatter({round: 1});
 
     _this.el.classList.add('product-content-view');
+    _this.el.classList.add('product-content-' + path);
     _this.el.addEventListener('click', _onClick);
 
     _this.model.on('change:id', _updateId);
@@ -113,8 +121,8 @@ var ProductContentView = function (options) {
         '</span>',
       '</span>',
       '<span class="buttons button-group">',
-        '<button class="edit">Edit</button>',
-        '<button class="delete">Delete</button>',
+        '<button class="edit" title="Edit">&#x270E;</button>',
+        '<button class="delete" title="Delete">&times;</button>',
       '</span>'
     ].join('');
   };
