@@ -20,11 +20,9 @@ var ProductContentEditView = function (params) {
       _formatter,
       _idEl,
       _lengthEl,
-      _manualEl,
       _modifiedEl,
       _transientContent,
       _typeEl,
-      _uploadEl,
       _urlEl,
 
       _createViewSkeleton,
@@ -106,22 +104,16 @@ var ProductContentEditView = function (params) {
       '<span class="content-modified" ',
           'aria-labeled-by="label-content-modifeid"></span>',
 
-      '<h3>Content</h3>',
+      '<h4>Current File</h4>',
       '<a class="content-url" target="_blank"></a>',
 
-      '<p class="alert info">',
-        'Content may be provided either as direct text input or as a file ',
-        'upload, but not both. Entering content directly will clear any ',
-        'uploaded content and vice-versa.',
-      '</p>',
-
-      '<h4>Enter content directly</h4>',
-      '<textarea class="content-manual-container hidden"',
-            'aria-labeled-by="label-content-manual" data-attribute="bytes">',
-      '</textarea>',
-
-      '<h4>Upload a new file</h4>',
-      '<div class="content-upload-container"></div>'
+      '<h4>Replace File</h4>',
+      '<div class="content-upload-container">',
+        '<button class="confirm content-upload-button">Upload File</button>',
+        '<br/>',
+        'Or drag/drop a file here',
+      '</div>',
+      '<div class="content-upload-errors"></div>'
     ].join('');
 
     _idEl = _this.el.querySelector('.content-id');
@@ -132,16 +124,14 @@ var ProductContentEditView = function (params) {
 
     _fileUploadView = FileUploadView({
       el: _this.el.querySelector('.content-upload-container'),
-      hideOnSuccess: true
+      button: _this.el.querySelector('.content-upload-button'),
+      upload: _this.el.querySelector('.content-upload-errors')
     });
     _fileUploadView.on('upload', _onFileUpload);
 
-    _uploadEl = _this.el.querySelector('.content-upload-container');
-    _manualEl = _this.el.querySelector('.content-manual-container');
 
     _idEl.addEventListener('change', _onInputChange);
     _typeEl.addEventListener('change', _onInputChange);
-    _manualEl.addEventListener('change', _onInputChange);
   };
 
   _onCancel = function () {
@@ -209,7 +199,6 @@ var ProductContentEditView = function (params) {
 
     _idEl.removeEventListener('change', _onInputChange);
     _typeEl.removeEventListener('change', _onInputChange);
-    _manualEl.removeEventListener('change', _onInputChange);
 
     _dialog.destroy();
     _fileUploadView.destroy();
@@ -229,7 +218,6 @@ var ProductContentEditView = function (params) {
     _modifiedEl = null;
     _transientContent = null;
     _typeEl = null;
-    _uploadEl = null;
     _urlEl = null;
 
     _initialize = null;
@@ -280,9 +268,7 @@ var ProductContentEditView = function (params) {
 
     bytes = _transientContent.get('bytes');
     if (bytes !== null) {
-      _manualEl.value = bytes;
     } else {
-      _manualEl.value = '';
     }
   };
 
