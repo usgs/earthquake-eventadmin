@@ -1,16 +1,17 @@
 'use strict';
 
-var FileUploadView = require('FileUploadView'),
+var ContentsManagerView = require('ContentsManagerView'),
+    // FileUploadView = require('FileUploadView'),
     Product = require('Product'),
     ProductContent = require('ProductContent'),
-    ProductContentView = require('ProductContentView'),
+    // ProductContentView = require('ProductContentView'),
     ProductContentEditView = require('ProductContentEditView'),
 
     Accordion = require('accordion/Accordion'),
 
     SendProductView = require('admin/SendProductView'),
 
-    CollectionView = require('mvc/CollectionView'),
+    // CollectionView = require('mvc/CollectionView'),
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
 
@@ -151,6 +152,7 @@ var EditProductView = function (options) {
       _codeInput,
       _contentErrorsEl,
       _contentInput,
+      _contentsManager,
       _contentsView,
       _contentTypeInput,
       _dialog,
@@ -372,40 +374,47 @@ var EditProductView = function (options) {
   };
 
   _createViewSkeletonContents = function () {
-    var existing,
-        fragment,
-        header;
+    // var existing,
+        // fragment,
+        // header;
 
-    fragment = document.createDocumentFragment();
+    // fragment = document.createDocumentFragment();
 
-    existing = fragment.appendChild(document.createElement('ul'));
-    existing.classList.add('editproduct-files-existing');
+    // existing = fragment.appendChild(document.createElement('ul'));
+    // existing.classList.add('editproduct-files-existing');
 
-    _contentsView = CollectionView({
-      collection: _product.get('contents'),
-      el: existing,
-      factory: ProductContentView
+    // _contentsView = CollectionView({
+    //   collection: _product.get('contents'),
+    //   el: existing,
+    //   factory: ProductContentView
+    // });
+
+    // _contentErrorsEl = fragment.appendChild(document.createElement('div'));
+
+    // header = fragment.appendChild(document.createElement('h4'));
+    // header.innerHTML = 'Add New Content';
+
+    // _fileUploadView = FileUploadView({
+    //   el: fragment.appendChild(document.createElement('div')),
+    //   hideOnSuccess: true
+    // });
+
+    // _fileUploadView.on('upload', _onFileUpload);
+
+    // _newContent = fragment.appendChild(document.createElement('button'));
+    // _newContent.innerHTML = 'Create Inline Content';
+    // _newContent.classList.add('green');
+    // _newContent.classList.add('editproduct-new-content');
+    // _newContent.addEventListener('click', _onNewContentClick);
+
+    var container = document.createElement('div');
+
+    _contentsManager = ContentsManagerView({
+      el: container,
+      model: _product
     });
 
-    _contentErrorsEl = fragment.appendChild(document.createElement('div'));
-
-    header = fragment.appendChild(document.createElement('h4'));
-    header.innerHTML = 'Add New Content';
-
-    _fileUploadView = FileUploadView({
-      el: fragment.appendChild(document.createElement('div')),
-      hideOnSuccess: true
-    });
-
-    _fileUploadView.on('upload', _onFileUpload);
-
-    _newContent = fragment.appendChild(document.createElement('button'));
-    _newContent.innerHTML = 'Create Inline Content';
-    _newContent.classList.add('green');
-    _newContent.classList.add('editproduct-new-content');
-    _newContent.addEventListener('click', _onNewContentClick);
-
-    return fragment;
+    return container;
   };
 
   _createViewSkeletonLinks = function () {
@@ -838,6 +847,10 @@ var EditProductView = function (options) {
       _accordion.destroy();
     }
 
+    if (_contentsManager) {
+      _contentsManager.destroy();
+    }
+
     if (_dialog) {
       _dialog.destroy();
     }
@@ -864,6 +877,7 @@ var EditProductView = function (options) {
     _codeInput = null;
     _contentErrorsEl = null;
     _contentInput = null;
+    _contentsManager = null;
     _contentsView = null;
     _contentTypeInput = null;
     _dialog = null;
