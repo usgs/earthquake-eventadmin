@@ -4,8 +4,6 @@ var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View'),
 
-    Tensor = require('scientific/tensor/Tensor'),
-
     CatalogEvent = require('CatalogEvent');
 
 
@@ -79,11 +77,6 @@ var ProductHistoryView = function (options) {
     for (var i = 0; i < _products.length; i++) {
       product = _products[i];
       updateTime = new Date(product.updateTime);
-
-      // get tensor information for MT and FM
-      if (product.type === 'moment-tensor' || product.type === 'focal-mechanism') {
-        product = Tensor.fromProduct(product);
-      }
 
       el = document.createElement('div');
       el.classList.add('alert');
