@@ -185,7 +185,7 @@ var removePhases = function (products) {
 
   for (i = 0; i < products.length; i++) {
     product = products[i];
-    key = product.source + product.code + product.updateTime;
+    key = product.source + product.code;
 
     if (product.type === 'origin'){
       originProducts[key] = product;
@@ -196,7 +196,7 @@ var removePhases = function (products) {
 
   for (i = 0; i < products.length; i++) {
     product = products[i];
-    key = product.source + product.code + product.updateTime;
+    key = product.source + product.code;
 
     if (product.type !== 'origin' && product.type !== 'phase-data') {
       newProducts.push(product);
