@@ -5,6 +5,7 @@ var EventModule = require('base/EventModule'),
     Util = require('util/Util'),
 
     AdminSummaryPage = require('admin/AdminSummaryPage'),
+    AllProductsPage = require('admin/AllProductsPage'),
     CreateProductPage = require('admin/CreateProductPage');
 
 
@@ -29,6 +30,17 @@ var DEFAULTS = {
       options: {
         title: 'Create Product',
         hash: 'createproduct'
+      },
+      //Always include page.
+      hasContent: function () {
+        return true;
+      }
+    },
+    {
+      factory: AllProductsPage,
+      options: {
+        title: 'All Products',
+        hash: 'allproducts'
       },
       //Always include page.
       hasContent: function () {
