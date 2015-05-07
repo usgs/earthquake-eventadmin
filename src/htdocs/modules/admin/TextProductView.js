@@ -7,8 +7,6 @@ var ContentsManagerView = require('ContentsManagerView'),
 
     SendProductView = require('admin/SendProductView'),
 
-    EventModulePage = require('base/EventModulePage'),
-
     Collection = require('mvc/Collection'),
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),
@@ -31,18 +29,13 @@ var TextProductView = function (options) {
 
       _contentsManagerView,
       _dialog,
-      _previewEl,
       _product,
       _sender,
       _sendProductView,
-      _textEl,
-      _toggleButton,
 
-      _createViewSkeleton,
       _onCancel,
       _onCreate,
-      _onSendProductDone,
-      _onToggleClick;
+      _onSendProductDone;
 
   _this = View(options);
 
@@ -55,6 +48,8 @@ var TextProductView = function (options) {
     var titleText = 'Edit Product';
 
     _product = options.product;
+
+    _this.el.classList.add('text-product-view');
 
     if (!_product) {
       titleText = 'Create Product';
@@ -80,9 +75,6 @@ var TextProductView = function (options) {
       });
     }
 
-    _createViewSkeleton();
-    _toggleButton.addEventListener('click', _onToggleClick);
-
     _sendProductView = SendProductView({product: _product});
     _sendProductView.on('done', _onSendProductDone);
 
@@ -102,48 +94,13 @@ var TextProductView = function (options) {
         }
       ]
     });
-  };
-
-
-  _createViewSkeleton = function () {
-    _this.el.classList.add('textproduct');
-
-    _this.el.innerHTML = [
-      '<div class="vertical textproduct-edit">',
-        '<label for="textproduct-text">',
-          'Text Content',
-          '<small>',
-            'May Include HTML Markup (',
-            '<a href="javascript:void(null);" class="textproduct-toggle">',
-              'Preview',
-            '</a>)',
-          '</small>',
-        '</label>',
-        '<textarea id="textproduct-text" ',
-            'class="textproduct-text"></textarea>',
-        '<div class="textproduct-preview hidden"></div>',
-        '<h3>Attach Files</h3>',
-        '<p class="text-product-view-attach-help">',
-          'Typically attached files are resources which you might reference ',
-          'in the text product (above). You can reference these resources ',
-          'with links (&lt;a&gt; tags) or images (&lt;img&gt; tags) ',
-          'etc&hellip; You can use the file name as the &ldquo;href&rdquo; or ',
-          '&ldquo;src&rdquo; attributes respectively. Use the ',
-          '&ldquo;preview&rdquo; feature to verify proper usage.',
-        '</p>',
-        '<div class="contents-manager-view"></div>',
-      '</div>'
-    ].join('');
-
-    _textEl = _this.el.querySelector('.textproduct-text');
-    _previewEl = _this.el.querySelector('.textproduct-preview');
-    _toggleButton = _this.el.querySelector('.textproduct-toggle');
 
     _contentsManagerView = ContentsManagerView({
-      el: _this.el.querySelector('.contents-manager-view'),
+      el: _this.el,
       model: _product
     });
   };
+
 
   /**
    * Called when the user cancels the add/edit view. Hides and destroys self
@@ -164,25 +121,25 @@ var TextProductView = function (options) {
    *
    */
   _onCreate = function () {
-    var contents = _product.get('contents'),
-        content = contents.get(''),
-        contentAttributes = null,
-        text = _textEl.value || '';
+    // var contents = _product.get('contents'),
+    //     content = contents.get(''),
+    //     contentAttributes = null,
+    //     text = _textEl.value || '';
 
-    contentAttributes = {
-      path: '',
-      bytes: text,
-      contentType: 'text/html',
-      lastModified: (new Date()).getTime(),
-      length: text.length
-    };
+    // contentAttributes = {
+    //   path: '',
+    //   bytes: text,
+    //   contentType: 'text/html',
+    //   lastModified: (new Date()).getTime(),
+    //   length: text.length
+    // };
 
-    if (content) {
-      content.set(contentAttributes);
-    } else {
-      content = ProductContent(contentAttributes);
-      contents.add(content);
-    }
+    // if (content) {
+    //   content.set(contentAttributes);
+    // } else {
+    //   content = ProductContent(contentAttributes);
+    //   contents.add(content);
+    // }
 
     _sendProductView.show();
   };
@@ -200,25 +157,6 @@ var TextProductView = function (options) {
     _this.destroy();
   };
 
-  /**
-   * Called when user clicks toggle button. Switches between edit and preview
-   * modes of this view.
-   *
-   */
-  _onToggleClick = function () {
-    if (_toggleButton.innerHTML === 'Preview') {
-      _toggleButton.innerHTML = 'Edit';
-      _previewEl.innerHTML = EventModulePage.prototype._replaceRelativePaths(
-          _textEl.value, _product.toJSON().contents);
-    } else {
-      _toggleButton.innerHTML = 'Preview';
-    }
-
-
-    _textEl.classList.toggle('hidden');
-    _previewEl.classList.toggle('hidden');
-  };
-
 
   /**
    * Should be called when finished with this view. Cleans up resources and
@@ -227,7 +165,6 @@ var TextProductView = function (options) {
    */
   _this.destroy = Util.compose(function () {
     _contentsManagerView.destroy();
-    _toggleButton.removeEventListener('click', _onToggleClick);
 
     _sendProductView.off('done', _onSendProductDone);
     _sendProductView.destroy();
@@ -237,18 +174,13 @@ var TextProductView = function (options) {
 
     _contentsManagerView = null;
     _dialog = null;
-    _previewEl = null;
     _product = null;
     _sender = null;
     _sendProductView = null;
-    _textEl = null;
-    _toggleButton = null;
 
-    _createViewSkeleton = null;
     _onCancel = null;
     _onCreate = null;
     _onSendProductDone = null;
-    _onToggleClick = null;
 
     _initialize = null;
     _this = null;
@@ -260,26 +192,6 @@ var TextProductView = function (options) {
    */
   _this.hide = function () {
     _dialog.hide();
-  };
-
-  /**
-   * Updates the values displayed in the view based on the current product
-   * state.
-   *
-   */
-  _this.render = function () {
-    var content,
-        contents = _product.get('contents');
-
-    if (contents && contents.get) {
-      content = contents.get('');
-    }
-
-    if (!content) {
-      _textEl.value = '';
-    } else {
-      _textEl.value = content.get('bytes');
-    }
   };
 
   /**
