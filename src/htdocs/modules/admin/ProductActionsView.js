@@ -1,14 +1,16 @@
 'use strict';
 
-var Util = require('util/Util'),
+var Product = require('Product'),
+
+    EventModulePage = require('admin/AdminEventModulePage'),
+    EditProductView = require('admin/EditProductView'),
+    ProductDetailsView = require('admin/ProductDetailsView'),
+    ProductFactory = require('admin/ProductFactory'),
+    ProductHistoryView = require('admin/ProductHistoryView'),
+
     View = require('mvc/View'),
 
-    EditProductView = require('./EditProductView'),
-    EventModulePage = require('./AdminEventModulePage'),
-    Product = require('Product'),
-    ProductFactory = require('./ProductFactory'),
-    ProductDetailsView = require('./ProductDetailsView'),
-    ProductHistoryView = require('./ProductHistoryView');
+    Util = require('util/Util');
 
 
 var DEFAULTS = {
