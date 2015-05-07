@@ -243,6 +243,9 @@ var ContentsManagerView = function (params) {
   _this.destroy = Util.compose(function () {
     var inline;
 
+    _collection.off('add', _onInlineContentChange);
+    _collection.off('remove', _onInlineContentChange);
+
     inline = _collection.get('');
     if (inline) {
       inline.off('change', _onInlineContentChange);

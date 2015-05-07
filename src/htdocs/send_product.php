@@ -104,7 +104,8 @@ try {
           if (strpos($uploadFile, $uploadDir) === 0) {
             file_put_contents($file, file_get_contents($uploadFile));
           } else {
-            throw new Exception('The uploaded file must be in the upload directory. ' . $uploadFile . ':' . $uploadDir);
+            throw new Exception('The uploaded file must be in the upload ' .
+                'directory. ' . $uploadFile . ':' . $uploadDir);
           }
         } else if (!downloadURL($url, $file, false)) {
           throw new Exception('Unable to download url ' . $content['url']);

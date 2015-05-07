@@ -200,6 +200,8 @@ var FileUploadView = function (options) {
     _dropEl = null;
     _inputEl = null;
     _uploadEl = null;
+    _url = null;
+    _hideOnSuccess = null;
 
     _onButtonClick = null;
     _onDragLeave = null;

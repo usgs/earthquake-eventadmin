@@ -121,26 +121,6 @@ var TextProductView = function (options) {
    *
    */
   _onCreate = function () {
-    // var contents = _product.get('contents'),
-    //     content = contents.get(''),
-    //     contentAttributes = null,
-    //     text = _textEl.value || '';
-
-    // contentAttributes = {
-    //   path: '',
-    //   bytes: text,
-    //   contentType: 'text/html',
-    //   lastModified: (new Date()).getTime(),
-    //   length: text.length
-    // };
-
-    // if (content) {
-    //   content.set(contentAttributes);
-    // } else {
-    //   content = ProductContent(contentAttributes);
-    //   contents.add(content);
-    // }
-
     _sendProductView.show();
   };
 
