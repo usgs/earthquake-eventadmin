@@ -40,6 +40,7 @@ var PRIORITY_PROPERTIES = {
   },
   'latitude': {
     type: 'number',
+    step: 'any',
     label: 'Latitude',
     help: 'Decimal degrees. Use negative values for southern latitudes.',
     placeholder: '',
@@ -55,6 +56,7 @@ var PRIORITY_PROPERTIES = {
   },
   'longitude': {
     type: 'number',
+    step: 'any',
     label: 'Longitude',
     help: 'Decimal degrees. Use negative values for western longitudes.',
     placeholder: '',
@@ -91,6 +93,7 @@ var PRIORITY_PROPERTIES = {
   },
   'magnitude': {
     type: 'number',
+    step: 'any',
     label: 'Magnitude',
     help: '',
     placeholder: '',
@@ -106,6 +109,7 @@ var PRIORITY_PROPERTIES = {
   },
   'depth': {
     type: 'number',
+    step: 'any',
     label: 'Depth',
     help: 'Event depth in kilometers',
     placeholder: '',
@@ -235,6 +239,9 @@ var EditProductView = function (options) {
     input.classList.add(id);
     if (info.placeholder) {
       input.setAttribute('placeholder', info.placeholder);
+    }
+    if (info.step) {
+      input.setAttribute('step', info.step);
     }
 
     _priorityInputs[key] = Util.extend({}, info);
