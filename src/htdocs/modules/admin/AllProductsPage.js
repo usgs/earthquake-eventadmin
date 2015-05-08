@@ -1,6 +1,7 @@
 'use strict';
 
 var CatalogEvent = require('CatalogEvent'),
+    Product = require('Product'),
 
     EditLinkView = require('admin/EditLinkView'),
     TextProductView = require('admin/TextProductView'),
@@ -11,12 +12,15 @@ var CatalogEvent = require('CatalogEvent'),
     Util = require('util/Util');
 
 var AllProductsPage = function (options) {
+  var catalogEvent;
   options = Util.extend({}, options || {});
 
-  this._event = CatalogEvent(options.eventDetails || {});
+  catalogEvent = CatalogEvent(options.eventDetails || {});
   this._products = CatalogEvent.getWithoutSuperseded(
-      CatalogEvent.productMapToList(
-      this._event.getProducts()));
+      CatalogEvent.productMapToList(catalogEvent.getProducts()));
+
+  this._addProductButton = null;
+  this._actionViews = [];
 
   EventModulePage.call(this, options);
 };
@@ -24,8 +28,18 @@ var AllProductsPage = function (options) {
 AllProductsPage.prototype = Object.create(EventModulePage.prototype);
 
 AllProductsPage.prototype._setContentMarkup = function () {
-  var productsTable,
+  var button,
+      productsTable,
       productsTableBody;
+
+  button = document.createElement('button');
+  button.classList.add('add-product-button');
+  button.innerHTML = 'Add Product';
+  button._clickHandler = this._onAddProductClick.bind(this);
+  button.addEventListener('click', button._clickHandler);
+  this._addProductButton = button;
+  this._content.appendChild(button);
+
 
   productsTable = document.createElement('table');
   productsTable.className = 'tabular product-table';
@@ -47,7 +61,21 @@ AllProductsPage.prototype._setContentMarkup = function () {
 
   // list products
   this._content.appendChild(productsTable);
-  console.log(this._products);
+};
+
+AllProductsPage.prototype._onAddProductClick = function () {
+  var props = this._event.properties;
+
+  EditProductView({
+    product: Product({
+      source: 'admin',
+      code: props.net + props.code + '-' + new Date().getTime(),
+      properties: {
+        eventsource: props.net,
+        eventsourcecode: props.code
+      }
+    })
+  }).show();
 };
 
 /**
@@ -85,6 +113,8 @@ AllProductsPage.prototype._getProductMarkup = function (product) {
     page: null,
     viewHistory: false
   });
+
+  this._actionViews.push(actionView);
 
   // append actions to td.actions
   actionsTableCell = tr.querySelector('.action');
@@ -135,6 +165,28 @@ AllProductsPage.prototype._getEditView = function (product) {
 
   // fall back to EditProductView
   return EditProductView;
+};
+
+/**
+ * Destroy this view.
+ */
+AllProductsPage.prototype.destroy = function () {
+  if (this._addProductButton !== null) {
+    this._addProductButton.removeEventListener('click',
+        this._addProductButton._clickHandler);
+    this._addProductButton = null;
+  }
+
+  if (this._actionViews !== null) {
+    this._actionViews.forEach(function (view) {
+      view.destroy();
+    });
+    this._actionViews = null;
+  }
+
+  this._products = null;
+
+  EventModulePage.prototype.destroy.call(this);
 };
 
 
