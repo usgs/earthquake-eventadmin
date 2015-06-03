@@ -302,6 +302,10 @@ var CatalogEvent = function (eventDetails) {
         products.push(product);
       }
     }
+    // sort most recent first.
+    products.sort(function (p1, p2) {
+      return p2.updateTime - p1.updateTime;
+    });
     return products;
   };
 
@@ -592,7 +596,7 @@ var CatalogEvent = function (eventDetails) {
           subEvent,
           subEventId;
       key = product.source + '_' + product.type + '_' + product.code;
-      props = product.properties;
+      props = product.properties || {};
       eventSource = props.eventsource || null;
       eventCode = props.eventsourcecode || null;
       if (eventSource === null || eventCode === null) {
