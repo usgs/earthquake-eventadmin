@@ -302,6 +302,10 @@ var CatalogEvent = function (eventDetails) {
         products.push(product);
       }
     }
+    // sort most recent first.
+    products.sort(function (p1, p2) {
+      return p2.updateTime - p1.updateTime;
+    });
     return products;
   };
 
