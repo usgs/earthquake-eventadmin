@@ -27,6 +27,30 @@ module.exports = function (grunt) {
     'concurrent:build'
   ]);
 
+  grunt.registerTask('eventadmin', function () {
+    try {
+      var fs = require('fs'),
+          stats = fs.lstatSync(gruntConfig.config.dist);
+      if (!stats.isDirectory()) {
+        throw new Error('dist is not a diretory');
+      }
+    } catch (e) {
+      // build if dist doesn't exist
+      grunt.task.run([
+        'build',
+        'clean:dist',
+        'concurrent:dist'
+      ]);
+    }
+
+    grunt.task.run([
+      'connect:template',
+      'configureRewriteRules',
+      'configureProxies:dist',
+      'connect:dist'
+    ]);
+  });
+
   grunt.registerTask('dist', [
     'build',
     'clean:dist',
