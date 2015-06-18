@@ -645,8 +645,9 @@ var CatalogEvent = function (eventDetails) {
     subEvents = _this.getSubEvents();
     for (id in subEvents) {
       subEvent = subEvents[id];
+      // skip the deleted subEvent
       if (!includeDeleted && subEvent.isDeleted()) {
-        return;
+        continue;
       }
 
       source = subEvent.getSource();
