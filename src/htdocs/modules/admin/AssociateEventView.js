@@ -1,6 +1,7 @@
 'use strict';
 
 var CatalogEvent = require('CatalogEvent'),
+    Collection = require('mvc/Collection'),
     Product = require('Product'),
     ProductContent = require('ProductContent'),
     SendProductView = require('admin/SendProductView'),
@@ -150,9 +151,13 @@ var AssociateEventView = function (options) {
 
     for (var i = 0; i < _associateProducts.length; i++) {
       _associateProducts[i].set({
-        'contents': {
-          '': ProductContent({bytes: text, length: text.length})
-        }
+        'contents': Collection([
+          ProductContent({
+            'id': '',
+            'bytes': text,
+            'length': text.length
+          })
+        ])
       });
     }
   };
