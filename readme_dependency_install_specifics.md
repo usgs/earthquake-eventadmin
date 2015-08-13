@@ -83,4 +83,4 @@ Readme dependencies
    `export PATH=$PATH:/usr/local/opt/ruby/bin`  
 
 5. Close and re-open your terminal so that your new PATH is loaded.  
-   Make sure to navigate back to your `geomag-baseline-calculator` project directory.
+   Make sure to navigate back to your `earthquake-eventadmin` project directory.
