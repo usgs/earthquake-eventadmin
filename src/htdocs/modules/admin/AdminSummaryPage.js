@@ -98,6 +98,7 @@ AdminSummaryPage.prototype._onInvalidateClick = function () {
   paths.push('/earthquakes/eventpage/' + eventid);
   paths.push('/earthquakes/feed/v1.0/detail/' + eventid + '.geojson');
   paths.push('/fdsnws/event/1/query?eventid=' + eventid + '&format=geojson');
+  paths.push(this._eventConfig.SEARCH_PATH);
 
   view = InvalidatorView({
     paths: paths

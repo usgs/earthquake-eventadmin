@@ -17,7 +17,9 @@ if (!isset($TEMPLATE)) {
   }
 
   $SEARCH_STUB = $OFFSITE_HOST . $CONFIG['SEARCH_STUB'];
-  $SEARCH_URL = $SEARCH_STUB . '&includesuperseded=true&eventid=' . $eventid;
+  $SEARCH_PATH = $CONFIG['SEARCH_STUB'] .
+      '&includesuperseded=true&eventid=' . $eventid;
+  $SEARCH_URL = $OFFSITE_HOST . $SEARCH_PATH;
 
   $ch = curl_init($SEARCH_URL);
   curl_setopt_array($ch, array(
@@ -67,6 +69,7 @@ if (!isset($TEMPLATE)) {
     'KML_STUB' => isset($CONFIG['KML_STUB']) ? $CONFIG['KML_STUB'] : null,
     'DYFI_RESPONSE_URL' => $CONFIG['DYFI_RESPONSE_URL'],
     'OFFSITE_HOST' => $CONFIG['OFFSITE_HOST'],
+    'SEARCH_PATH' => $SEARCH_PATH,
     'SEARCH_STUB' => $SEARCH_STUB
   );
 
