@@ -108,6 +108,23 @@ var AssociateEventView = function (options) {
           _associateProductText = 'multiple event ids from same source';
           // build an associate product for each id with the matching source
           _associateProducts = _generateAssociateProducts(matchingEventSource, associateEvent);
+
+          // workaround when preferred IDs are not both from the same source
+          if (_referenceEvent.source !== associateEvent.source) {
+            // associate using the preferred eventsource and eventsourcecode
+            _associateProducts.push(Product({
+              source: 'admin',
+              type: 'associate',
+              code: _referenceEvent.source + _referenceEvent.sourceCode + '_' +
+                  associateEvent.source + associateEvent.sourceCode,
+              properties: {
+                eventsource: _referenceEvent.source,
+                eventsourcecode: _referenceEvent.sourceCode,
+                othereventsource: associateEvent.source,
+                othereventsourcecode: associateEvent.sourceCode
+              }
+            }));
+          }
         } else {
           _associateProductText = 'outside automatic association window';
           // associate using the preferred eventsource and eventsourcecode
