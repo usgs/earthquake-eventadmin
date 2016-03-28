@@ -58,7 +58,9 @@ if (!isset($TEMPLATE)) {
 
   if ($PROPERTIES['net'] . $PROPERTIES['code'] !== $eventid) {
     header('HTTP/1.1 301 Moved Permanently');
-    header('Location: ' . $PROPERTIES['url']);
+    header('Location: event.php?eventid=' .
+        $PROPERTIES['net'] . $PROPERTIES['code']);
+    return;
   }
 
   $TITLE = $PROPERTIES['title'];
