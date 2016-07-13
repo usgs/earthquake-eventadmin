@@ -29,8 +29,20 @@ if (!is_dir($CONF_DIR)) {
   mkdir($CONF_DIR, 0755, true);
 }
 
+
+// check for non-interactive mode
+foreach ($argv as $arg) {
+  if ($arg === '--non-interactive') {
+    define('NON_INTERACTIVE', true);
+  }
+}
+if (!defined('NON_INTERACTIVE')) {
+  define('NON_INTERACTIVE', false);
+}
+
 // Interactively prompts user for config. Writes CONFIG_FILE_INI
 include_once 'configure.inc.php';
+
 
 // Parse the configuration
 $CONFIG = parse_ini_file($CONFIG_FILE_INI);
@@ -57,7 +69,7 @@ file_put_contents($HTTPD_CONF, '
 
 include_once './functions.inc.php';
 if (!file_exists($CONFIG['PDL_JAR_FILE'])) {
-  if (promptYesNo('Download PDL Jar File?')) {
+  if (NON_INTERACTIVE || promptYesNo('Download PDL Jar File?')) {
     downloadURL(
         'http://ehppdl1.cr.usgs.gov/ProductClient/ProductClient.jar',
         $CONFIG['PDL_JAR_FILE']);

@@ -1,4 +1,19 @@
-language: node_js
-node_js:
-  - '0.10'
-  - '0.12'
+sudo: false
+language: php
+php:
+  - '5.6'
+before_install:
+  - composer self-update
+  - gem install compass
+  - nvm install stable
+  - nvm use stable
+  - npm install -g grunt-cli
+  - npm --version
+  - node --version
+  - npm list -g
+install:
+  - npm install phantomjs-prebuilt
+  - npm install
+  - php src/lib/pre-install.php --non-interactive
+script:
+  - npm test
