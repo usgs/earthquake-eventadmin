@@ -31,7 +31,7 @@
     "grunt-contrib-jshint": "~0.11.0",
     "grunt-contrib-uglify": "~0.7.0",
     "grunt-contrib-watch": "~0.6.1",
-    "grunt-mocha-phantomjs": "~0.5.0",
+    "grunt-mocha-phantomjs": "3.0.0",
     "hazdev-accordion": "usgs/hazdev-accordion#ca109f240b2c05606c6722fb38dd228f074ed5f4",
     "hazdev-cache-invalidator": "usgs/hazdev-cache-invalidator#5e011ad7d1bff50e95f063e60c1720f796a69b56",
     "hazdev-location-view": "usgs/hazdev-location-view#c732dbb696004e8cddaba5de477e5de7456c3e28",
@@ -42,7 +42,7 @@
     "hazdev-webutils": "usgs/hazdev-webutils#61b99bfd9db5cd9e889d02e55c74d9f713d600a6",
     "ini": "^1.2.1",
     "leaflet": "^0.7.3",
-    "mocha": "~1.13.0",
+    "mocha": "^2.1.0",
     "quakeml-parser-js": "usgs/quakeml-parser-js",
     "sinon": "~1.12.2"
   },
