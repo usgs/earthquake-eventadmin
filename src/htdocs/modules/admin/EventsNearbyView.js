@@ -157,10 +157,11 @@ var EventsNearbyView = function (options) {
       _associateEventView.destroy();
       _associateEventView = null;
     }
-      _el = null;
-      _event = null;
-      _nearbyEventsEl = null;
-      _searchStub = null;
+
+    _el = null;
+    _event = null;
+    _nearbyEventsEl = null;
+    _searchStub = null;
   }, _this.destroy);
 
 

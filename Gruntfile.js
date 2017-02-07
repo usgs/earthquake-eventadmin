@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
   grunt.event.on('watch', function (action, filepath) {
     // Only lint the file that actually changed
-    grunt.config(['jshint', 'scripts'], filepath);
+    grunt.config(['eslint', 'scripts'], filepath);
   });
 
   grunt.registerTask('test', [

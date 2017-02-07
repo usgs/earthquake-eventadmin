@@ -2,10 +2,10 @@
 'use strict';
 
 var
-    /* jshint ignore:start */
+    /* eslint-disable */
     AdminSummaryDetailsPage = require('admin/AdminSummaryDetailsPage'),
     AdminEventModulePage = require('admin/AdminEventModulePage'),
-    /* jshint ignore:end */
+    /* eslint-enable */
     EventPage = require('base/EventPage'),
     AdminModule = require('admin/AdminModule'),
     ImpactModule = require('impact/ImpactModule'),
@@ -39,29 +39,29 @@ eventpage = new EventPage({
     }),
 
     new SummaryModule({
-        'eventDetails': EventDetails,
-        'eventConfig': EventConfig,
-        'pages': [
-          {
-            factory: SummaryPage,
-            options: {
-              title: 'Summary',
-              hash: 'summary'
-            },
-            //Always include page.
-            hasContent: function () {
-              return true;
-            },
-            productTypes: ['origin', 'geoserve']
+      'eventDetails': EventDetails,
+      'eventConfig': EventConfig,
+      'pages': [
+        {
+          factory: SummaryPage,
+          options: {
+            title: 'Summary',
+            hash: 'summary'
           },
-          {
-            factory: InteractiveMap,
-            options: {
-              title: 'Interactive Map',
-              hash: 'map'
-            }
+          //Always include page.
+          hasContent: function () {
+            return true;
+          },
+          productTypes: ['origin', 'geoserve']
+        },
+        {
+          factory: InteractiveMap,
+          options: {
+            title: 'Interactive Map',
+            hash: 'map'
           }
-        ]
+        }
+      ]
     }),
 
     new ImpactModule({

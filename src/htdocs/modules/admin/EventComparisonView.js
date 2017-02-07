@@ -5,11 +5,11 @@ var CollectionTable = require('mvc/CollectionTable'),
     Util = require('util/Util');
 
 var DEFAULTS = {
-    className: 'collection-table event-comparison tabular',
-    emptyMarkup: '&ndash;',
-    buttons: null,
-    eventLink: null
-  };
+  className: 'collection-table event-comparison tabular',
+  emptyMarkup: '&ndash;',
+  buttons: null,
+  eventLink: null
+};
 
 
 var EventComparisonView = function (options) {
@@ -194,21 +194,20 @@ var EventComparisonView = function (options) {
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = function () {
+    // Remove event listeners
+    _collectionTable.el.removeEventListener('click', _onClick);
 
-      // Remove event listeners
-      _collectionTable.el.removeEventListener('click', _onClick);
+    // clean up private methods
+    _getColumns = null;
+    _onClick = null;
 
-      // clean up private methods
-      _getColumns = null;
-      _onClick = null;
-
-      // clean up private variables
-      _buttons = null;
-      _callbackMap = null;
-      _collection = null;
-      _collectionTable = null;
-      _formatter = null;
-      _referenceEvent = null;
+    // clean up private variables
+    _buttons = null;
+    _callbackMap = null;
+    _collection = null;
+    _collectionTable = null;
+    _formatter = null;
+    _referenceEvent = null;
   };
 
   _initialize();

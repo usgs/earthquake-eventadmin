@@ -7,7 +7,7 @@ var gruntConfig = {
   concurrent: require('./concurrent'),
   connect: require('./connect'),
   copy: require('./copy'),
-  jshint: require('./jshint'),
+  eslint: require('./eslint'),
   mocha_phantomjs: require('./mocha_phantomjs'),
   postcss: require('./postcss'),
   uglify: require('./uglify'),
@@ -21,11 +21,11 @@ var gruntConfig = {
     'grunt-contrib-clean',
     'grunt-contrib-connect',
     'grunt-contrib-copy',
-    'grunt-contrib-jshint',
     'grunt-contrib-uglify',
     'grunt-contrib-watch',
     'grunt-mocha-phantomjs',
-    'grunt-postcss'
+    'grunt-postcss',
+    'gruntify-eslint'
   ]
 };
 

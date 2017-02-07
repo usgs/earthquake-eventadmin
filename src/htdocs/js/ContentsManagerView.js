@@ -15,8 +15,6 @@ var FileUploadView = require('FileUploadView'),
     Util = require('util/Util');
 
 
-var _ID_SEQUENCE = 0;
-
 var ContentsManagerView = function (params) {
   var _this,
       _initialize,
@@ -26,7 +24,6 @@ var ContentsManagerView = function (params) {
       _destroyCollection,
       _errorsEl,
       _fileUploadView,
-      _id,
       _inlineEditEl,
       _inlinePreviewEl,
       _toggleEditModeEl,
@@ -46,7 +43,6 @@ var ContentsManagerView = function (params) {
   _initialize = function (/*params*/) {
     var inline;
 
-    _id = 'contents-manager-view-' + (_ID_SEQUENCE++);
     _collection = _this.model.get('contents');
 
     _collection.on('add', 'render', _this);
@@ -135,6 +131,7 @@ var ContentsManagerView = function (params) {
   _createViewSkeleton = function () {
     _this.el.classList.add('contents-manager-view');
 
+    /* eslint-disable */
     _this.el.innerHTML = [
       '<small>',
         'This content may include HTML markup. ',
@@ -164,6 +161,7 @@ var ContentsManagerView = function (params) {
       '<div class="contents-manager-view-errors"></div>',
       '<div class="contents-manager-view-contents-view"></div>'
     ].join('');
+    /* eslint-enable */
   };
 
   _onFileUpload = function (file) {
@@ -264,7 +262,6 @@ var ContentsManagerView = function (params) {
     _destroyCollection = null;
     _errorsEl = null;
     _fileUploadView = null;
-    _id = null;
     _inlineEditEl = null;
     _inlinePreviewEl = null;
     _toggleEditModeEl = null;

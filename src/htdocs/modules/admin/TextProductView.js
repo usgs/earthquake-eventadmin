@@ -30,7 +30,6 @@ var TextProductView = function (options) {
       _contentsManagerView,
       _dialog,
       _product,
-      _sender,
       _sendProductView,
 
       _onCancel,
@@ -155,7 +154,6 @@ var TextProductView = function (options) {
     _contentsManagerView = null;
     _dialog = null;
     _product = null;
-    _sender = null;
     _sendProductView = null;
 
     _onCancel = null;

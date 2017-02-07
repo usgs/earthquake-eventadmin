@@ -112,6 +112,7 @@ var ProductContentView = function (options) {
       title = '<em>&lt;inline&gt;</em>';
     }
 
+    /* eslint-disable */
     _this.el.innerHTML = [
       '<span class="title">', title, '</span>',
       '<span class="subtitle">',
@@ -125,6 +126,7 @@ var ProductContentView = function (options) {
         '<button class="delete" title="Delete">&times;</button>',
       '</span>'
     ].join('');
+    /* eslint-enable */
   };
 
 

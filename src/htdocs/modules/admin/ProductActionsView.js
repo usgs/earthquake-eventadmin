@@ -277,21 +277,20 @@ var ProductActionsView = function (options) {
    *         new view object.
    */
   _this.newActionsView = function (options) {
-    return ProductActionsView(Util.extend(
-        // current options
-        {
-          deleteProduct: _deleteProduct,
-          editProduct: _editProduct,
-          editView: _editView,
-          event: _event,
-          page: _page,
-          products: _products,
-          productFactory: _productFactory,
-          trumpProduct: _trumpProduct,
-          viewHistory: _viewHistory
-        },
-        // override options
-        options));
+    return ProductActionsView(Util.extend({
+      // current options
+      deleteProduct: _deleteProduct,
+      editProduct: _editProduct,
+      editView: _editView,
+      event: _event,
+      page: _page,
+      products: _products,
+      productFactory: _productFactory,
+      trumpProduct: _trumpProduct,
+      viewHistory: _viewHistory
+    },
+    // override options
+    options));
   };
 
   _initialize(options);
