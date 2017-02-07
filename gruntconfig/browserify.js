@@ -13,6 +13,8 @@ var browserify = {
       paths: [
         CWD + '/' + config.src + '/htdocs/js',
         CWD + '/' + config.src + '/htdocs/modules',
+        NODE_MODULES + '/earthquake-eventpages/src/htdocs/js',
+        NODE_MODULES + '/earthquake-eventpages/src/htdocs/modules',
         NODE_MODULES + '/hazdev-accordion/src',
         NODE_MODULES + '/hazdev-cache-invalidator/src/htdocs/js',
         NODE_MODULES + '/hazdev-location-view/src',
@@ -34,6 +36,11 @@ var browserify = {
   event: {
     src: [config.src + '/htdocs/js/event.js'],
     dest: config.build + '/' + config.src + '/htdocs/js/event.js'
+  },
+
+  products: {
+    src: [config.src + '/htdocs/js/products.js'],
+    dest: config.build + '/' + config.src + '/htdocs/js/products.js'
   },
 
   // test bundle
