@@ -23,7 +23,6 @@ module.exports = function (grunt) {
     'clean:build',
     'copy:eventpages',
     'copy:invalidator',
-    'compass:eventpages',
     'concurrent:build'
   ]);
 

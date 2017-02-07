@@ -11,7 +11,7 @@ var concurrent = {
   ],
   build: [
     'browserify',
-    'compass:dev',
+    'postcss:dev',
     'copy:build',
     'copy:test',
     'copy:leaflet',
@@ -21,7 +21,7 @@ var concurrent = {
   ],
   dist: [
     'copy:dist',
-    'cssmin',
+    'postcss:dist',
     'uglify'
   ]
 };

@@ -57,8 +57,11 @@ var connect = {
   ],
 
   rules: (function () {
-    var rules = {};
-    rules['^' + MOUNT_PATH + '/(.*)$'] = '/$1';
+    var rules = [];
+    rules.push({
+      from: '^' + MOUNT_PATH + '/(.*)$',
+      to: '/$1'
+    });
     return rules;
   })(),
 
