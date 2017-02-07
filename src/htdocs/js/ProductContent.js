@@ -40,7 +40,7 @@ var ProductContent = function (options) {
     }
 
     if (bytes !== null && bytes.length !== _this.get('length')) {
-      console.log('Invalid product contents. Actual length and claimed ' +
+      throw new Error('Invalid product contents. Actual length and claimed ' +
           'length differ.');
     }
   };

@@ -1,16 +1,16 @@
 
-@import 'AdminSummaryDetailsPage';
-@import 'AdminSummaryPage';
-@import 'AssociateEventView';
-@import 'AllProductsPage';
-@import 'EditLinkView';
-@import 'EditProductView';
-@import 'EventComparisonView';
-@import 'LinkSummaryDetailsView';
-@import 'ProductActionsView';
-@import 'ProductHistoryView';
-@import 'SendProductView';
-@import 'TextSummaryDetailsView';
+@import '_AdminSummaryDetailsPage.scss';
+@import '_AdminSummaryPage.scss';
+@import '_AssociateEventView.scss';
+@import '_AllProductsPage.scss';
+@import '_EditLinkView.scss';
+@import '_EditProductView.scss';
+@import '_EventComparisonView.scss';
+@import '_LinkSummaryDetailsView.scss';
+@import '_ProductActionsView.scss';
+@import '_ProductHistoryView.scss';
+@import '_SendProductView.scss';
+@import '_TextSummaryDetailsView.scss';
 
 label > small {
   display:block;

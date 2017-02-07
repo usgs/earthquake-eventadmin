@@ -149,9 +149,7 @@ var EditProductView = function (options) {
 
       _accordion,
       _codeInput,
-      _contentInput,
       _contentsManager,
-      _contentTypeInput,
       _dialog,
       _linksInput,
       _priorityInputs,
@@ -161,7 +159,6 @@ var EditProductView = function (options) {
       _sourceInput,
       _statusInput,
       _typeInput,
-      _uploadView,
 
       _createInput,
       _createViewSkeleton,
@@ -172,7 +169,6 @@ var EditProductView = function (options) {
       _createViewSkeletonProperties,
       _onCancel,
       _onCreate,
-      _parsePropertyInput,
       _renderBasic,
       _renderLinks,
       _renderPriority,
@@ -296,54 +292,54 @@ var EditProductView = function (options) {
   };
 
   _createViewSkeletonBasic = function () {
-      var fragment,
-          codeHelp,
-          codeLabel,
-          sourceLabel,
-          statusLabel,
-          statusHelp,
-          typeLabel;
+    var fragment,
+        codeHelp,
+        codeLabel,
+        sourceLabel,
+        statusLabel,
+        statusHelp,
+        typeLabel;
 
-      fragment = document.createDocumentFragment();
+    fragment = document.createDocumentFragment();
 
-      sourceLabel = fragment.appendChild(document.createElement('label'));
-      sourceLabel.setAttribute('for', 'editproduct-source');
-      sourceLabel.innerHTML = 'Source';
-      _sourceInput = fragment.appendChild(document.createElement('input'));
-      _sourceInput.setAttribute('type', 'text');
-      _sourceInput.setAttribute('id', 'editproduct-source');
-      _sourceInput.classList.add('editproduct-source');
+    sourceLabel = fragment.appendChild(document.createElement('label'));
+    sourceLabel.setAttribute('for', 'editproduct-source');
+    sourceLabel.innerHTML = 'Source';
+    _sourceInput = fragment.appendChild(document.createElement('input'));
+    _sourceInput.setAttribute('type', 'text');
+    _sourceInput.setAttribute('id', 'editproduct-source');
+    _sourceInput.classList.add('editproduct-source');
 
-      typeLabel = fragment.appendChild(document.createElement('label'));
-      typeLabel.setAttribute('for', 'editproduct-type');
-      typeLabel.innerHTML = 'Type';
-      _typeInput = fragment.appendChild(document.createElement('input'));
-      _typeInput.setAttribute('type', 'text');
-      _typeInput.setAttribute('id', 'editproduct-type');
-      _typeInput.classList.add('editproduct-type');
+    typeLabel = fragment.appendChild(document.createElement('label'));
+    typeLabel.setAttribute('for', 'editproduct-type');
+    typeLabel.innerHTML = 'Type';
+    _typeInput = fragment.appendChild(document.createElement('input'));
+    _typeInput.setAttribute('type', 'text');
+    _typeInput.setAttribute('id', 'editproduct-type');
+    _typeInput.classList.add('editproduct-type');
 
-      codeLabel = fragment.appendChild(document.createElement('label'));
-      codeLabel.setAttribute('for', 'editproduct-code');
-      codeLabel.innerHTML = 'Code';
-      codeHelp = codeLabel.appendChild(document.createElement('small'));
-      codeHelp.innerHTML = 'Unique codes (within a source and type) define ' +
-          'unique products';
-      _codeInput = fragment.appendChild(document.createElement('input'));
-      _codeInput.setAttribute('type', 'text');
-      _codeInput.setAttribute('id', 'editproduct-code');
-      _codeInput.classList.add('editproduct-code');
+    codeLabel = fragment.appendChild(document.createElement('label'));
+    codeLabel.setAttribute('for', 'editproduct-code');
+    codeLabel.innerHTML = 'Code';
+    codeHelp = codeLabel.appendChild(document.createElement('small'));
+    codeHelp.innerHTML = 'Unique codes (within a source and type) define ' +
+        'unique products';
+    _codeInput = fragment.appendChild(document.createElement('input'));
+    _codeInput.setAttribute('type', 'text');
+    _codeInput.setAttribute('id', 'editproduct-code');
+    _codeInput.classList.add('editproduct-code');
 
-      statusLabel = fragment.appendChild(document.createElement('label'));
-      statusLabel.setAttribute('for', 'editproduct-status');
-      statusLabel.innerHTML = 'Status';
-      statusHelp = statusLabel.appendChild(document.createElement('small'));
-      statusHelp.innerHTML = 'Use &ldquo;DELETE&rdquo; to delete this product';
-      _statusInput = fragment.appendChild(document.createElement('input'));
-      _statusInput.setAttribute('type', 'text');
-      _statusInput.setAttribute('id', 'editproduct-status');
-      _statusInput.classList.add('editproduct-status');
+    statusLabel = fragment.appendChild(document.createElement('label'));
+    statusLabel.setAttribute('for', 'editproduct-status');
+    statusLabel.innerHTML = 'Status';
+    statusHelp = statusLabel.appendChild(document.createElement('small'));
+    statusHelp.innerHTML = 'Use &ldquo;DELETE&rdquo; to delete this product';
+    _statusInput = fragment.appendChild(document.createElement('input'));
+    _statusInput.setAttribute('type', 'text');
+    _statusInput.setAttribute('id', 'editproduct-status');
+    _statusInput.classList.add('editproduct-status');
 
-      return fragment;
+    return fragment;
   };
 
   _createViewSkeletonContents = function () {
@@ -412,7 +408,7 @@ var EditProductView = function (options) {
     var fragment,
         intro;
 
-   fragment = document.createDocumentFragment();
+    fragment = document.createDocumentFragment();
 
     intro = fragment.appendChild(document.createElement('p'));
     intro.classList.add('alert');
@@ -455,15 +451,19 @@ var EditProductView = function (options) {
     errors = [];
 
     try { rawVals = _validateBasic(); }
-        catch (e) { errors.push(e); }
+    catch (e) { errors.push(e); }
+
     try { propertyVals = _validatePriority(); }
-        catch (e) { errors.push(e); }
+    catch (e) { errors.push(e); }
+
     try { propertyVals = _validateProperties(propertyVals); }
-        catch (e) { errors.push(e); }
+    catch (e) { errors.push(e); }
+
     try { linkVals = _validateLinks(); }
-        catch (e) { errors.push(e); }
+    catch (e) { errors.push(e); }
+
     try { fileVals = _validateFiles(); }
-        catch (e) { errors.push(e); }
+    catch (e) { errors.push(e); }
 
     if (errors.length === 0) {
       rawVals.properties = propertyVals;
@@ -486,39 +486,23 @@ var EditProductView = function (options) {
       _sendProductView.show();
     } else {
       ModalView('One or more errors occurred when creating the product. ' +
-          'Please review you input values and try again.' + errors.join('<br/>'), {
-        title: 'Error Parsing Product',
-        classes: ['modal-error'],
-        buttons: [
-          {
-            text: 'Fix Inputs',
-            callback: function (evt, modal) {
-              modal.hide();
-              modal.destroy();
+          'Please review you input values and try again.' +
+          errors.join('<br/>'),
+        {
+          title: 'Error Parsing Product',
+          classes: ['modal-error'],
+          buttons: [
+            {
+              text: 'Fix Inputs',
+              callback: function (evt, modal) {
+                modal.hide();
+                modal.destroy();
+              }
             }
-          }
-        ]
-      }).show();
+          ]
+        }
+      ).show();
     }
-  };
-
-  _parsePropertyInput = function () {
-    var properties;
-
-    properties = {};
-
-    _propertiesInput.value.split('\n').forEach(function (property) {
-      var tokens = property.split('=');
-
-      if (tokens.length !== 2) {
-        throw new Error('Malformed product property ' +
-            '&ldquo;' + property + '&rdquo;');
-      }
-
-      properties[tokens[0].trim()] = tokens[1].trim();
-    });
-
-    return properties;
   };
 
   _renderBasic = function () {
@@ -753,9 +737,7 @@ var EditProductView = function (options) {
 
     _accordion = null;
     _codeInput = null;
-    _contentInput = null;
     _contentsManager = null;
-    _contentTypeInput = null;
     _dialog = null;
     _linksInput = null;
     _priorityInputs = null;
@@ -765,7 +747,6 @@ var EditProductView = function (options) {
     _sourceInput = null;
     _statusInput = null;
     _typeInput = null;
-    _uploadView = null;
 
     _createInput = null;
     _createViewSkeleton = null;
@@ -776,7 +757,6 @@ var EditProductView = function (options) {
     _createViewSkeletonProperties = null;
     _onCancel = null;
     _onCreate = null;
-    _parsePropertyInput = null;
     _renderBasic = null;
     _renderLinks = null;
     _renderPriority = null;

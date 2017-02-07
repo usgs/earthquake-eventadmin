@@ -1,23 +1,16 @@
-// this is from earthquake-eventpages
-@import 'css/index';
+@import 'hazdev-webutils/src/mvc/ModalView.scss';
+@import 'hazdev-webutils/src/util/Message.scss';
+@import 'hazdev-cache-invalidator/src/htdocs/css/_InvalidatorView.scss';
 
-// this is from hazdev-webutils
-@import 'mvc/ModalView';
 
-// this is from hazdev-webutils
-@import 'util/Message';
+@import 'modules/admin/index.scss';
+@import 'modules/admin/scientific/index.scss';
+@import 'modules/admin/summary/index.scss';
 
-// this is from hazdev-cache-invalidator
-@import 'hazdev-cache-invalidator/src/htdocs/css/InvalidatorView';
-
-@import 'htdocs/modules/admin/index';
-@import 'htdocs/modules/admin/scientific/index';
-@import 'htdocs/modules/admin/summary/index';
-
-@import 'FileUploadStatusView';
-@import 'ContentsManagerView';
-@import 'ProductContentEditView';
-@import 'ProductContentView';
+@import '_FileUploadStatusView.scss';
+@import '_ContentsManagerView.scss';
+@import '_ProductContentEditView.scss';
+@import '_ProductContentView.scss';
 
 
 /* this supports both location view and dyfi-form */

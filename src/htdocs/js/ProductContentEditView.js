@@ -77,6 +77,7 @@ var ProductContentEditView = function (params) {
     _this.el.classList.add('vertical');
     _this.el.classList.add('productcontentedit');
 
+    /* eslint-disable */
     _this.el.innerHTML = [
       '<label for="content-id">',
         'Content Path',
@@ -115,6 +116,7 @@ var ProductContentEditView = function (params) {
       '</div>',
       '<div class="content-upload-errors"></div>'
     ].join('');
+    /* eslint-enable */
 
     _idEl = _this.el.querySelector('.content-id');
     _typeEl = _this.el.querySelector('.content-type');
@@ -230,8 +232,7 @@ var ProductContentEditView = function (params) {
   };
 
   _this.render = function () {
-    var bytes,
-        date,
+    var date,
         size,
         type,
         url;
@@ -264,12 +265,6 @@ var ProductContentEditView = function (params) {
     _urlEl.setAttribute('href', url);
     _urlEl.setAttribute('title', url);
     _urlEl.innerHTML = url;
-
-
-    bytes = _transientContent.get('bytes');
-    if (bytes !== null) {
-    } else {
-    }
   };
 
   _this.show = function () {

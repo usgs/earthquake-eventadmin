@@ -1,13 +1,11 @@
 'use strict';
 
 
-var TextProductView = require('admin/TextProductView'),
-    SummaryPage = require('summary/SummaryPage'),
-
-    CatalogEvent = require('CatalogEvent'),
+var CatalogEvent = require('CatalogEvent'),
     EditLinkView = require('admin/EditLinkView'),
     LinkSummaryDetailsView = require('admin/LinkSummaryDetailsView'),
     ProductActionsView = require('admin/ProductActionsView'),
+    SummaryPage = require('summary/SummaryPage'),
     TextSummaryDetailsView = require('admin/TextSummaryDetailsView'),
     TextProductView = require('admin/TextProductView');
 

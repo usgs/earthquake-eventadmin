@@ -21,7 +21,6 @@ var AssociateEventView = function (options) {
       _initialize,
 
       // variables
-      _associateEvent,
       _associateEventId,
       _associateProducts = [],
       _associateProductText,
@@ -280,7 +279,6 @@ var AssociateEventView = function (options) {
       _dialog.destroy();
       _dialog = null;
     }
-    _associateEvent = null;
     _associateEventId = null;
     _associateProducts = null;
     _infoEl = null;

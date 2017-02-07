@@ -148,7 +148,7 @@ AdminScientificSummaryPage.prototype._getAddLinkClick = function () {
  *
  * @see earthquake-eventpages::summary/SummaryPage#_getTexts
  */
- AdminScientificSummaryPage.prototype.getTexts = function () {
+AdminScientificSummaryPage.prototype.getTexts = function () {
   var button,
       buttonTitle,
       el,
@@ -192,7 +192,7 @@ AdminScientificSummaryPage.prototype._getAddLinkClick = function () {
  *
  * @see earthquake-eventpages::summary/SummaryPage#_getText
  */
- AdminScientificSummaryPage.prototype.getText = function (product) {
+AdminScientificSummaryPage.prototype.getText = function (product) {
   var actionsView,
       el;
 
@@ -225,7 +225,7 @@ AdminScientificSummaryPage.prototype._getAddLinkClick = function () {
  * @return {Function}
  *         click event handler to add a text product.
  */
- AdminScientificSummaryPage.prototype._getAddTextClick = function () {
+AdminScientificSummaryPage.prototype._getAddTextClick = function () {
   var eventDetails = this._event;
 
   return function (e) {

@@ -3,25 +3,25 @@
 var concurrent = {
   scripts: [
     'browserify',
-    'jshint:scripts'
+    'eslint:scripts'
   ],
   tests: [
     'browserify:test',
-    'jshint:tests'
+    'eslint:tests'
   ],
   build: [
     'browserify',
-    'compass:dev',
+    'postcss:dev',
     'copy:build',
     'copy:test',
     'copy:leaflet',
     'copy:locationview_images',
-    'jshint:scripts',
-    'jshint:tests'
+    'eslint:scripts',
+    'eslint:tests'
   ],
   dist: [
     'copy:dist',
-    'cssmin',
+    'postcss:dist',
     'uglify'
   ]
 };
