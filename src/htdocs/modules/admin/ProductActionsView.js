@@ -109,7 +109,7 @@ var ProductActionsView = function (options) {
       _addButton({
         className: 'trump',
         handler: _this.onTrumpProduct,
-        text: 'Trump Product'
+        text: 'Make Authoritative'
       });
     }
 
