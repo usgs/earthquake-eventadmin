@@ -11,9 +11,9 @@ $links = '';
 if ($eventid != null and $eventid != '') {
   $links .=
       navItem($CONFIG['MOUNT_PATH'] .
-          '/event.php?eventid=' + $eventid, 'Summary') .
+          '/event.php?eventid=' . $eventid, 'Manage Event') .
       navItem($CONFIG['MOUNT_PATH'] .
-          '/products.php?eventid=' + $eventid, 'All Products')
+          '/products.php?eventid=' . $eventid, 'Manage Products')
     ;
 }
 
