@@ -22,16 +22,14 @@ if (!isset($TEMPLATE)) {
 
 
   $TITLE = $PROPERTIES['title'];
-  $NAVIGATION = navItem('#', 'Event Summary');
+  $NAVIGATION = true;
 
   $HEAD = '<link rel="stylesheet" href="css/event.css"/>';
   $FOOT = '
-      /* create event page with event details and config. */
       <script>
         var EventConfig = ' . json_encode($EVENT_CONFIG) . ';
         var EventDetails = ' . json_encode($EVENT) . ';
       </script>
-      /* this script creates EventPage using EventConfig, EventDetails */
       <script src="js/event.js"></script>
     ';
 
@@ -39,7 +37,7 @@ if (!isset($TEMPLATE)) {
 }
 
 if ($httpCode != 409) {
-  include_once '../lib/inc/html.inc.php';
+  echo '<div class="eventadmin-event"></div>';
 } else {
   print '<p class="alert error">The requested event has been deleted.</p>';
 }

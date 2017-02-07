@@ -1,6 +1,7 @@
 /* global EventConfig, EventDetails */
 'use strict';
 
+
 var AllProductsView = require('AllProductsView');
 
 
