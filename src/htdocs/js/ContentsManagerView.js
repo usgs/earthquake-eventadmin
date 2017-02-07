@@ -5,8 +5,6 @@ var FileUploadView = require('FileUploadView'),
     ProductContent = require('ProductContent'),
     ProductContentView = require('ProductContentView'),
 
-    EventModulePage = require('base/EventModulePage'),
-
     Collection = require('mvc/Collection'),
     CollectionView = require('mvc/CollectionView'),
     View = require('mvc/View'),
@@ -35,7 +33,8 @@ var ContentsManagerView = function (params) {
       _createViewSkeleton,
       _onFileUpload,
       _onInlineEditChange,
-      _onToggleClick;
+      _onToggleClick,
+      _replaceRelativePaths;
 
 
   _this = View(params);
@@ -231,6 +230,31 @@ var ContentsManagerView = function (params) {
     }
   };
 
+  /**
+   * Replace relative paths in content.
+   *
+   * @param html {String}
+   *        html markup.
+   * @param contents {Object<path => Content>}
+   *        contents to replace.
+   * @return {String}
+   *         markup any quoted paths are replaced with quoted content urls.
+   *         "path" => "content.url".
+   */
+  _replaceRelativePaths = function (html, contents) {
+    var content,
+        path;
+
+    for (path in contents) {
+      if (path !== '') {
+        content = contents[path];
+        html = html.replace(new RegExp('"' + path + '"', 'g'),
+            '"' + content.url + '"');
+      }
+    }
+    return html;
+  };
+
 
   _this.destroy = Util.compose(function () {
     var inline;
@@ -288,9 +312,8 @@ var ContentsManagerView = function (params) {
     if (inline) {
       bytes = inline.get('bytes');
       _inlineEditEl.value = bytes;
-      _inlinePreviewEl.innerHTML =
-          EventModulePage.prototype._replaceRelativePaths(
-              bytes, _this.model.toJSON().contents);
+      _inlinePreviewEl.innerHTML = _replaceRelativePaths(
+          bytes, _this.model.toJSON().contents);
     } else {
       _inlineEditEl.value = '';
       _inlinePreviewEl.innerHTML = '';
