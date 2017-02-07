@@ -47,7 +47,7 @@ var watch = {
       'Gruntfile.js',
       'gruntconfig/**/*.js'
     ],
-    tasks: ['jshint:gruntfile']
+    tasks: ['eslint:gruntfile']
   }
 };
 
