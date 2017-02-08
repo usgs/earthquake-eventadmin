@@ -1,35 +1,36 @@
 'use strict';
 
+
 var CatalogEvent = require('admin/CatalogEvent'),
     Collection = require('mvc/Collection'),
+    ModalView = require('mvc/ModalView'),
     Product = require('admin/Product'),
     ProductContent = require('admin/ProductContent'),
     SendProductView = require('admin/SendProductView'),
-
-    ModalView = require('mvc/ModalView'),
-    View = require('mvc/View'),
-
     Util = require('util/Util'),
+    View = require('mvc/View'),
     Xhr = require('util/Xhr');
 
-var DEFAULTS = {
+
+var _DEFAULTS;
+
+_DEFAULTS = {
   SEARCH_STUB: 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson'
 };
+
 
 var AssociateEventView = function (options) {
   var _this,
       _initialize,
 
-      // variables
       _associateEventId,
-      _associateProducts = [],
       _associateProductText,
+      _associateProducts,
       _dialog,
       _infoEl,
       _referenceEvent,
       _searchStub,
 
-      // methods
       _appendAssociationText,
       _createSendProductView,
       _findMatchingSource,
@@ -38,13 +39,15 @@ var AssociateEventView = function (options) {
       _onCancel,
       _onConfirm;
 
+
   _this = View(options);
 
-  _initialize = function () {
+  _initialize = function (options) {
     var el = _this.el;
 
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
 
+    _associateProducts = [];
     _referenceEvent = options.referenceEvent;
     _associateEventId = options.associateEventId;
     _searchStub = options.eventConfig.SEARCH_STUB || options.SEARCH_STUB;
@@ -72,22 +75,111 @@ var AssociateEventView = function (options) {
     });
 
     _dialog.show();
-    options = null;
+  };
+
+
+  /**
+   * Adds association logic text as inline product content from
+   * the textarea input
+   */
+  _appendAssociationText = function () {
+    var text = _infoEl.querySelector('.textproduct-text').value;
+
+    for (var i = 0; i < _associateProducts.length; i++) {
+      _associateProducts[i].set({
+        'contents': Collection([
+          ProductContent({
+            'id': '',
+            'bytes': text,
+            'length': text.length
+          })
+        ])
+      });
+    }
   };
 
   /**
-   * Confirm button callback for modal dialog
+   * Display associate products in SendProductView
    */
-  _onConfirm = function () {
-    _appendAssociationText();
-    _createSendProductView();
+  _createSendProductView = function () {
+    var sendProductView = SendProductView({
+      modalTitle: 'Associate Product(s)',
+      products: _associateProducts,
+      formatProduct: function (products) {
+        // format product being sent
+        return sendProductView.formatProduct(products);
+      }
+    });
+    sendProductView.show();
   };
 
   /**
-   * Cancel button callback for modal dialog
+   * Finds the matching eventSource that is preventing association by
+   * comparing eventCodes on the event you are trying to associate against
+   * the reference event.
+   *
+   * @param  associateEventSummary {Object}
+   *         The event to be associated
+   *
+   * @return {String}
+   *         The network source
    */
-  _onCancel = function () {
-    _dialog.hide();
+  _findMatchingSource = function (associateEventSummary) {
+    var matchingSource = null,
+        referenceEventCodes,
+        associateEventCodes;
+
+    referenceEventCodes = _referenceEvent.eventCodes;
+    associateEventCodes = associateEventSummary.eventCodes;
+
+    for (var key in associateEventCodes) {
+      if (key in referenceEventCodes) {
+        matchingSource = key;
+      }
+    }
+
+    return matchingSource;
+  };
+
+  /**
+   * Builds an array of associate products when the two events that are being
+   * associated share an event solution from the same source. Occasionally,
+   * multiple associate products must be generated to force an association.
+   *
+   * @param  source {String},
+   *         The source that is shared between the two events.
+   * @param  associateEvent {Object} associateEvent [description]
+   *         The event that is being associated.
+   *
+   * @return {Array<Object>}
+   *         An array of associate products
+   */
+  _generateAssociateProducts = function (source, associateEvent) {
+    var products = [],
+        associateEventCodes = associateEvent.eventCodes[source],
+        referenceEventCodes = _referenceEvent.eventCodes[source],
+        x, i;
+
+    for (i = 0; i < referenceEventCodes.length; i++) {
+      for (x = 0; x < associateEventCodes.length; x++) {
+        products.push(
+          Product({
+            source: 'admin',
+            type: 'associate',
+            code: source + referenceEventCodes[i] + '_' +
+                source + associateEventCodes[x],
+            properties: {
+              eventsource: source,
+              eventsourcecode: referenceEventCodes[i],
+              othereventsource: source,
+              othereventsourcecode: associateEventCodes[x]
+            }
+          })
+        );
+      }
+    }
+
+    return products;
   };
 
   /**
@@ -159,115 +251,32 @@ var AssociateEventView = function (options) {
   };
 
   /**
-   * Adds association logic text as inline product content from
-   * the textarea input
+   * Cancel button callback for modal dialog
    */
-  _appendAssociationText = function () {
-    var text = _infoEl.querySelector('.textproduct-text').value;
-
-    for (var i = 0; i < _associateProducts.length; i++) {
-      _associateProducts[i].set({
-        'contents': Collection([
-          ProductContent({
-            'id': '',
-            'bytes': text,
-            'length': text.length
-          })
-        ])
-      });
-    }
+  _onCancel = function () {
+    _dialog.hide();
   };
 
   /**
-   * Display associate products in SendProductView
+   * Confirm button callback for modal dialog
    */
-  _createSendProductView = function () {
-    var sendProductView = SendProductView({
-      modalTitle: 'Associate Product(s)',
-      products: _associateProducts,
-      formatProduct: function (products) {
-        // format product being sent
-        return sendProductView.formatProduct(products);
-      }
-    });
-    sendProductView.show();
+  _onConfirm = function () {
+    _appendAssociationText();
+    _createSendProductView();
   };
 
-  /**
-   * Builds an array of associate products when the two events that are being
-   * associated share an event solution from the same source. Occasionally,
-   * multiple associate products must be generated to force an association.
-   *
-   * @param  source {String},
-   *         The source that is shared between the two events.
-   * @param  associateEvent {Object} associateEvent [description]
-   *         The event that is being associated.
-   *
-   * @return {Array<Object>}
-   *         An array of associate products
-   */
-  _generateAssociateProducts = function (source, associateEvent) {
-    var products = [],
-        associateEventCodes = associateEvent.eventCodes[source],
-        referenceEventCodes = _referenceEvent.eventCodes[source],
-        x, i;
-
-    for (i = 0; i < referenceEventCodes.length; i++) {
-      for (x = 0; x < associateEventCodes.length; x++) {
-        products.push(
-          Product({
-            source: 'admin',
-            type: 'associate',
-            code: source + referenceEventCodes[i] + '_' +
-                source + associateEventCodes[x],
-            properties: {
-              eventsource: source,
-              eventsourcecode: referenceEventCodes[i],
-              othereventsource: source,
-              othereventsourcecode: associateEventCodes[x]
-            }
-          })
-        );
-      }
-    }
-
-    return products;
-  };
-
-  /**
-   * Finds the matching eventSource that is preventing association by
-   * comparing eventCodes on the event you are trying to associate against
-   * the reference event.
-   *
-   * @param  associateEventSummary {Object}
-   *         The event to be associated
-   *
-   * @return {String}
-   *         The network source
-   */
-  _findMatchingSource = function (associateEventSummary) {
-    var matchingSource = null,
-        referenceEventCodes,
-        associateEventCodes;
-
-    referenceEventCodes = _referenceEvent.eventCodes;
-    associateEventCodes = associateEventSummary.eventCodes;
-
-    for (var key in associateEventCodes) {
-      if (key in referenceEventCodes) {
-        matchingSource = key;
-      }
-    }
-
-    return matchingSource;
-  };
 
   /**
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
 
     // methods
+    _appendAssociationText = null;
+    _createSendProductView = null;
     _findMatchingSource = null;
     _generateAssociateProducts = null;
     _getContent = null;
@@ -279,15 +288,23 @@ var AssociateEventView = function (options) {
       _dialog.destroy();
       _dialog = null;
     }
+
     _associateEventId = null;
+    _associateProductText = null;
     _associateProducts = null;
     _infoEl = null;
     _referenceEvent = null;
     _searchStub = null;
+
+    _initialize = null;
+    _this = null;
   }, _this.destroy);
 
-  _initialize();
+
+  _initialize(options);
+  options = null;
   return _this;
 };
+
 
 module.exports = AssociateEventView;
