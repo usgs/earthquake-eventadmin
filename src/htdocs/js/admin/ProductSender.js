@@ -5,7 +5,9 @@ var Util = require('util/Util'),
     Xhr = require('util/Xhr');
 
 
-var DEFAULTS = {
+var _DEFAULTS;
+
+_DEFAULTS = {
   url: 'send_product.php'
 };
 
@@ -25,10 +27,9 @@ var ProductSender = function (options) {
 
   _this = {};
 
-  _initialize = function () {
-    options = Util.extend({}, DEFAULTS, options);
+  _initialize = function (options) {
+    options = Util.extend({}, _DEFAULTS, options);
     _url = options.url;
-    options = null;
   };
 
 
@@ -72,7 +73,8 @@ var ProductSender = function (options) {
   };
 
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 
