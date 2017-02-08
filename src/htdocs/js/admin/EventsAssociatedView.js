@@ -27,7 +27,8 @@ var EventsAssociatedView = function (options) {
       _createView,
       _deleteCallback,
       _disassociateCallback,
-      _sendProduct;
+      _sendProduct,
+      _trumpCallback;
 
 
   options = Util.extend({}, options);
@@ -79,6 +80,11 @@ var EventsAssociatedView = function (options) {
           title: 'Delete',
           className: 'delete',
           callback: _deleteCallback
+        },
+        {
+          title: 'Make Authoritative',
+          className: 'trump',
+          callback: _trumpCallback
         }
       ]
     });
@@ -184,12 +190,44 @@ var EventsAssociatedView = function (options) {
 
 
   /**
+   * Trump Product button click handler.
+   *
+   * @param eventSummary {Object}
+   *        Product
+   * @param referenceEvent {Object}
+   *        Product
+   */
+  _trumpCallback = function (eventSummary, referenceEvent) {
+    var trumpProduct,
+        trumpText,
+        trumpTitle;
+
+    trumpProduct = _productFactory.getTrump({
+      'code': referenceEvent.sourceCode,
+      'properties': {
+        'eventsource': eventSummary.source,
+        'eventsourcecode': eventSummary.sourceCode
+      },
+      'source': referenceEvent.source,
+      'type': 'origin'
+    });
+
+    trumpText = 'The following TRUMP product(s) will be sent. ' +
+        'Click a product below for more details.';
+    trumpTitle = 'Trump Product(s)';
+
+    _sendProduct([trumpProduct], trumpTitle, trumpText);
+  };
+
+  /**
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = Util.compose(function () {
 
     // methods
+    _trumpCallback = null;
     _disassociateCallback = null;
+    _deleteCallback = null;
     _createView = null;
 
     // variables

@@ -81,6 +81,22 @@ var EventComparisonView = function (options) {
     _collectionTable.el.addEventListener('click', _onClick);
   };
 
+  /**
+   * Click handler that delegates the proper callback when a button is
+   * clicked on in the CollectionTable.
+   */
+  _onClick = function (e) {
+    var element = e.target,
+        eventid = null,
+        title = null;
+
+    if (element.nodeName.toUpperCase() === 'BUTTON') {
+      eventid = element.getAttribute('data-id');
+      title = element.innerHTML;
+      // execute callback for the button with the matching classname
+      _callbackMap[title](_collection.get(eventid), _referenceEvent);
+    }
+  };
 
   _getColumns = function () {
     return [
