@@ -20,25 +20,23 @@ if (!isset($TEMPLATE)) {
 
   include_once '../lib/details.inc.php';
 
-
   $TITLE = $PROPERTIES['title'];
   $NAVIGATION = true;
 
-  $HEAD = '<link rel="stylesheet" href="css/event.css"/>';
+  $HEAD = '<link rel="stylesheet" href="css/products.css"/>';
   $FOOT = '
-      <script>
-        var EventConfig = ' . json_encode($EVENT_CONFIG) . ';
-        var EventDetails = ' . json_encode($EVENT) . ';
-      </script>
-      <script src="js/event.js"></script>
-    ';
+    <script>
+      var EventConfig = ' . json_encode($EVENT_CONFIG) . ';
+      var EventDetails = ' . json_encode($EVENT) . ';
+    </script>
+    <script src="js/products.js"></script>
+  ';
 
-  include 'template.inc.php';
+  include_once 'template.inc.php';
 }
 
 if ($httpCode != 409) {
-  echo '<div class="eventadmin-event"></div>';
+  echo '<div class="eventadmin-products"></div>';
 } else {
-  print '<p class="alert error">The requested event has been deleted.</p>';
+  echo '<p class="alert error">The requested event has been deleted.</p>';
 }
-?>

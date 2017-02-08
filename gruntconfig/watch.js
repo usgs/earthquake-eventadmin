@@ -15,7 +15,7 @@ var watch = {
   },
   scripts: {
     files: [config.src + '/htdocs/**/*.js'],
-    tasks: ['concurrent:scripts', 'mocha_phantomjs'],
+    tasks: ['browserify', 'eslint:scripts', 'mocha_phantomjs'],
     options: {
       livereload: config.liveReloadPort
     }
@@ -29,7 +29,7 @@ var watch = {
       config.test + '/*.html',
       config.test + '/**/*.js'
     ],
-    tasks: ['concurrent:tests', 'mocha_phantomjs']
+    tasks: ['browserify:test', 'eslint:tests', 'mocha_phantomjs']
   },
   livereload: {
     options: {
@@ -47,7 +47,7 @@ var watch = {
       'Gruntfile.js',
       'gruntconfig/**/*.js'
     ],
-    tasks: ['jshint:gruntfile']
+    tasks: ['eslint:gruntfile']
   }
 };
 

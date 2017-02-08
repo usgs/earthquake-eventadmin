@@ -14,16 +14,25 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:build',
-    'concurrent:build',
+    'browserify',
+    'postcss:build',
+    'copy:build',
+    'copy:test',
+    'eslint:scripts',
+    'eslint:tests',
     'connect:test',
     'mocha_phantomjs'
   ]);
 
   grunt.registerTask('build', [
     'clean:build',
-    'copy:eventpages',
     'copy:invalidator',
-    'concurrent:build'
+    'browserify',
+    'postcss:build',
+    'copy:build',
+    'copy:test',
+    'eslint:scripts',
+    'eslint:tests'
   ]);
 
   grunt.registerTask('eventadmin', function () {
@@ -38,7 +47,9 @@ module.exports = function (grunt) {
       grunt.task.run([
         'build',
         'clean:dist',
-        'concurrent:dist'
+        'copy:dist',
+        'postcss:dist',
+        'uglify'
       ]);
     }
 
@@ -53,7 +64,9 @@ module.exports = function (grunt) {
   grunt.registerTask('dist', [
     'build',
     'clean:dist',
-    'concurrent:dist',
+    'copy:dist',
+    'postcss:dist',
+    'uglify',
     'connect:template',
     'configureRewriteRules',
     'configureProxies:dist',

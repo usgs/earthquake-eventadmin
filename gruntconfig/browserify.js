@@ -1,48 +1,75 @@
 'use strict';
 
-var config = require('./config');
+
+var babelify = require('babelify'),
+    config = require('./config'),
+    glob = require('glob');
 
 
-var CWD = process.cwd(),
-    NODE_MODULES = CWD + '/node_modules';
+var BUNDLE_CLASSES;
+
+BUNDLE_CLASSES = [];
+
+
+Object.keys(config.jsPath).forEach(function (path) {
+  var files,
+      pattern;
+
+  pattern = config.jsPath[path];
+  if (pattern) {
+    path = path + '/';
+    files = glob.sync(path + pattern);
+    files.forEach(function (file) {
+      var alias;
+      alias = file.replace(path, '').replace('.js', '');
+      BUNDLE_CLASSES.push('./' + file + ':' + alias);
+    });
+  }
+});
+
 
 var browserify = {
+
   options: {
     browserifyOptions: {
       debug: true,
-      paths: [
-        CWD + '/' + config.src + '/htdocs/js',
-        CWD + '/' + config.src + '/htdocs/modules',
-        NODE_MODULES + '/earthquake-eventpages/src/htdocs/js',
-        NODE_MODULES + '/earthquake-eventpages/src/htdocs/modules',
-        NODE_MODULES + '/hazdev-accordion/src',
-        NODE_MODULES + '/hazdev-cache-invalidator/src/htdocs/js',
-        NODE_MODULES + '/hazdev-location-view/src',
-        NODE_MODULES + '/hazdev-question-view/src',
-        NODE_MODULES + '/hazdev-svgimagemap/src',
-        NODE_MODULES + '/hazdev-tablist/src',
-        NODE_MODULES + '/hazdev-webutils/src',
-        NODE_MODULES + '/quakeml-parser-js/src'
-      ]
+      paths: Object.keys(config.jsPath)
+    },
+    transform: [
+      babelify.configure({
+        presets: ['es2015']
+      })
+    ]
+  },
+
+
+  'bundle': {
+    src: [],
+    dest: config.build + '/' + config.src + '/htdocs/js/bundle.js',
+    options: {
+      alias: BUNDLE_CLASSES
     }
   },
 
-  // source bundles
-  index: {
-    src: [config.src + '/htdocs/js/index.js'],
-    dest: config.build + '/' + config.src + '/htdocs/js/index.js'
+  'entrypoints': {
+    expand: true,
+    cwd: './' + config.src + '/htdocs/js',
+    dest: './' + config.build + '/' + config.src + '/htdocs/js',
+    src: [
+      '*.js'
+    ],
+    options: {
+    }
   },
 
-  event: {
-    src: [config.src + '/htdocs/js/event.js'],
-    dest: config.build + '/' + config.src + '/htdocs/js/event.js'
-  },
-
-  // test bundle
-  test: {
+  'test': {
     src: config.test + '/test.js',
-    dest: config.build + '/' + config.test + '/test.js'
+    dest: config.build + '/' + config.test + '/test.js',
+    options: {
+      external: BUNDLE_CLASSES
+    }
   }
+
 };
 
 

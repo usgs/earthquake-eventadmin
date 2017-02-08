@@ -9,12 +9,6 @@ var OFFSITE_HOST = config.ini.OFFSITE_HOST;
 
 var addMiddleware = function (connect, options, middlewares) {
   middlewares.unshift(
-    require('compression')({
-      filter: function (req, res) {
-        var type = res.getHeader('Content-Type');
-        return (type+'').match(/(css|javascript)/);
-      }
-    }),
     require('grunt-connect-rewrite/lib/utils').rewriteRequest,
     require('grunt-connect-proxy/lib/utils').proxyRequest,
     require('gateway')(options.base[0], {
@@ -37,7 +31,7 @@ var connect = {
     {
       context: '/theme/',
       host: 'localhost',
-      port: 8113,
+      port: config.templatePort,
       rewrite: {
         '^/theme': ''
       }
@@ -56,25 +50,50 @@ var connect = {
     }
   ],
 
-  rules: (function () {
-    var rules = [];
-    rules.push({
+  rules: [
+    {
       from: '^' + MOUNT_PATH + '/(.*)$',
       to: '/$1'
-    });
-    return rules;
-  })(),
+    }
+  ],
 
 
   dev: {
     options: {
-      base: [config.build + '/' + config.src + '/htdocs'],
-      port: 8110,
+      base: [
+        config.build + '/' + config.src + '/htdocs'
+      ],
       livereload: config.liveReloadPort,
-      open: 'http://localhost:8110/index.php',
-      middleware: addMiddleware
+      middleware: addMiddleware,
+      open: 'http://localhost:' + config.buildPort +
+          MOUNT_PATH + '/index.php',
+      port: config.buildPort
     }
   },
+
+  dist: {
+    options: {
+      base: [
+        config.dist + '/htdocs'
+      ],
+      keepalive: true,
+      middleware: addMiddleware,
+      open: 'http://localhost:' + config.distPort +
+          MOUNT_PATH + '/index.php',
+      port: config.distPort
+    }
+  },
+
+  template: {
+    options: {
+      base: [
+        'node_modules/hazdev-template/dist/htdocs'
+      ],
+      middleware: addMiddleware,
+      port: config.templatePort
+    }
+  },
+
   test: {
     options: {
       base: [
@@ -82,23 +101,8 @@ var connect = {
         config.build + '/' + config.test,
         'node_modules'
       ],
-      port: 8111,
-      open: 'http://localhost:8111/test.html'
-    }
-  },
-  dist: {
-    options: {
-      base: [config.dist + '/htdocs'],
-      port: 8112,
-      keepalive: true,
-      open: 'http://localhost:8112/',
-      middleware: addMiddleware
-    }
-  },
-  template: {
-    options: {
-      base: ['node_modules/hazdev-template/dist/htdocs'],
-      port: 8113
+      open: 'http://localhost:' + config.testPort + '/test.html',
+      port: config.testPort
     }
   }
 };

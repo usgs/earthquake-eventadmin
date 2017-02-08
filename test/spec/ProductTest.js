@@ -1,8 +1,8 @@
 /* global chai, describe, it */
 'use strict';
 
-var Product = require('Product'),
-    ProductContent = require('ProductContent'),
+var Product = require('admin/Product'),
+    ProductContent = require('admin/ProductContent'),
 
     Collection = require('mvc/Collection');
 

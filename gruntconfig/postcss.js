@@ -3,59 +3,55 @@
 var autoprefixer = require('autoprefixer'),
     cssnano = require('cssnano'),
     calc = require('postcss-calc'),
-    cssImport = require('postcss-import'),
+    postcssImport = require('postcss-import'),
     precss = require('precss');
 
 
-var config = require('./config'),
-    CWD = '.',
-    NODE_MODULES = CWD + '/node_modules';
+var config = require('./config');
 
 
 var postcss = {
-  dev: {
+
+  build: {
     options: {
       map: true,
       processors: [
-        cssImport({
-          path: [
-            config.src + '/htdocs',
-            NODE_MODULES
-          ]
+        postcssImport({
+          path: config.cssPath
         }),
         precss(),
         calc(),
-        autoprefixer({'browsers': 'last 4 versions'}) // vendor prefix as needed
+        autoprefixer({'browsers': 'last 4 versions'})
       ]
     },
-    expand: true,
     cwd: config.src + '/htdocs',
-    src: [
-      '**/*.scss',
-      '!**/_*.scss'
-    ],
     dest: config.build + '/' + config.src + '/htdocs',
+    expand: true,
     ext: '.css',
-    extDot: 'last'
+    extDot: 'last',
+    src: [
+      'css/*.scss',
+      '!css/_*.scss'
+    ]
   },
 
   dist: {
-    cwd: config.build + '/' + config.src + '/htdocs',
-    dest: config.dist + '/htdocs',
-    expand: true,
     options: {
       processors: [
-        cssnano({ // minify
+        cssnano({
           autoprefixer: false,
           zindex: false
         })
       ]
     },
+    cwd: config.build + '/' + config.src + '/htdocs',
+    dest: config.dist + '/htdocs',
+    expand: true,
     src: [
       '**/*.css'
     ]
   }
-};
 
+};
 
 module.exports = postcss;
