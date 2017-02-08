@@ -2,11 +2,11 @@
 
 var Product = require('Product'),
 
-    EventModulePage = require('admin/AdminEventModulePage'),
     EditProductView = require('admin/EditProductView'),
     ProductDetailsView = require('admin/ProductDetailsView'),
     ProductFactory = require('admin/ProductFactory'),
     ProductHistoryView = require('admin/ProductHistoryView'),
+    SendProductView = require('admin/SendProductView'),
 
     View = require('mvc/View'),
 
@@ -157,9 +157,41 @@ var ProductActionsView = function (options) {
 
 
   /**
-   * Reuse send product from EventModulePage.
+   * Reference to EventModulePage sendProduct.
+   * TODO :: Consolidate this with other sendProduct methods...
    */
-  _sendProduct = EventModulePage.prototype._sendProduct;
+  _sendProduct = function (products, title, text) {
+    // send product
+    var sendProductView,
+        productSent;
+
+    sendProductView = SendProductView({
+      modalTitle: title,
+      modalText: text,
+      products: products,
+      formatProduct: function (products) {
+        // format product being sent
+        return sendProductView.formatProduct(products);
+      }
+    });
+    sendProductView.on('success', function () {
+      // track that product was sent
+      productSent = true;
+    });
+    sendProductView.on('cancel', function () {
+      if (productSent) {
+        // product was sent, which will modify the event
+        // reload page to see update
+        window.location.reload();
+      } else {
+        // product not sent, cleanup
+        products = null;
+        sendProductView.destroy();
+        sendProductView = null;
+      }
+    });
+    sendProductView.show();
+  };
 
   /**
    * Edit Product button click handler.

@@ -1,13 +1,13 @@
 'use strict';
 
-var EventModulePage = require('admin/AdminEventModulePage'),
-    EventComparisonView = require('admin/EventComparisonView'),
+var EventComparisonView = require('admin/EventComparisonView'),
     CatalogEvent = require('CatalogEvent'),
     Collection = require('mvc/Collection'),
     Util = require('util/Util'),
     View = require('mvc/View'),
     Product = require('Product'),
-    ProductFactory = require('./ProductFactory');
+    ProductFactory = require('admin/ProductFactory'),
+    SendProductView = require('admin/SendProductView');
 
 
 var EventsAssociatedView = function (options) {
@@ -145,8 +145,40 @@ var EventsAssociatedView = function (options) {
 
   /**
    * Reference to EventModulePage sendProduct.
+   * TODO :: Consolidate this with other sendProduct methods...
    */
-  _sendProduct = EventModulePage.prototype._sendProduct;
+  _sendProduct = function (products, title, text) {
+    // send product
+    var sendProductView,
+        productSent;
+
+    sendProductView = SendProductView({
+      modalTitle: title,
+      modalText: text,
+      products: products,
+      formatProduct: function (products) {
+        // format product being sent
+        return sendProductView.formatProduct(products);
+      }
+    });
+    sendProductView.on('success', function () {
+      // track that product was sent
+      productSent = true;
+    });
+    sendProductView.on('cancel', function () {
+      if (productSent) {
+        // product was sent, which will modify the event
+        // reload page to see update
+        window.location.reload();
+      } else {
+        // product not sent, cleanup
+        products = null;
+        sendProductView.destroy();
+        sendProductView = null;
+      }
+    });
+    sendProductView.show();
+  };
 
   /**
    * Clean up private variables, methods, and remove event listeners.

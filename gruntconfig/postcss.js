@@ -19,7 +19,7 @@ var postcss = {
       processors: [
         cssImport({
           path: [
-            config.src + '/htdocs',
+            config.src + '/htdocs/css',
             NODE_MODULES
           ]
         }),

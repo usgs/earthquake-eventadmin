@@ -1,31 +1,8 @@
 @import 'hazdev-webutils/src/mvc/ModalView.scss';
-@import 'hazdev-webutils/src/util/Message.scss';
-@import 'hazdev-cache-invalidator/src/htdocs/css/_InvalidatorView.scss';
 
-
-@import 'modules/admin/index.scss';
-@import 'modules/admin/scientific/index.scss';
-@import 'modules/admin/summary/index.scss';
+@import '_SendProductView.scss';
 
 @import '_FileUploadStatusView.scss';
 @import '_ContentsManagerView.scss';
 @import '_ProductContentEditView.scss';
 @import '_ProductContentView.scss';
-
-
-/* this supports both location view and dyfi-form */
-.modal > .modal-dialog {
-  padding: 43px 0 55px;
-
-  > .modal-footer {
-    line-height: 40px;
-    padding: 0.5em 1em;
-    background: #fff;
-    height: inherit;
-
-    button {
-      vertical-align:middle;
-      margin: 0 8px 0 0;
-    }
-  }
-}
