@@ -9,12 +9,6 @@ var OFFSITE_HOST = config.ini.OFFSITE_HOST;
 
 var addMiddleware = function (connect, options, middlewares) {
   middlewares.unshift(
-    require('compression')({
-      filter: function (req, res) {
-        var type = res.getHeader('Content-Type');
-        return (type+'').match(/(css|javascript)/);
-      }
-    }),
     require('grunt-connect-rewrite/lib/utils').rewriteRequest,
     require('grunt-connect-proxy/lib/utils').proxyRequest,
     require('gateway')(options.base[0], {
