@@ -13,6 +13,7 @@ var browserify = {
       paths: [
         CWD + '/' + config.src + '/htdocs/js',
         CWD + '/' + config.src + '/htdocs/modules',
+        NODE_MODULES + '/hazdev-accordion/src',
         NODE_MODULES + '/hazdev-cache-invalidator/src/htdocs/js',
         NODE_MODULES + '/hazdev-webutils/src'
       ]
