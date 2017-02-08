@@ -1,10 +1,14 @@
 'use strict';
 
+
 var CollectionTable = require('mvc/CollectionTable'),
     Formatter = require('admin/Formatter'),
     Util = require('util/Util');
 
-var DEFAULTS = {
+
+var _DEFAULTS;
+
+_DEFAULTS = {
   className: 'collection-table event-comparison tabular',
   emptyMarkup: '&ndash;',
   buttons: null,
@@ -13,11 +17,9 @@ var DEFAULTS = {
 
 
 var EventComparisonView = function (options) {
-
   var _this,
       _initialize,
 
-      // private variables
       _buttons,
       _callbackMap,
       _collection,
@@ -26,17 +28,17 @@ var EventComparisonView = function (options) {
       _formatter,
       _referenceEvent,
 
-      // private methods
       _getColumns,
       _onClick;
 
+
   _this = {};
 
-  _initialize = function () {
+  _initialize = function (options) {
     var title =  null,
         referenceEventRow;
 
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
     _buttons = options.buttons || [];
     _collection = options.collection;
     _eventLink = options.eventLink;
@@ -77,25 +79,8 @@ var EventComparisonView = function (options) {
 
     // add click handler to CollectionTable
     _collectionTable.el.addEventListener('click', _onClick);
-    options = null;
   };
 
-  /**
-   * Click handler that delegates the proper callback when a button is
-   * clicked on in the CollectionTable.
-   */
-  _onClick = function (e) {
-    var element = e.target,
-        eventid = null,
-        title = null;
-
-    if (element.nodeName.toUpperCase() === 'BUTTON') {
-      eventid = element.getAttribute('data-id');
-      title = element.innerHTML;
-      // execute callback for the button with the matching classname
-      _callbackMap[title](_collection.get(eventid));
-    }
-  };
 
   _getColumns = function () {
     return [
@@ -191,6 +176,24 @@ var EventComparisonView = function (options) {
   };
 
   /**
+   * Click handler that delegates the proper callback when a button is
+   * clicked on in the CollectionTable.
+   */
+  _onClick = function (e) {
+    var element = e.target,
+        eventid = null,
+        title = null;
+
+    if (element.nodeName.toUpperCase() === 'BUTTON') {
+      eventid = element.getAttribute('data-id');
+      title = element.innerHTML;
+      // execute callback for the button with the matching classname
+      _callbackMap[title](_collection.get(eventid));
+    }
+  };
+
+
+  /**
    * Clean up private variables, methods, and remove event listeners.
    */
   _this.destroy = function () {
@@ -210,7 +213,9 @@ var EventComparisonView = function (options) {
     _referenceEvent = null;
   };
 
-  _initialize();
+
+  _initialize(options);
+  options = null;
   return _this;
 };
 
