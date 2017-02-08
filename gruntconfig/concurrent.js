@@ -11,7 +11,7 @@ var concurrent = {
   ],
   build: [
     'browserify',
-    'postcss:dev',
+    'postcss:build',
     'copy:build',
     'copy:test',
     'copy:leaflet',
