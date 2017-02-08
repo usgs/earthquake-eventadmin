@@ -1,5 +1,4 @@
 .product-action-view {
-
   margin: 1em 0;
 
   > button {
@@ -25,9 +24,9 @@
 
   @media screen and (max-width: 767px) {
     > button {
-      font-size: .8125em;
-      line-height: 3rem;
+      font-size: 0.8125em;
       height: 3rem;
+      line-height: 3rem;
     }
   }
 }

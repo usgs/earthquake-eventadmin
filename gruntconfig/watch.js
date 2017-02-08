@@ -22,7 +22,7 @@ var watch = {
   },
   scss: {
     files: [config.src + '/htdocs/**/*.scss'],
-    tasks: ['postcss:dev']
+    tasks: ['postcss:build']
   },
   tests: {
     files: [

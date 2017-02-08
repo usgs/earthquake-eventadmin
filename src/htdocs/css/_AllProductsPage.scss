@@ -3,14 +3,14 @@
 
   @media screen and (max-width: 767px) {
     font-size: .8125em;
-    line-height: 3rem;
     height: 3rem;
+    line-height: 3rem;
   }
 }
 
 label > small {
-  display:block;
   color: #666;
+  display:block;
   font-size: smaller;
 }
 
