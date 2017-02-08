@@ -1,7 +1,7 @@
 /* global chai, describe, it */
 'use strict';
 
-var Product = require('Product'),
+var Product = require('admin/Product'),
 
     TextProductView = require('admin/TextProductView');
 

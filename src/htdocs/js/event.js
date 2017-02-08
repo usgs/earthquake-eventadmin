@@ -2,7 +2,7 @@
 'use strict';
 
 
-var AdminSummaryPage = require('AdminSummaryPage');
+var AdminSummaryPage = require('admin/AdminSummaryPage');
 
 
 AdminSummaryPage({

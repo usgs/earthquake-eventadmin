@@ -2,7 +2,7 @@
 'use strict';
 
 
-var AllProductsView = require('AllProductsView');
+var AllProductsView = require('admin/AllProductsView');
 
 
 AllProductsView({
