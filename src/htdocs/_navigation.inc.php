@@ -3,21 +3,29 @@
 include_once 'functions.inc.php';
 include_once '../conf/config.inc.php';
 
-$eventid = param('eventid');
-$links = '';
+if (isset($IS_LOGGED_IN) && $IS_LOGGED_IN) {
+  // User is logged in
 
-// If we know an $eventid, use it and provide links to switch between event
-// and product management pages.
-if ($eventid != null and $eventid != '') {
-  $links .=
-      navItem($CONFIG['MOUNT_PATH'] .
-          '/event.php?eventid=' . $eventid, 'Manage Event') .
-      navItem($CONFIG['MOUNT_PATH'] .
-          '/products.php?eventid=' . $eventid, 'Manage Products')
-    ;
+  if (isset($eventid) && $eventid != null && $eventid != '') {
+    // Managing an event
+    echo
+      navItem($CONFIG['MOUNT_PATH'] . '/search.php" class="up-one-level',
+          'Search Events') .
+      navGroup('Event: ' . $eventid,
+        navItem($CONFIG['MOUNT_PATH'] . '/event.php?eventid=' . $eventid,
+            'Manage') .
+        navItem($CONFIG['MOUNT_PATH'] . '/addedit.php?eventid=' . $eventid,
+            'Add/Edit Content') .
+        navItem($CONFIG['MOUNT_PATH'] . '/products.php?eventid=' . $eventid,
+            'All Products') .
+        navItem('https://earthquake.usgs.gov/earthquakes/eventpage/' . $eventid,
+            'View Event Page')
+        );
+
+  } else {
+    echo
+      navItem($CONFIG['MOUNT_PATH'] . '/search.php', 'Search Events');
+  }
+
+  echo navItem($CONFIG['MOUNT_PATH'] . '/logout.php', 'Log Out');
 }
-
-echo navGroup('Event Admin',
-    navItem($CONFIG['MOUNT_PATH'] . '/index.php', 'Search Events') .
-    $links
-  );

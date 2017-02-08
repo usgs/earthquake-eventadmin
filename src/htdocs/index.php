@@ -1,7 +1,6 @@
 <?php
-
 if (!isset($TEMPLATE)) {
-  include_once '../conf/config.inc.php';
+  include_once '../lib/session.inc.php';
 
   $TITLE = 'Login - Event Admin';
   $NAVIGATION = true;

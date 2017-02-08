@@ -1,7 +1,7 @@
 <?php
 
 // always run inside a session
-session_start();
+include_once '../lib/session.inc.php';
 
 if (!isset($_POST['product'])) {
     header('400 Bad Request');

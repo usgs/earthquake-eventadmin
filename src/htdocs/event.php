@@ -1,6 +1,7 @@
 <?php
 
 if (!isset($TEMPLATE)) {
+  include_once '../lib/session.inc.php';
 
   //
   // Get event details. Will set the following variables
@@ -41,4 +42,3 @@ if ($httpCode != 409) {
 } else {
   print '<p class="alert error">The requested event has been deleted.</p>';
 }
-?>
