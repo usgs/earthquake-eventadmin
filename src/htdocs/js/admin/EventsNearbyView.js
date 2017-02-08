@@ -63,9 +63,13 @@ var EventsNearbyView = function (options) {
     Xhr.ajax({
       url: _getSearchUrl(),
       success: function (data) {
-        var events = [],
-            feature = null,
-            properties = null;
+        var events,
+            feature,
+            properties;
+
+        events = [];
+        feature = null;
+        properties = null;
 
         // Build array of events with event details for Collection
         for (var i = 0; i < data.features.length; i++) {

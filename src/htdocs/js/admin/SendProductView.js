@@ -152,8 +152,6 @@ var SendProductView = function (options) {
         }
       ]
     });
-
-    options = null;
   };
 
 
@@ -168,12 +166,15 @@ var SendProductView = function (options) {
    */
   _getContainerForProduct = function (product) {
     var container,
-        containers = _this.el.querySelectorAll('section.accordion'),
+        containers,
         i,
         len,
-        productContainer = null,
-        productId = _getProductIdentifier(product);
+        productContainer,
+        productId;
 
+    containers = _this.el.querySelectorAll('section.accordion');
+    productContainer = null;
+    productId = _getProductIdentifier(product);
 
     for (i = 0, len = containers.length; i < len; i++) {
       container = containers.item(i);

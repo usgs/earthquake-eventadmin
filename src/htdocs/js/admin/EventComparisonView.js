@@ -181,8 +181,11 @@ var EventComparisonView = function (options) {
    */
   _onClick = function (e) {
     var element = e.target,
-        eventid = null,
-        title = null;
+        eventid,
+        title;
+
+    eventid = null;
+    title = null;
 
     if (element.nodeName.toUpperCase() === 'BUTTON') {
       eventid = element.getAttribute('data-id');

@@ -217,10 +217,13 @@ var EditProductView = function (options) {
 
   _createInput = function (key, info) {
     var container = document.createDocumentFragment(),
-        help = null,
-        id = 'editproduct-' + key,
+        help,
+        id,
         input,
         label;
+
+    help = null;
+    id = 'editproduct-' + key;
 
     label = container.appendChild(document.createElement('label'));
     label.setAttribute('for', id);

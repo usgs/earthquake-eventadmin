@@ -125,10 +125,11 @@ var AssociateEventView = function (options) {
    *         The network source
    */
   _findMatchingSource = function (associateEventSummary) {
-    var matchingSource = null,
+    var matchingSource,
         referenceEventCodes,
         associateEventCodes;
 
+    matchingSource = null;
     referenceEventCodes = _referenceEvent.eventCodes;
     associateEventCodes = associateEventSummary.eventCodes;
 

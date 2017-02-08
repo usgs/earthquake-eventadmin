@@ -52,8 +52,11 @@ var EventsAssociatedView = function (options) {
    * a disassociate button.
    */
   _createView = function () {
-    var id = null,
-        events = [];
+    var id,
+        events;
+
+    id = null;
+    events = [];
 
     _subEvents = _event.getSubEvents();
 
