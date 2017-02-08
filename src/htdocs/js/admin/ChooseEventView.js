@@ -1,11 +1,14 @@
 'use strict';
 
+
 var Util = require('util/Util'),
     View = require('mvc/View'),
     Xhr = require('util/Xhr');
 
 
-var DEFAULTS = {
+var _DEFAULTS;
+
+_DEFAULTS = {
   url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
 };
 
@@ -24,12 +27,13 @@ var ChooseEventView = function (options) {
       _createList,
       _onEventSearchSubmit;
 
+
   _this = View(options);
 
-  _initialize = function () {
+  _initialize = function (options) {
     var el;
 
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
     _url = options.url;
 
     el = _this.el;
@@ -57,9 +61,8 @@ var ChooseEventView = function (options) {
     _createEventSearch(el.querySelector('.eventTime'));
     _createForm(el.querySelector('.eventId'));
     _createList(el.querySelector('.eqlist'), _url);
-
-    options = null;
   };
+
 
   _createEventSearch = function (el) {
     el.innerHTML = '<form class="vertical">' +
@@ -79,37 +82,6 @@ var ChooseEventView = function (options) {
     _searchForm = el.querySelector('form');
 
     _searchForm.addEventListener('submit', _onEventSearchSubmit);
-  };
-
-  _onEventSearchSubmit = function (e) {
-    var endTime,
-        searchTime,
-        startTime,
-        url;
-
-    e.preventDefault();
-
-    searchTime = _eventTime.value.toUpperCase();
-
-    if (searchTime.indexOf('Z') === -1) {
-      searchTime = new Date(searchTime.concat('Z'));
-    } else {
-      searchTime = new Date(searchTime);
-    }
-
-    try {
-      startTime = new Date(searchTime.getTime() - 900000);
-      endTime = new Date(searchTime.getTime() + 900000);
-
-      url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
-          '&starttime=' + startTime.toISOString() +
-          '&endtime=' + endTime.toISOString();
-
-      _createList(_searchList, url);
-    } catch (ex) {
-      _searchList.innerHTML = '<p class="alert error">Must use valid time ' +
-          'format: yyyy-mm-dd hh:mm:ss</p>';
-    }
   };
 
   _createForm = function (el) {
@@ -152,6 +124,38 @@ var ChooseEventView = function (options) {
     });
   };
 
+  _onEventSearchSubmit = function (e) {
+    var endTime,
+        searchTime,
+        startTime,
+        url;
+
+    e.preventDefault();
+
+    searchTime = _eventTime.value.toUpperCase();
+
+    if (searchTime.indexOf('Z') === -1) {
+      searchTime = new Date(searchTime.concat('Z'));
+    } else {
+      searchTime = new Date(searchTime);
+    }
+
+    try {
+      startTime = new Date(searchTime.getTime() - 900000);
+      endTime = new Date(searchTime.getTime() + 900000);
+
+      url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+          '&starttime=' + startTime.toISOString() +
+          '&endtime=' + endTime.toISOString();
+
+      _createList(_searchList, url);
+    } catch (ex) {
+      _searchList.innerHTML = '<p class="alert error">Must use valid time ' +
+          'format: yyyy-mm-dd hh:mm:ss</p>';
+    }
+  };
+
+
   _this.destroy = Util.compose(function () {
     _searchForm.removeEventListener('submit', _onEventSearchSubmit);
 
@@ -165,7 +169,9 @@ var ChooseEventView = function (options) {
     _url = null;
   }, _this.destroy);
 
-  _initialize();
+
+  _initialize(options);
+  options = null;
   return _this;
 };
 
