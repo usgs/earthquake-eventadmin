@@ -5,8 +5,8 @@ if (!isset($TEMPLATE)) {
 
   $TITLE = 'Choose Event';
   $NAVIGATION = true;
-  $HEAD = '<link rel="stylesheet" href="css/index.css"/>';
-  $FOOT = '<script src="js/index.js"></script>';
+  $HEAD = '<link rel="stylesheet" href="css/search.css"/>';
+  $FOOT = '<script src="js/search.js"></script>';
 
   include 'template.inc.php';
 }
