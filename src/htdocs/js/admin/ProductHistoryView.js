@@ -1,12 +1,17 @@
 'use strict';
 
-var ModalView = require('mvc/ModalView'),
+
+var CatalogEvent = require('admin/CatalogEvent'),
+    ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
-    View = require('mvc/View'),
-
-    CatalogEvent = require('admin/CatalogEvent');
+    View = require('mvc/View');
 
 
+/**
+ * A view for rendering the history of a single product. This view is rendered
+ * in a dialog.
+ *
+ */
 var ProductHistoryView = function (options) {
   var _this,
       _initialize,
@@ -21,9 +26,10 @@ var ProductHistoryView = function (options) {
       _products = [],
       _section;
 
+
   _this = View(options);
 
-  _initialize = function () {
+  _initialize = function (options) {
     var product;
 
     _el = _this.el;
@@ -55,8 +61,6 @@ var ProductHistoryView = function (options) {
       closable: true,
     });
     _dialog.show();
-
-    options = null;
   };
 
   _this.render = function () {
@@ -144,7 +148,9 @@ var ProductHistoryView = function (options) {
     _this = null;
   }, _this.destroy);
 
-  _initialize();
+
+  _initialize(options);
+  options = null;
   return _this;
 };
 
