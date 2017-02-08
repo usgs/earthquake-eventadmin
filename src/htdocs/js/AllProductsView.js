@@ -30,6 +30,7 @@ var AllProductsView = function (options) {
     options = Util.extend({}, _DEFAULTS, options);
 
     _this._actionViews = [];
+    _this._eventDetails = options.eventDetails;
 
     _this.event = CatalogEvent(options.eventDetails || {});
     _this.products = CatalogEvent.getWithoutSuperseded(
@@ -162,7 +163,7 @@ var AllProductsView = function (options) {
   };
 
   _this._onAddProductClick = function (/*evt*/) {
-    var props = this._event.properties;
+    var props = _this._eventDetails.properties;
 
     EditProductView({
       product: Product({
