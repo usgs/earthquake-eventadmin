@@ -28,4 +28,6 @@ if (isset($IS_LOGGED_IN) && $IS_LOGGED_IN) {
   }
 
   echo navItem($CONFIG['MOUNT_PATH'] . '/logout.php', 'Log Out');
+} else {
+  echo navItem($CONFIG['MOUNT_PATH'] . '/index.php', 'Log In');
 }
