@@ -1,17 +1,15 @@
 'use strict';
 
 
-var ContentsManagerView = require('admin/ContentsManagerView'),
+var Collection = require('mvc/Collection'),
+    ContentsManagerView = require('admin/ContentsManagerView'),
+    ModalView = require('mvc/ModalView'),
     Product = require('admin/Product'),
     ProductContent = require('admin/ProductContent'),
-
     SendProductView = require('admin/SendProductView'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
-    Collection = require('mvc/Collection'),
-    ModalView = require('mvc/ModalView'),
-    View = require('mvc/View'),
-
-    Util = require('util/Util');
 
 
 /**
@@ -35,6 +33,7 @@ var TextProductView = function (options) {
       _onCancel,
       _onCreate,
       _onSendProductDone;
+
 
   _this = View(options);
 
@@ -143,6 +142,10 @@ var TextProductView = function (options) {
    *
    */
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
+
     _contentsManagerView.destroy();
 
     _sendProductView.off('done', _onSendProductDone);

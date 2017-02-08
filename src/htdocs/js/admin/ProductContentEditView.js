@@ -1,17 +1,15 @@
 'use strict';
 
+
 var FileUploadView = require('admin/FileUploadView'),
     Formatter = require('admin/Formatter'),
-    ProductContent = require('admin/ProductContent'),
-
     ModalView = require('mvc/ModalView'),
-    View = require('mvc/View'),
+    ProductContent = require('admin/ProductContent'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
-    Util = require('util/Util')
-    ;
 
-
-var ProductContentEditView = function (params) {
+var ProductContentEditView = function (options) {
   var _this,
       _initialize,
 
@@ -32,9 +30,9 @@ var ProductContentEditView = function (params) {
       _onSave;
 
 
-  _this = View(params);
+  _this = View(options);
 
-  _initialize = function (params) {
+  _initialize = function (options) {
     var dialogTitle;
 
     // Create a "working" product content the user can mess with, but if the
@@ -43,7 +41,7 @@ var ProductContentEditView = function (params) {
     _transientContent = ProductContent(_this.model.get());
     _transientContent.on('change', 'render', _this);
 
-    _formatter = params.formatter || Formatter({round: 1});
+    _formatter = options.formatter || Formatter({round: 1});
 
     if (_this.model.get('bytes') || _this.model.get('url')) {
       dialogTitle = 'Edit Product Content';
@@ -196,6 +194,10 @@ var ProductContentEditView = function (params) {
 
 
   _this.destroy = Util.compose(_this.destroy, function () {
+    if (_this === null) {
+      return;
+    }
+
     _transientContent.off();
     _fileUploadView.off();
 
@@ -273,9 +275,10 @@ var ProductContentEditView = function (params) {
   };
 
 
-  _initialize(params);
-  params = null;
+  _initialize(options);
+  options = null;
   return _this;
 };
+
 
 module.exports = ProductContentEditView;

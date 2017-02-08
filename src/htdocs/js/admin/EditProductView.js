@@ -1,19 +1,18 @@
 'use strict';
 
-var ContentsManagerView = require('admin/ContentsManagerView'),
-    Product = require('admin/Product'),
 
-    Accordion = require('accordion/Accordion'),
-
-    SendProductView = require('admin/SendProductView'),
-
+var Accordion = require('accordion/Accordion'),
+    ContentsManagerView = require('admin/ContentsManagerView'),
     ModalView = require('mvc/ModalView'),
-    View = require('mvc/View'),
+    Product = require('admin/Product'),
+    SendProductView = require('admin/SendProductView'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
-    Util = require('util/Util');
 
+var _PRIORITY_PROPERTIES;
 
-var PRIORITY_PROPERTIES = {
+_PRIORITY_PROPERTIES = {
   'region': {
     type: 'text',
     label: 'Region Name',
@@ -215,12 +214,16 @@ var EditProductView = function (options) {
     _this.render();
   };
 
+
   _createInput = function (key, info) {
     var container = document.createDocumentFragment(),
-        help = null,
-        id = 'editproduct-' + key,
+        help,
+        id,
         input,
         label;
+
+    help = null;
+    id = 'editproduct-' + key;
 
     label = container.appendChild(document.createElement('label'));
     label.setAttribute('for', id);
@@ -397,8 +400,8 @@ var EditProductView = function (options) {
       '</li></ul>';
 
 
-    for (key in PRIORITY_PROPERTIES) {
-      fragment.appendChild(_createInput(key, PRIORITY_PROPERTIES[key]));
+    for (key in _PRIORITY_PROPERTIES) {
+      fragment.appendChild(_createInput(key, _PRIORITY_PROPERTIES[key]));
     }
 
     return fragment;
@@ -428,7 +431,6 @@ var EditProductView = function (options) {
     return fragment;
   };
 
-
   /**
    * Callback called when the "Cancel" button is clicked.
    *
@@ -450,20 +452,35 @@ var EditProductView = function (options) {
 
     errors = [];
 
-    try { rawVals = _validateBasic(); }
-    catch (e) { errors.push(e); }
+    try {
+      rawVals = _validateBasic();
+    } catch (e) {
+      errors.push(e);
+    }
 
-    try { propertyVals = _validatePriority(); }
-    catch (e) { errors.push(e); }
+    try {
+      propertyVals = _validatePriority();
+    } catch (e) {
+      errors.push(e);
+    }
 
-    try { propertyVals = _validateProperties(propertyVals); }
-    catch (e) { errors.push(e); }
+    try {
+      propertyVals = _validateProperties(propertyVals);
+    } catch (e) {
+      errors.push(e);
+    }
 
-    try { linkVals = _validateLinks(); }
-    catch (e) { errors.push(e); }
+    try {
+      linkVals = _validateLinks();
+    } catch (e) {
+      errors.push(e);
+    }
 
-    try { fileVals = _validateFiles(); }
-    catch (e) { errors.push(e); }
+    try {
+      fileVals = _validateFiles();
+    } catch (e) {
+      errors.push(e);
+    }
 
     if (errors.length === 0) {
       rawVals.properties = propertyVals;
@@ -791,5 +808,6 @@ var EditProductView = function (options) {
   options = null;
   return _this;
 };
+
 
 module.exports = EditProductView;

@@ -1,12 +1,15 @@
 'use strict';
 
-var View = require('mvc/View'),
+
+var FileUploadStatusView = require('admin/FileUploadStatusView'),
     Util = require('util/Util'),
+    View = require('mvc/View');
 
-    FileUploadStatusView = require('admin/FileUploadStatusView');
 
 
-var DEFAULTS = {
+var _DEFAULTS;
+
+_DEFAULTS = {
   url: 'file_upload.php',
   hideOnSuccess: false
 };
@@ -55,7 +58,7 @@ var FileUploadView = function (options) {
   _this = View(options);
 
   _initialize = function (options) {
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
 
     _url = options.url;
     _hideOnSuccess = options.hideOnSuccess;

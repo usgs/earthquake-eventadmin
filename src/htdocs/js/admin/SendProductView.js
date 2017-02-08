@@ -1,17 +1,18 @@
 'use strict';
 
-var Product = require('admin/Product'),
-    ProductSender = require('admin/ProductSender'),
 
-    Accordion = require('accordion/Accordion'),
-
+var Accordion = require('accordion/Accordion'),
     ModalView = require('mvc/ModalView'),
-    View = require('mvc/View'),
+    Product = require('admin/Product'),
+    ProductSender = require('admin/ProductSender'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
-    Util = require('util/Util');
 
+var _DEFAULTS,
+    _EXIT_CODES;
 
-var EXIT_CODES = {
+_EXIT_CODES = {
   0: 'OKAY',
   1: 'EXIT_INVALID_ARGUMENTS',
   2: 'EXIT_UNABLE_TO_BUILD',
@@ -19,12 +20,16 @@ var EXIT_CODES = {
   4: 'EXIT_PARTIALLY_SENT'
 };
 
-var DEFAULTS = {
+_DEFAULTS = {
   modalText: 'Click a product below for more details.',
   modalTitle: 'Products to Send'
 };
 
-var prettySize = function (size) {
+
+var _getProductIdentifier,
+    _prettySize;
+
+_prettySize = function (size) {
   var suffixes = ['B', 'KB', 'MB', 'GB'],
       suffixIdx = 0;
 
@@ -41,7 +46,7 @@ var prettySize = function (size) {
 };
 
 
-var getProductIdentifier = function (product) {
+_getProductIdentifier = function (product) {
   if (!product.get) {
     product = Product(product);
   }
@@ -52,6 +57,7 @@ var getProductIdentifier = function (product) {
     product.get('code')
   ].join(':');
 };
+
 
 /**
  * View that displays product to be sent.
@@ -98,15 +104,21 @@ var SendProductView = function (options) {
       _onSend,
       _sendCallback;
 
+
   _this = View(options);
 
-  _initialize = function () {
+  /**
+   * Constructor.
+   * Initializes a new SendProductView.
+   *
+   */
+  _initialize = function (options) {
     var el;
 
     _accordion = null;
 
     // options
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
     _products = options.products || [options.product];
     _sender = options.sender || ProductSender();
     _formatProduct = options.formatProduct || null;
@@ -140,19 +152,29 @@ var SendProductView = function (options) {
         }
       ]
     });
-
-    options = null;
   };
 
 
+  /**
+   * Find the container for the given `product`.
+   *
+   * @param product {Product}
+   *     The product for which to find the container.
+   *
+   * @return {DOMElement}
+   *     The element for this product or null if no such element exists.
+   */
   _getContainerForProduct = function (product) {
     var container,
-        containers = _this.el.querySelectorAll('section.accordion'),
+        containers,
         i,
         len,
-        productContainer = null,
-        productId = getProductIdentifier(product);
+        productContainer,
+        productId;
 
+    containers = _this.el.querySelectorAll('section.accordion');
+    productContainer = null;
+    productId = _getProductIdentifier(product);
 
     for (i = 0, len = containers.length; i < len; i++) {
       container = containers.item(i);
@@ -166,16 +188,33 @@ var SendProductView = function (options) {
     return productContainer;
   };
 
+  /**
+   * Callback function executed when the dialog cancel button is clicked.
+   * Hides the dialog and dispatches a 'cancel' event on this view.
+   *
+   */
   _onCancel = function () {
     _dialog.hide();
     _this.trigger('cancel');
   };
 
+  /**
+   * Callback function executed when the user has sent a product and clicks the
+   * done button indicating they are finished. Hides the dialog and dispatches
+   * a 'done' event on this view.
+   *
+   */
   _onDone = function () {
     _dialog.hide();
     _this.trigger('done');
   };
 
+  /**
+   * Callback function executed when the user indicates they would like the
+   * product to be sent. Uses the sender to send all necessary products and
+   * updates the dialog to hide the send button and provide a done button.
+   *
+   */
   _onSend = function () {
     var cancelButton,
         doneButton,
@@ -204,6 +243,19 @@ var SendProductView = function (options) {
     });
   };
 
+  /**
+   * Callback function executed when the product sender finishes sending a
+   * product. Verifies the send status and generates a result message
+   * in the dialog. If all products are done sending, updates dialog
+   * title to indicate sending is complete.
+   *
+   * @param status {Integer}
+   *     Number indicating status of send XHR request.
+   * @param xhr {XMLHttpRequest}
+   *     The XMLHttpRequest object used to send the product.
+   * @param data {Object}
+   *     The data returned by the XHR request.
+   */
   _sendCallback = function (status, xhr, data) {
     var container,
         format,
@@ -244,10 +296,15 @@ var SendProductView = function (options) {
     }
   };
 
+
   /**
    * Clean up event handlers and references.
    */
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
+
     // remove event listeners
     _dialog.hide();
     _dialog.destroy();
@@ -291,7 +348,7 @@ var SendProductView = function (options) {
 
     accordionContent = _products.map(function (product) {
       return {
-        toggleText: getProductIdentifier(product),
+        toggleText: _getProductIdentifier(product),
         toggleElement: 'h5',
         classes: 'accordion-standard' + isClosed,
         contentText: format(product)
@@ -310,15 +367,33 @@ var SendProductView = function (options) {
     });
   };
 
+  /**
+   * Hides the dialog.
+   *
+   */
   _this.hide = function () {
     _dialog.hide();
   };
 
+  /**
+   * Shows the dialog.
+   *
+   */
   _this.show = function () {
     _this.render();
     _dialog.show();
   };
 
+  /**
+   * Generates markup used for displaying information about the product(s) to
+   * be sent.
+   *
+   * @param {Product}
+   *     The product to format.
+   *
+   * @return {String}
+   *     The markup to display for this product.
+   */
   _this.formatProduct = function (product) {
     var buf = [],
         props,
@@ -372,7 +447,7 @@ var SendProductView = function (options) {
         name = p;
       }
 
-      buf.push('<li>' + name + ' (' + prettySize(content.get('length')) +
+      buf.push('<li>' + name + ' (' + _prettySize(content.get('length')) +
           ') ' + type + '</li>');
     });
     buf.push('</ul></dd>');
@@ -381,6 +456,22 @@ var SendProductView = function (options) {
     return buf.join('');
   };
 
+  /**
+   * Default formatting method used to render a message about the status
+   * of an individual product send status. This method may be overridden
+   * if a 'formatResult' parameter is provided as an option during
+   * this view's construction.
+   *
+   * @param status {Integer}
+   *     Number indicating status of send XHR request.
+   * @param xhr {XMLHttpRequest}
+   *     The XMLHttpRequest object used to send the product.
+   * @param data {Object}
+   *     The data returned by the XHR request.
+   *
+   * @return {String}
+   *     The markup to display as the result.
+   */
   _this.formatResult = function (status, xhr, data) {
     var exitCode,
         result;
@@ -402,7 +493,7 @@ var SendProductView = function (options) {
         '</div>';
       } else {
         result = '<div class="alert error">' +
-          EXIT_CODES[exitCode] + ' :: Failed to send product!' +
+          _EXIT_CODES[exitCode] + ' :: Failed to send product!' +
         '</div>';
       }
 
@@ -421,7 +512,8 @@ var SendProductView = function (options) {
   };
 
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 

@@ -1,21 +1,25 @@
 'use strict';
 
+
 var Product = require('admin/Product');
 
 
 /**
  * A factory for product objects.
+ *
  */
 var ProductFactory = function (/*options*/) {
   var _this,
-      // methods
+
       _getProduct;
+
 
   _this = {};
 
 
   /**
    * Get a product object.
+   *
    */
   _getProduct = function (product) {
     if (typeof product.get === 'function') {

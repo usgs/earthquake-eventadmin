@@ -1,19 +1,17 @@
 'use strict';
 
 
-var FileUploadView = require('admin/FileUploadView'),
+var Collection = require('mvc/Collection'),
+    CollectionView = require('mvc/CollectionView'),
+    FileUploadView = require('admin/FileUploadView'),
+    Message = require('util/Message'),
     ProductContent = require('admin/ProductContent'),
     ProductContentView = require('admin/ProductContentView'),
-
-    Collection = require('mvc/Collection'),
-    CollectionView = require('mvc/CollectionView'),
-    View = require('mvc/View'),
-
-    Message = require('util/Message'),
-    Util = require('util/Util');
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
 
-var ContentsManagerView = function (params) {
+var ContentsManagerView = function (options) {
   var _this,
       _initialize,
 
@@ -37,9 +35,9 @@ var ContentsManagerView = function (params) {
       _replaceRelativePaths;
 
 
-  _this = View(params);
+  _this = View(options);
 
-  _initialize = function (/*params*/) {
+  _initialize = function (/*options*/) {
     var inline;
 
     _collection = _this.model.get('contents');
@@ -321,9 +319,10 @@ var ContentsManagerView = function (params) {
   };
 
 
-  _initialize(params);
-  params = null;
+  _initialize(options);
+  options = null;
   return _this;
 };
+
 
 module.exports = ContentsManagerView;

@@ -1,10 +1,13 @@
 'use strict';
 
-var Model = require('mvc/Model'),
 
+var Model = require('mvc/Model'),
     Util = require('util/Util');
 
-var _attr_is_valid = function (attrs, attr) {
+
+var _attr_is_valid;
+
+_attr_is_valid = function (attrs, attr) {
   var value;
 
   if (attrs.hasOwnProperty(attr)) {
@@ -17,6 +20,7 @@ var _attr_is_valid = function (attrs, attr) {
 
   return false;
 };
+
 
 var ProductContent = function (options) {
   var _this,
@@ -83,9 +87,11 @@ var ProductContent = function (options) {
     }
   };
 
+
   _initialize(options);
   options = null;
   return _this;
 };
+
 
 module.exports = ProductContent;

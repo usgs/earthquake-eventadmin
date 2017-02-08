@@ -1,10 +1,9 @@
 'use strict';
 
+
 var Formatter = require('admin/Formatter'),
     ProductContentEditView = require('admin/ProductContentEditView'),
-
     View = require('mvc/View'),
-
     Util = require('util/Util');
 
 
@@ -79,6 +78,10 @@ var ProductContentView = function (options) {
 
 
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
+
     _this.model.off('change:id', _updateId);
     _this.el.removeEventListener('click', _onClick);
 

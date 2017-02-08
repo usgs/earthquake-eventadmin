@@ -1,17 +1,17 @@
 'use strict';
 
-var EventComparisonView = require('admin/EventComparisonView'),
-    CatalogEvent = require('admin/CatalogEvent'),
+
+var CatalogEvent = require('admin/CatalogEvent'),
     Collection = require('mvc/Collection'),
-    Util = require('util/Util'),
-    View = require('mvc/View'),
+    EventComparisonView = require('admin/EventComparisonView'),
     Product = require('admin/Product'),
     ProductFactory = require('admin/ProductFactory'),
-    SendProductView = require('admin/SendProductView');
+    SendProductView = require('admin/SendProductView'),
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
 
 var EventsAssociatedView = function (options) {
-
   var _this,
       _initialize,
 
@@ -24,16 +24,16 @@ var EventsAssociatedView = function (options) {
       _subEvents,
 
       // methods
+      _createView,
       _deleteCallback,
       _disassociateCallback,
-      _createView,
       _sendProduct;
+
 
   options = Util.extend({}, options);
   _this = View(options);
 
-
-  _initialize = function () {
+  _initialize = function (options) {
     _el = _this.el;
     _event = CatalogEvent(options.eventDetails);
     _sendProductView = null;
@@ -45,7 +45,6 @@ var EventsAssociatedView = function (options) {
     _associatedEventsEl = _el.querySelector('.associated-events');
 
     _createView();
-    options = null;
   };
 
   /**
@@ -53,8 +52,11 @@ var EventsAssociatedView = function (options) {
    * a disassociate button.
    */
   _createView = function () {
-    var id = null,
-        events = [];
+    var id,
+        events;
+
+    id = null;
+    events = [];
 
     _subEvents = _event.getSubEvents();
 
@@ -180,6 +182,7 @@ var EventsAssociatedView = function (options) {
     sendProductView.show();
   };
 
+
   /**
    * Clean up private variables, methods, and remove event listeners.
    */
@@ -201,7 +204,8 @@ var EventsAssociatedView = function (options) {
   }, _this.destroy);
 
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 

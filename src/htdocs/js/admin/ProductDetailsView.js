@@ -1,20 +1,26 @@
 'use strict';
 
+
 var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View');
 
 
+/**
+ * A read-only view for rendering product details. This view renders
+ * in a modal dialog.
+ *
+ */
 var ProductDetailsView = function (options) {
   var _this,
       _initialize,
 
-      // variables
       _dialog,
       _actionsView,
       _page,
       _product,
       _section;
+
 
   _this = View(options);
 
@@ -44,24 +50,6 @@ var ProductDetailsView = function (options) {
     _dialog.show();
   };
 
-  _this.render = function () {
-    var el = _page.getDetailsContent(_product);
-
-    _section.innerHTML = '<dl class="vertical">' +
-        '<dt>Source</dt><dd>' + _product.source + '</dd>' +
-        '<dt>Type</dt><dd>' + _product.type + '</dd>' +
-        '<dt>Code</dt><dd>' + _product.code + '</dd>' +
-        '<dt>Update Time</dt><dd>' +
-            new Date(_product.updateTime).toISOString()
-                .replace('T', ' ')
-                .replace(/\.[\d]+Z/, ' UTC') +
-        '</dd>' +
-        '</dl>';
-
-    // call getSummaryContent and append the content to the modal dialog
-    _section.appendChild(_actionsView.el);
-    _section.appendChild(el);
-  };
 
   /**
    * Clean up private variables, methods, and remove event listeners.
@@ -87,10 +75,30 @@ var ProductDetailsView = function (options) {
     _this = null;
   }, _this.destroy);
 
+  _this.render = function () {
+    var el = _page.getDetailsContent(_product);
+
+    _section.innerHTML = '<dl class="vertical">' +
+        '<dt>Source</dt><dd>' + _product.source + '</dd>' +
+        '<dt>Type</dt><dd>' + _product.type + '</dd>' +
+        '<dt>Code</dt><dd>' + _product.code + '</dd>' +
+        '<dt>Update Time</dt><dd>' +
+            new Date(_product.updateTime).toISOString()
+                .replace('T', ' ')
+                .replace(/\.[\d]+Z/, ' UTC') +
+        '</dd>' +
+        '</dl>';
+
+    // call getSummaryContent and append the content to the modal dialog
+    _section.appendChild(_actionsView.el);
+    _section.appendChild(el);
+  };
+
 
   _initialize(options);
   options = null;
   return _this;
 };
+
 
 module.exports = ProductDetailsView;

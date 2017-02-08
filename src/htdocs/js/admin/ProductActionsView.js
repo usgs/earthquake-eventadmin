@@ -1,19 +1,19 @@
 'use strict';
 
-var Product = require('admin/Product'),
 
-    EditProductView = require('admin/EditProductView'),
+var EditProductView = require('admin/EditProductView'),
+    Product = require('admin/Product'),
     ProductDetailsView = require('admin/ProductDetailsView'),
     ProductFactory = require('admin/ProductFactory'),
     ProductHistoryView = require('admin/ProductHistoryView'),
     SendProductView = require('admin/SendProductView'),
-
-    View = require('mvc/View'),
-
-    Util = require('util/Util');
+    Util = require('util/Util'),
+    View = require('mvc/View');
 
 
-var DEFAULTS = {
+var _DEFAULTS;
+
+_DEFAULTS = {
   deleteProduct: true,
   editProduct: true,
   editProductView: EditProductView,
@@ -53,7 +53,7 @@ var DEFAULTS = {
 var ProductActionsView = function (options) {
   var _this,
       _initialize,
-      // variables
+
       _buttons,
       _deleteProduct,
       _editProduct,
@@ -64,16 +64,17 @@ var ProductActionsView = function (options) {
       _productFactory,
       _trumpProduct,
       _viewHistory,
-      // methods
+
       _addButton,
       _sendProduct;
+
 
   _this = View(options);
 
   _initialize = function (options) {
     var el;
 
-    options = Util.extend({}, DEFAULTS, options);
+    options = Util.extend({}, _DEFAULTS, options);
     _deleteProduct = options.deleteProduct;
     _editProduct = options.editProduct;
     _editView = options.editView || EditProductView;
@@ -193,17 +194,50 @@ var ProductActionsView = function (options) {
     sendProductView.show();
   };
 
+
   /**
-   * Edit Product button click handler.
+   * View destroy method.
    */
-  _this.onEditProduct = function (e) {
-    if (e.preventDefault) {
-      e.preventDefault();
+  _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
     }
 
-    _editView({
-      product: Product(_products[0])
-    }).show();
+    _buttons.forEach(function (button) {
+      button.removeEventListener('click', button._clickHandler);
+    });
+
+    _buttons = null;
+    _event = null;
+    _page = null;
+    _products = null;
+    _sendProduct = null;
+    _this = null;
+  }, _this.destroy);
+
+  /**
+   * Factory method to create new ProductActionsView based on this view.
+   *
+   * @param options {Object}
+   *        options to override any settings of this view.
+   * @return {ProductActionsView}
+   *         new view object.
+   */
+  _this.newActionsView = function (options) {
+    return ProductActionsView(Util.extend({
+      // current options
+      deleteProduct: _deleteProduct,
+      editProduct: _editProduct,
+      editView: _editView,
+      event: _event,
+      page: _page,
+      products: _products,
+      productFactory: _productFactory,
+      trumpProduct: _trumpProduct,
+      viewHistory: _viewHistory
+    },
+    // override options
+    options));
   };
 
   /**
@@ -225,6 +259,19 @@ var ProductActionsView = function (options) {
     deleteTitle = 'Delete Product(s)';
     // Send delete product
     _sendProduct(deleteProducts, deleteTitle, deleteText);
+  };
+
+  /**
+   * Edit Product button click handler.
+   */
+  _this.onEditProduct = function (e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
+    _editView({
+      product: Product(_products[0])
+    }).show();
   };
 
   /**
@@ -279,51 +326,6 @@ var ProductActionsView = function (options) {
     });
   };
 
-  /**
-   * View destroy method.
-   */
-  _this.destroy = Util.compose(function () {
-    if (_this === null) {
-      return;
-    }
-
-    _buttons.forEach(function (button) {
-      button.removeEventListener('click', button._clickHandler);
-    });
-
-    _buttons = null;
-    _event = null;
-    _page = null;
-    _products = null;
-    _sendProduct = null;
-    _this = null;
-  }, _this.destroy);
-
-
-  /**
-   * Factory method to create new ProductActionsView based on this view.
-   *
-   * @param options {Object}
-   *        options to override any settings of this view.
-   * @return {ProductActionsView}
-   *         new view object.
-   */
-  _this.newActionsView = function (options) {
-    return ProductActionsView(Util.extend({
-      // current options
-      deleteProduct: _deleteProduct,
-      editProduct: _editProduct,
-      editView: _editView,
-      event: _event,
-      page: _page,
-      products: _products,
-      productFactory: _productFactory,
-      trumpProduct: _trumpProduct,
-      viewHistory: _viewHistory
-    },
-    // override options
-    options));
-  };
 
   _initialize(options);
   options = null;

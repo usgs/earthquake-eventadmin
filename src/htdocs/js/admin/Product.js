@@ -1,15 +1,14 @@
 'use strict';
 
-var ProductContent = require('admin/ProductContent'),
 
-    Collection = require('mvc/Collection'),
+var Collection = require('mvc/Collection'),
     Model = require('mvc/Model'),
-
+    ProductContent = require('admin/ProductContent'),
     Util = require('util/Util');
 
 
-var STATUS_UPDATE = 'UPDATE',
-    STATUS_DELETE = 'DELETE';
+var _STATUS_UPDATE = 'UPDATE',
+    _STATUS_DELETE = 'DELETE';
 
 
 /**
@@ -46,13 +45,14 @@ var Product = function (options) {
   var _this,
       _initialize;
 
+
   _this = Model(Util.extend({
     id: null,
     source: null,
     type: null,
     code: null,
     updateTime: null,
-    status: STATUS_UPDATE,
+    status: _STATUS_UPDATE,
     properties: {},
     links: {},
     contents: null,
@@ -119,14 +119,15 @@ var Product = function (options) {
     return json;
   });
 
+
   _initialize(options);
   options = null;
   return _this;
 };
 
 
-Product.STATUS_UPDATE = STATUS_UPDATE;
-Product.STATUS_DELETE = STATUS_DELETE;
+Product.STATUS_UPDATE = _STATUS_UPDATE;
+Product.STATUS_DELETE = _STATUS_DELETE;
 
 
 module.exports = Product;

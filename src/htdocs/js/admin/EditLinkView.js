@@ -1,11 +1,12 @@
 'use strict';
 
+
 var ModalView = require('mvc/ModalView'),
     Product = require('admin/Product'),
+    SendProductView = require('admin/SendProductView.js'),
     Util = require('util/Util'),
-    View = require('mvc/View'),
+    View = require('mvc/View');
 
-    SendProductView = require('admin/SendProductView.js');
 
 /**
  * Modal view that allows the user to either add or edit links.
@@ -25,8 +26,8 @@ var EditLinkView = function (options) {
       _onCancel,
       _onSubmit;
 
-  _this = View(options);
 
+  _this = View(options);
 
   /**
    * Creates modal dialog box
@@ -94,6 +95,16 @@ var EditLinkView = function (options) {
     });
   };
 
+
+  /**
+   * Hides the modal view and calls destroy
+   */
+  _onCancel = function () {
+    _modal.hide();
+    _this.trigger('cancel');
+    _this.destroy();
+  };
+
   /**
    * On modal view submit sends properties and calls sendProductView.
    */
@@ -111,13 +122,28 @@ var EditLinkView = function (options) {
     _sendProductView.show();
   };
 
+
   /**
-   * Hides the modal view and calls destroy
+   * Cleans up everyting.
    */
-  _onCancel = function () {
+  _this.destroy = Util.compose(function () {
     _modal.hide();
-    _this.trigger('cancel');
-    _this.destroy();
+    _modal.destroy();
+    _modal = null;
+    _sendProductView.destroy();
+    _sendProductView = null;
+    _text = null;
+    _url = null;
+    _onSubmit = null;
+    _onCancel = null;
+    _this = null;
+  }, _this.destroy);
+
+  /**
+   * Hides the modal dialog box.
+   */
+  _this.hide = function () {
+    _modal.hide();
   };
 
   /**
@@ -137,13 +163,6 @@ var EditLinkView = function (options) {
   };
 
   /**
-   * Hides the modal dialog box.
-   */
-  _this.hide = function () {
-    _modal.hide();
-  };
-
-  /**
    * Shows modal dialog box.
    */
   _this.show = function () {
@@ -151,26 +170,11 @@ var EditLinkView = function (options) {
     _modal.show();
   };
 
-  /**
-   * Cleans up everyting.
-   */
-  _this.destroy = Util.compose(function () {
-    _modal.hide();
-    _modal.destroy();
-    _modal = null;
-    _sendProductView.destroy();
-    _sendProductView = null;
-    _text = null;
-    _url = null;
-    _onSubmit = null;
-    _onCancel = null;
-    _this = null;
-  }, _this.destroy);
 
   _initialize(options);
   options = null;
   return _this;
-
 };
+
 
 module.exports = EditLinkView;

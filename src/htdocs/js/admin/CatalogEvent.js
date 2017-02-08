@@ -1,25 +1,118 @@
 'use strict';
 
+
 var Util = require('util/Util');
 
+
+// Private helper methods. Some of these are statically exposed on CatalogEvent
+// class at bottom of this file for external usage.
+var _getProductWithEventIdProperties,
+    _getProductWithOriginProperties,
+    _getSortedMostPreferredFirst,
+    _getWithoutDeleted,
+    _getWithoutSuperseded,
+    _productHasOriginProperties,
+    _productMapToList,
+    _removePhases;
+
 /**
- * Convert a product map to an array.
+ * Get the most preferred product with event id properties.
  *
- * @param map {Object}
- *        keys are product types.
- *        values are arrays of products.
- * @return {Array}
- *         array containing all products.
+ * Event ID properties are eventsource and eventsourcecode.
+ *
+ * Products are sorted using _getSortedMostPreferredFirst before checking
+ * for properties.
+ *
+ * @param list {Array}
+ *        array of products.
+ * @return {Object}
+ *         most preferred product with event id properties.
  */
-var productMapToList = function (map) {
-  var list = [],
-      type;
-  for (type in map) {
-    list.push.apply(list, map[type]);
+_getProductWithEventIdProperties = function (list) {
+  var i,
+      props;
+  list = _getSortedMostPreferredFirst(list);
+  for (i = 0; i < list.length; i++) {
+    props = list[i].properties;
+    if (props.hasOwnProperty('eventsource') &&
+        props.hasOwnProperty('eventsourcecode')) {
+      return list[i];
+    }
   }
-  return list;
+  return null;
 };
 
+/**
+ * Get the most preferred product with origin properties.
+ *
+ * Origin properties include event id (eventsource, eventsourcecode) and
+ * event location (latitude, longitude, eventtime).
+ *
+ * Products are sorted using _getSortedMostPreferredFirst before checking
+ * for properties.
+ *
+ * @param list {Array}
+ *        array of products.
+ * @return {Object}
+ *         most preferred product with origin properties.
+ */
+_getProductWithOriginProperties = function (list) {
+  var i,
+      product;
+  list = _getSortedMostPreferredFirst(list);
+  for (i = 0; i < list.length; i++) {
+    product = list[i];
+    if (_productHasOriginProperties(product)) {
+      return product;
+    }
+  }
+  return null;
+};
+
+/**
+ * Sort products based on preferred weight.
+ *
+ * When preferred weights are equal, most recent updateTime is preferred.
+ *
+ * @param list {Array}
+ *        array of products.
+ * @return {Array}
+ *         sorted array, most preferred first.
+ */
+_getSortedMostPreferredFirst = function (list) {
+  var sorted = list.splice(0);
+  sorted.sort(function (p1, p2) {
+    var diff;
+    diff = p2.preferredWeight - p1.preferredWeight;
+    if (diff !== 0) {
+      return diff;
+    }
+    diff = p2.updateTime - p1.updateTime;
+    if (diff !== 0) {
+      return diff;
+    }
+    return (p1.id > p2.id ? 1 : -1);
+  });
+  return sorted;
+};
+
+/**
+ * Filter deleted products from array.
+ *
+ * @param list {Array}
+ *        array of products.
+ * @return {Array}
+ *         array without deleted versions.
+ */
+_getWithoutDeleted = function (list) {
+  var withoutDeleted = [];
+  list.forEach(function (product) {
+    if (product.status.toUpperCase() !== 'DELETE') {
+      withoutDeleted.push(product);
+    }
+  });
+  return withoutDeleted;
+};
 
 /**
  * Filter superseded products (old versions) from array.
@@ -29,7 +122,7 @@ var productMapToList = function (map) {
  * @return {Array}
  *         array without superseded versions.
  */
-var getWithoutSuperseded = function (list) {
+_getWithoutSuperseded = function (list) {
   var unique = {},
       products;
   list.forEach(function (product) {
@@ -52,51 +145,6 @@ var getWithoutSuperseded = function (list) {
 };
 
 /**
- * Filter deleted products from array.
- *
- * @param list {Array}
- *        array of products.
- * @return {Array}
- *         array without deleted versions.
- */
-var getWithoutDeleted = function (list) {
-  var withoutDeleted = [];
-  list.forEach(function (product) {
-    if (product.status.toUpperCase() !== 'DELETE') {
-      withoutDeleted.push(product);
-    }
-  });
-  return withoutDeleted;
-};
-
-/**
- * Sort products based on preferred weight.
- *
- * When preferred weights are equal, most recent updateTime is preferred.
- *
- * @param list {Array}
- *        array of products.
- * @return {Array}
- *         sorted array, most preferred first.
- */
-var getSortedMostPreferredFirst = function (list) {
-  var sorted = list.splice(0);
-  sorted.sort(function (p1, p2) {
-    var diff;
-    diff = p2.preferredWeight - p1.preferredWeight;
-    if (diff !== 0) {
-      return diff;
-    }
-    diff = p2.updateTime - p1.updateTime;
-    if (diff !== 0) {
-      return diff;
-    }
-    return (p1.id > p2.id ? 1 : -1);
-  });
-  return sorted;
-};
-
-/**
  * Check whether product has origin properties.
  *
  * Origin properties include event id (eventsource, eventsourcecode) and
@@ -106,7 +154,7 @@ var getSortedMostPreferredFirst = function (list) {
  *        product to check.
  * @return true if product has all origin properties, false otherwise.
  */
-var productHasOriginProperties = function (product) {
+_productHasOriginProperties = function (product) {
   var props = product.properties;
   if (props.hasOwnProperty('eventsource') &&
       props.hasOwnProperty('eventsourcecode') &&
@@ -119,62 +167,24 @@ var productHasOriginProperties = function (product) {
 };
 
 /**
- * Get the most preferred product with origin properties.
+ * Convert a product map to an array.
  *
- * Origin properties include event id (eventsource, eventsourcecode) and
- * event location (latitude, longitude, eventtime).
- *
- * Products are sorted using getSortedMostPreferredFirst before checking
- * for properties.
- *
- * @param list {Array}
- *        array of products.
- * @return {Object}
- *         most preferred product with origin properties.
+ * @param map {Object}
+ *        keys are product types.
+ *        values are arrays of products.
+ * @return {Array}
+ *         array containing all products.
  */
-var getProductWithOriginProperties = function (list) {
-  var i,
-      product;
-  list = getSortedMostPreferredFirst(list);
-  for (i = 0; i < list.length; i++) {
-    product = list[i];
-    if (productHasOriginProperties(product)) {
-      return product;
-    }
+_productMapToList = function (map) {
+  var list = [],
+      type;
+  for (type in map) {
+    list.push.apply(list, map[type]);
   }
-  return null;
+  return list;
 };
 
-
-/**
- * Get the most preferred product with event id properties.
- *
- * Event ID properties are eventsource and eventsourcecode.
- *
- * Products are sorted using getSortedMostPreferredFirst before checking
- * for properties.
- *
- * @param list {Array}
- *        array of products.
- * @return {Object}
- *         most preferred product with event id properties.
- */
-var getProductWithEventIdProperties = function (list) {
-  var i,
-      props;
-  list = getSortedMostPreferredFirst(list);
-  for (i = 0; i < list.length; i++) {
-    props = list[i].properties;
-    if (props.hasOwnProperty('eventsource') &&
-        props.hasOwnProperty('eventsourcecode')) {
-      return list[i];
-    }
-  }
-  return null;
-};
-
-
-var removePhases = function (products) {
+_removePhases = function (products) {
   var product,
       originProducts = {},
       phaseProducts = {},
@@ -220,13 +230,15 @@ var removePhases = function (products) {
 var CatalogEvent = function (eventDetails) {
   var _this,
       _initialize,
+
       _products,
       _properties,
       _summary;
 
-  _this = Object.create({});
 
-  _initialize = function () {
+  _this = {};
+
+  _initialize = function (eventDetails) {
     _products = {};
     _properties = {};
     if (typeof eventDetails !== 'undefined') {
@@ -234,9 +246,8 @@ var CatalogEvent = function (eventDetails) {
       _properties = Util.extend({}, eventDetails.properties, {products:null});
     }
     _summary = null;
-    // clean up
-    eventDetails = null;
   };
+
 
   /**
    * Add a product to this event.
@@ -251,377 +262,6 @@ var CatalogEvent = function (eventDetails) {
     }
     _products[type].push(product);
     _summary = null;
-  };
-
-  /**
-   * Remove a product from this event.
-   *
-   * @param product {Object}
-   *        product to remove.
-   */
-  _this.removeProduct = function (product) {
-    var type = product.type,
-        typeProducts,
-        index;
-    if (_products.hasOwnProperty(type)) {
-      typeProducts = _products[type];
-      index = typeProducts.indexOf(product);
-      if (index >= 0) {
-        typeProducts = typeProducts.splice(index, 1);
-        if (typeProducts.length === 0) {
-          delete _products[type];
-        } else {
-          _products[type] = typeProducts;
-        }
-        _summary = null;
-      }
-    }
-  };
-
-  /**
-   * Get event products.
-   */
-  _this.getProducts = function (type) {
-    if (type) {
-      return _products[type] || [];
-    } else {
-      return _products;
-    }
-  };
-
-  /**
-   * Get all versions of a product (type, souce, code).
-   */
-  _this.getAllProductVersions = function (type, source, code) {
-    var products = [],
-        product;
-
-    for (var i = 0; i < _products[type].length; i++) {
-      product = _products[type][i];
-      if (product.source === source && product.code === code) {
-        products.push(product);
-      }
-    }
-    // sort most recent first.
-    products.sort(function (p1, p2) {
-      return p2.updateTime - p1.updateTime;
-    });
-    return products;
-  };
-
-  /**
-   * Get the preferred event id.
-   *
-   * @return {String}
-   *         the preferred event id, or null if none.
-   */
-  _this.getEventId = function () {
-    var product = _this.getEventIdProduct(),
-        props;
-    if (product !== null) {
-      props = product.properties;
-      return props.eventsource + props.eventsourcecode;
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event source.
-   *
-   * @return {String}
-   *         the preferred event source, or null if none.
-   */
-  _this.getSource = function () {
-    var product = _this.getEventIdProduct();
-    if (product !== null) {
-      return product.properties.eventsource;
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event code.
-   *
-   * @return {String}
-   *         the preferred event code, or null if none.
-   */
-  _this.getSourceCode = function () {
-    var product = _this.getEventIdProduct();
-    if (product !== null) {
-      return product.properties.eventsourcecode;
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event time.
-   *
-   * @return {Date}
-   *         the preferred origin time for this event, or null if none.
-   */
-  _this.getTime = function () {
-    var product = _this.getProductWithOriginProperties();
-    if (product !== null) {
-      return new Date(product.properties.eventtime);
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event latitude.
-   *
-   * @return {Number}
-   *         the preferred latitude for this event, or null if none.
-   */
-  _this.getLatitude = function () {
-    var product = _this.getProductWithOriginProperties();
-    if (product !== null) {
-      return Number(product.properties.latitude);
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event longitude.
-   *
-   * @return {Number}
-   *         the preferred longitude for this event, or null if none.
-   */
-  _this.getLongitude = function () {
-    var product = _this.getProductWithOriginProperties();
-    if (product !== null) {
-      return Number(product.properties.longitude);
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event depth.
-   *
-   * @return {Number}
-   *         the preferred depth for this event, or null if none.
-   */
-  _this.getDepth = function () {
-    var product = _this.getProductWithOriginProperties(),
-        props;
-    if (product !== null) {
-      props = product.properties;
-      return (props.hasOwnProperty('depth') ? Number(props.depth) : null);
-    }
-    return null;
-  };
-
-  /**
-   * Get the preferred event magnitude.
-   *
-   * @return {Number}
-   *         the preferred magnitude for this event, or null if none.
-   */
-  _this.getMagnitude = function () {
-    var product = _this.getPreferredMagnitudeProduct(),
-        props;
-    if (product === null) {
-      product = _this.getProductWithOriginProperties();
-    }
-    if (product !== null) {
-      props = product.properties;
-      return (props.hasOwnProperty('magnitude') ?
-          Number(props.magnitude) : null);
-    }
-    return null;
-  };
-
-  /**
-   * Check whether event is deleted.
-   *
-   * @return {Boolean}
-   *         true if deleted, false otherwise.
-   */
-  _this.isDeleted = function () {
-    var product = _this.getPreferredOriginProduct();
-    if (product !== null &&
-        product.status.toUpperCase() !== 'DELETE' &&
-        productHasOriginProperties(product)) {
-      // have "origin" product, that isn't deleted, and has origin properties.
-      return false;
-    }
-    // otherwise, deleted
-    return true;
-  };
-
-  /**
-   * Get the product with event id properties.
-   *
-   * This may be a superseded or deleted product.
-   *
-   * @return {Number}
-   *         the preferred latitude for this event, or null if none.
-   */
-  _this.getEventIdProduct = function () {
-    var product = _this.getPreferredOriginProduct();
-    if (product === null) {
-      product = _this.getProductWithOriginProperties();
-    }
-    if (product === null) {
-      product = _this.getProductWithEventIdProperties();
-    }
-    return product;
-  };
-
-  /**
-   * Get the product with origin properties.
-   *
-   * This may be a superseded or deleted product.
-   *
-   * @return {Number}
-   *         the product with origin properties this event, or null if none.
-   */
-  _this.getProductWithOriginProperties = function () {
-    var product;
-    if (_products.hasOwnProperty('origin')) {
-      // origin products not superseded or deleted
-      product = getProductWithOriginProperties(
-          getWithoutDeleted(getWithoutSuperseded(
-              _products.origin)));
-      if (product !== null) {
-        return product;
-      }
-      // origin products superseded by a delete
-      product = getProductWithOriginProperties(
-          getWithoutSuperseded(getWithoutDeleted(
-              _products.origin)));
-      if (product !== null) {
-        return product;
-      }
-    }
-    // products not superseded or deleted
-    product = getProductWithOriginProperties(
-        getWithoutDeleted(getWithoutSuperseded(
-            productMapToList(_products))));
-    if (product !== null) {
-      return product;
-    }
-    // products superseded by a delete
-    product = getProductWithOriginProperties(
-        getWithoutSuperseded(getWithoutDeleted(
-            productMapToList(_products))));
-    return product;
-  };
-
-  /**
-   * Get the preferred product with origin properties.
-   *
-   * If no preferred product has origin properties,
-   * look for preferred product with event id.
-   *
-   * @return {Number}
-   *         the preferred product with origin properties this event, or null.
-   */
-  _this.getPreferredOriginProduct = function () {
-    var product;
-    if (_products.hasOwnProperty('origin')) {
-      // origin products not superseded or deleted
-      product = getProductWithOriginProperties(
-          getWithoutDeleted(getWithoutSuperseded(
-              _products.origin)));
-      if (product !== null) {
-        return product;
-      }
-      // origin products not superseded that have event id
-      product = getProductWithEventIdProperties(
-          getWithoutSuperseded(_products.origin));
-      if (product !== null) {
-        return product;
-      }
-      // origin exists, but is incomplete
-      return null;
-    }
-    // products not superseded or deleted
-    product = getProductWithOriginProperties(
-        getWithoutDeleted(getWithoutSuperseded(
-            productMapToList(_products))));
-    if (product !== null) {
-      return product;
-    }
-    // products not superseded that have eventid.
-    product = getProductWithEventIdProperties(
-        getWithoutSuperseded(productMapToList(_products)));
-    return product;
-  };
-
-
-  /**
-   * Get the preferred magnitude product.
-   *
-   * Current calls getPreferredOriginProduct.  Method is a placeholder in case
-   * moment-tensor or other products become preferred source of magnitude.
-   *
-   * @return {Object}
-   *         the product that defines the magnitude for the event, or null.
-   */
-  _this.getPreferredMagnitudeProduct = function () {
-    return _this.getPreferredOriginProduct();
-  };
-
-  /**
-   * Break this event into events by contributor.
-   *
-   * All products that do not include an event id are included with the
-   * preferred sub event.
-   *
-   * @return {Object}
-   *         keys are event ids.
-   *         values are CatalogEvents.
-   */
-  _this.getSubEvents = function () {
-    var preferredEvent,
-        preferredEventId,
-        productEvents,
-        subEvents,
-        withoutSuperseded;
-
-    preferredEventId = _this.getEventId();
-    preferredEvent = CatalogEvent();
-    productEvents = {};
-    subEvents = {};
-    subEvents[preferredEventId] = preferredEvent;
-
-    withoutSuperseded = getWithoutSuperseded(
-        productMapToList(_products));
-    withoutSuperseded.forEach(function (product) {
-      var key,
-          eventCode,
-          eventSource,
-          props,
-          subEvent,
-          subEventId;
-      key = product.source + '_' + product.type + '_' + product.code;
-      props = product.properties || {};
-      eventSource = props.eventsource || null;
-      eventCode = props.eventsourcecode || null;
-      if (eventSource === null || eventCode === null) {
-        subEvent = preferredEvent;
-      } else {
-        subEventId = eventSource + eventCode;
-        if (!subEvents.hasOwnProperty(subEventId)) {
-          subEvents[subEventId] = CatalogEvent();
-        }
-        subEvent = subEvents[subEventId];
-      }
-      subEvent.addProduct(product);
-      productEvents[key] = subEvent;
-    });
-
-    productMapToList(_products).forEach(function (product) {
-      var key;
-      if (withoutSuperseded.indexOf(product) !== -1) {
-        return;
-      }
-      key = product.source + '_' + product.type + '_' + product.code;
-      productEvents[key].addProduct(product);
-    });
-
-    return subEvents;
   };
 
   /**
@@ -661,6 +301,319 @@ var CatalogEvent = function (eventDetails) {
       }
     }
     return allEventCodes;
+  };
+
+  /**
+   * Get all versions of a product (type, souce, code).
+   */
+  _this.getAllProductVersions = function (type, source, code) {
+    var products = [],
+        product;
+
+    for (var i = 0; i < _products[type].length; i++) {
+      product = _products[type][i];
+      if (product.source === source && product.code === code) {
+        products.push(product);
+      }
+    }
+    // sort most recent first.
+    products.sort(function (p1, p2) {
+      return p2.updateTime - p1.updateTime;
+    });
+    return products;
+  };
+
+  /**
+   * Get the preferred event depth.
+   *
+   * @return {Number}
+   *         the preferred depth for this event, or null if none.
+   */
+  _this.getDepth = function () {
+    var product = _this.getProductWithOriginProperties(),
+        props;
+    if (product !== null) {
+      props = product.properties;
+      return (props.hasOwnProperty('depth') ? Number(props.depth) : null);
+    }
+    return null;
+  };
+
+  /**
+   * Get the preferred event id.
+   *
+   * @return {String}
+   *         the preferred event id, or null if none.
+   */
+  _this.getEventId = function () {
+    var product = _this.getEventIdProduct(),
+        props;
+    if (product !== null) {
+      props = product.properties;
+      return props.eventsource + props.eventsourcecode;
+    }
+    return null;
+  };
+
+  /**
+   * Get the product with event id properties.
+   *
+   * This may be a superseded or deleted product.
+   *
+   * @return {Number}
+   *         the preferred latitude for this event, or null if none.
+   */
+  _this.getEventIdProduct = function () {
+    var product = _this.getPreferredOriginProduct();
+    if (product === null) {
+      product = _this.getProductWithOriginProperties();
+    }
+    if (product === null) {
+      product = _this.getProductWithEventIdProperties();
+    }
+    return product;
+  };
+
+  /**
+   * Get the preferred event latitude.
+   *
+   * @return {Number}
+   *         the preferred latitude for this event, or null if none.
+   */
+  _this.getLatitude = function () {
+    var product = _this.getProductWithOriginProperties();
+    if (product !== null) {
+      return Number(product.properties.latitude);
+    }
+    return null;
+  };
+
+  /**
+   * Get the preferred event longitude.
+   *
+   * @return {Number}
+   *         the preferred longitude for this event, or null if none.
+   */
+  _this.getLongitude = function () {
+    var product = _this.getProductWithOriginProperties();
+    if (product !== null) {
+      return Number(product.properties.longitude);
+    }
+    return null;
+  };
+
+  /**
+   * Get the preferred event magnitude.
+   *
+   * @return {Number}
+   *         the preferred magnitude for this event, or null if none.
+   */
+  _this.getMagnitude = function () {
+    var product = _this.getPreferredMagnitudeProduct(),
+        props;
+    if (product === null) {
+      product = _this.getProductWithOriginProperties();
+    }
+    if (product !== null) {
+      props = product.properties;
+      return (props.hasOwnProperty('magnitude') ?
+          Number(props.magnitude) : null);
+    }
+    return null;
+  };
+
+  /**
+   * Get the preferred magnitude product.
+   *
+   * Current calls getPreferredOriginProduct.  Method is a placeholder in case
+   * moment-tensor or other products become preferred source of magnitude.
+   *
+   * @return {Object}
+   *         the product that defines the magnitude for the event, or null.
+   */
+  _this.getPreferredMagnitudeProduct = function () {
+    return _this.getPreferredOriginProduct();
+  };
+
+  /**
+   * Get the preferred product with origin properties.
+   *
+   * If no preferred product has origin properties,
+   * look for preferred product with event id.
+   *
+   * @return {Number}
+   *         the preferred product with origin properties this event, or null.
+   */
+  _this.getPreferredOriginProduct = function () {
+    var product;
+    if (_products.hasOwnProperty('origin')) {
+      // origin products not superseded or deleted
+      product = _getProductWithOriginProperties(
+          _getWithoutDeleted(_getWithoutSuperseded(
+              _products.origin)));
+      if (product !== null) {
+        return product;
+      }
+      // origin products not superseded that have event id
+      product = _getProductWithEventIdProperties(
+          _getWithoutSuperseded(_products.origin));
+      if (product !== null) {
+        return product;
+      }
+      // origin exists, but is incomplete
+      return null;
+    }
+    // products not superseded or deleted
+    product = _getProductWithOriginProperties(
+        _getWithoutDeleted(_getWithoutSuperseded(
+            _productMapToList(_products))));
+    if (product !== null) {
+      return product;
+    }
+    // products not superseded that have eventid.
+    product = _getProductWithEventIdProperties(
+        _getWithoutSuperseded(_productMapToList(_products)));
+    return product;
+  };
+
+  /**
+   * Get the product with origin properties.
+   *
+   * This may be a superseded or deleted product.
+   *
+   * @return {Number}
+   *         the product with origin properties this event, or null if none.
+   */
+  _this.getProductWithOriginProperties = function () {
+    var product;
+    if (_products.hasOwnProperty('origin')) {
+      // origin products not superseded or deleted
+      product = _getProductWithOriginProperties(
+          _getWithoutDeleted(_getWithoutSuperseded(
+              _products.origin)));
+      if (product !== null) {
+        return product;
+      }
+      // origin products superseded by a delete
+      product = _getProductWithOriginProperties(
+          _getWithoutSuperseded(_getWithoutDeleted(
+              _products.origin)));
+      if (product !== null) {
+        return product;
+      }
+    }
+    // products not superseded or deleted
+    product = _getProductWithOriginProperties(
+        _getWithoutDeleted(_getWithoutSuperseded(
+            _productMapToList(_products))));
+    if (product !== null) {
+      return product;
+    }
+    // products superseded by a delete
+    product = _getProductWithOriginProperties(
+        _getWithoutSuperseded(_getWithoutDeleted(
+            _productMapToList(_products))));
+    return product;
+  };
+
+  /**
+   * Get event products.
+   */
+  _this.getProducts = function (type) {
+    if (type) {
+      return _products[type] || [];
+    } else {
+      return _products;
+    }
+  };
+
+  /**
+   * Get the preferred event source.
+   *
+   * @return {String}
+   *         the preferred event source, or null if none.
+   */
+  _this.getSource = function () {
+    var product = _this.getEventIdProduct();
+    if (product !== null) {
+      return product.properties.eventsource;
+    }
+    return null;
+  };
+
+  /**
+   * Get the preferred event code.
+   *
+   * @return {String}
+   *         the preferred event code, or null if none.
+   */
+  _this.getSourceCode = function () {
+    var product = _this.getEventIdProduct();
+    if (product !== null) {
+      return product.properties.eventsourcecode;
+    }
+    return null;
+  };
+
+  /**
+   * Break this event into events by contributor.
+   *
+   * All products that do not include an event id are included with the
+   * preferred sub event.
+   *
+   * @return {Object}
+   *         keys are event ids.
+   *         values are CatalogEvents.
+   */
+  _this.getSubEvents = function () {
+    var preferredEvent,
+        preferredEventId,
+        productEvents,
+        subEvents,
+        withoutSuperseded;
+
+    preferredEventId = _this.getEventId();
+    preferredEvent = CatalogEvent();
+    productEvents = {};
+    subEvents = {};
+    subEvents[preferredEventId] = preferredEvent;
+
+    withoutSuperseded = _getWithoutSuperseded(
+        _productMapToList(_products));
+    withoutSuperseded.forEach(function (product) {
+      var key,
+          eventCode,
+          eventSource,
+          props,
+          subEvent,
+          subEventId;
+      key = product.source + '_' + product.type + '_' + product.code;
+      props = product.properties || {};
+      eventSource = props.eventsource || null;
+      eventCode = props.eventsourcecode || null;
+      if (eventSource === null || eventCode === null) {
+        subEvent = preferredEvent;
+      } else {
+        subEventId = eventSource + eventCode;
+        if (!subEvents.hasOwnProperty(subEventId)) {
+          subEvents[subEventId] = CatalogEvent();
+        }
+        subEvent = subEvents[subEventId];
+      }
+      subEvent.addProduct(product);
+      productEvents[key] = subEvent;
+    });
+
+    _productMapToList(_products).forEach(function (product) {
+      var key;
+      if (withoutSuperseded.indexOf(product) !== -1) {
+        return;
+      }
+      key = product.source + '_' + product.type + '_' + product.code;
+      productEvents[key].addProduct(product);
+    });
+
+    return subEvents;
   };
 
   /**
@@ -722,19 +675,77 @@ var CatalogEvent = function (eventDetails) {
     return _summary;
   };
 
+  /**
+   * Get the preferred event time.
+   *
+   * @return {Date}
+   *         the preferred origin time for this event, or null if none.
+   */
+  _this.getTime = function () {
+    var product = _this.getProductWithOriginProperties();
+    if (product !== null) {
+      return new Date(product.properties.eventtime);
+    }
+    return null;
+  };
 
-  _initialize();
+  /**
+   * Check whether event is deleted.
+   *
+   * @return {Boolean}
+   *         true if deleted, false otherwise.
+   */
+  _this.isDeleted = function () {
+    var product = _this.getPreferredOriginProduct();
+    if (product !== null &&
+        product.status.toUpperCase() !== 'DELETE' &&
+        _productHasOriginProperties(product)) {
+      // have "origin" product, that isn't deleted, and has origin properties.
+      return false;
+    }
+    // otherwise, deleted
+    return true;
+  };
+
+  /**
+   * Remove a product from this event.
+   *
+   * @param product {Object}
+   *        product to remove.
+   */
+  _this.removeProduct = function (product) {
+    var type = product.type,
+        typeProducts,
+        index;
+    if (_products.hasOwnProperty(type)) {
+      typeProducts = _products[type];
+      index = typeProducts.indexOf(product);
+      if (index >= 0) {
+        typeProducts = typeProducts.splice(index, 1);
+        if (typeProducts.length === 0) {
+          delete _products[type];
+        } else {
+          _products[type] = typeProducts;
+        }
+        _summary = null;
+      }
+    }
+  };
+
+
+  _initialize(eventDetails);
+  eventDetails = null;
   return _this;
 };
 
 
 // add static methods
-CatalogEvent.productMapToList = productMapToList;
-CatalogEvent.getWithoutDeleted = getWithoutDeleted;
-CatalogEvent.getWithoutSuperseded = getWithoutSuperseded;
-CatalogEvent.getSortedMostPreferredFirst = getSortedMostPreferredFirst;
-CatalogEvent.productHasOriginProperties = productHasOriginProperties;
-CatalogEvent.removePhases = removePhases;
+CatalogEvent.productMapToList = _productMapToList;
+CatalogEvent.getWithoutDeleted = _getWithoutDeleted;
+CatalogEvent.getWithoutSuperseded = _getWithoutSuperseded;
+CatalogEvent.getSortedMostPreferredFirst = _getSortedMostPreferredFirst;
+CatalogEvent.productHasOriginProperties = _productHasOriginProperties;
+CatalogEvent.removePhases = _removePhases;
 
 
 module.exports = CatalogEvent;

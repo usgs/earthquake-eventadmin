@@ -1,7 +1,9 @@
 'use strict';
 
+
 var Util = require('util/Util'),
     View = require('mvc/View');
+
 
 /**
  * View to display file upload status.
@@ -17,21 +19,21 @@ var Util = require('util/Util'),
 var FileUploadStatusView = function (options) {
   var _this,
       _initialize,
-      // variables
+
       _button,
       _name,
       _progress,
       _result,
       _xhr,
-      // methods
+
+      _onClick,
       _onLoad,
-      _onProgress,
-      _onClick;
+      _onProgress;
 
 
   _this = View(options);
 
-  _initialize = function () {
+  _initialize = function (options) {
     var el,
         file;
 
@@ -116,6 +118,7 @@ var FileUploadStatusView = function (options) {
     }
   };
 
+
   /**
    * Destroy this view.
    */
@@ -140,7 +143,8 @@ var FileUploadStatusView = function (options) {
   }, _this.destroy);
 
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 
