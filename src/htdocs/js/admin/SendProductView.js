@@ -26,7 +26,7 @@ _DEFAULTS = {
 };
 
 
-var _getProductIdentifier,;
+var _getProductIdentifier,
     _prettySize;
 
 _prettySize = function (size) {
@@ -172,7 +172,7 @@ var SendProductView = function (options) {
         i,
         len,
         productContainer = null,
-        productId = getProductIdentifier(product);
+        productId = _getProductIdentifier(product);
 
 
     for (i = 0, len = containers.length; i < len; i++) {
@@ -347,7 +347,7 @@ var SendProductView = function (options) {
 
     accordionContent = _products.map(function (product) {
       return {
-        toggleText: getProductIdentifier(product),
+        toggleText: _getProductIdentifier(product),
         toggleElement: 'h5',
         classes: 'accordion-standard' + isClosed,
         contentText: format(product)
@@ -446,7 +446,7 @@ var SendProductView = function (options) {
         name = p;
       }
 
-      buf.push('<li>' + name + ' (' + prettySize(content.get('length')) +
+      buf.push('<li>' + name + ' (' + _prettySize(content.get('length')) +
           ') ' + type + '</li>');
     });
     buf.push('</ul></dd>');
