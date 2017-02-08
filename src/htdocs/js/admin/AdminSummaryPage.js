@@ -1,5 +1,6 @@
 'use strict';
 
+
 var CatalogEvent = require('admin/CatalogEvent'),
     EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
@@ -36,6 +37,7 @@ var AdminSummaryPage = function (options) {
 
     _createViewSkeleton();
   };
+
 
   _createViewSkeleton = function () {
     var button;
@@ -177,6 +179,10 @@ var AdminSummaryPage = function (options) {
 
 
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
+
     _this._buttons.forEach(function (button) {
       button.removeEventListener('click', button._clickHandler);
       button._clickHandler = null;
