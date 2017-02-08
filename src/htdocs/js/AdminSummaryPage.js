@@ -3,7 +3,6 @@
 var CatalogEvent = require('CatalogEvent'),
     EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
-    EventModulePage = require('admin/AdminEventModulePage'),
     InvalidatorView = require('invalidator/InvalidatorView'),
     ModalView = require('mvc/ModalView'),
     ProductFactory = require('admin/ProductFactory'),
@@ -189,8 +188,6 @@ var AdminSummaryPage = function (options) {
 
     _this._eventsNearby.destroy();
     _this._eventsNearby = null;
-
-    EventModulePage.prototype.destroy.call(_this);
   }, _this.destroy);
 
 
