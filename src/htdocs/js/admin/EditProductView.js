@@ -1,7 +1,7 @@
 'use strict';
 
-var ContentsManagerView = require('ContentsManagerView'),
-    Product = require('Product'),
+var ContentsManagerView = require('admin/ContentsManagerView'),
+    Product = require('admin/Product'),
 
     Accordion = require('accordion/Accordion'),
 

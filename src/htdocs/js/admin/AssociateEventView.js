@@ -1,9 +1,9 @@
 'use strict';
 
-var CatalogEvent = require('CatalogEvent'),
+var CatalogEvent = require('admin/CatalogEvent'),
     Collection = require('mvc/Collection'),
-    Product = require('Product'),
-    ProductContent = require('ProductContent'),
+    Product = require('admin/Product'),
+    ProductContent = require('admin/ProductContent'),
     SendProductView = require('admin/SendProductView'),
 
     ModalView = require('mvc/ModalView'),
@@ -13,7 +13,7 @@ var CatalogEvent = require('CatalogEvent'),
     Xhr = require('util/Xhr');
 
 var DEFAULTS = {
-  SEARCH_STUB: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson'
+  SEARCH_STUB: 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson'
 };
 
 var AssociateEventView = function (options) {

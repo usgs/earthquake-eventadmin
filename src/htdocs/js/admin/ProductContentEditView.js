@@ -1,8 +1,8 @@
 'use strict';
 
-var FileUploadView = require('FileUploadView'),
-    Formatter = require('Formatter'),
-    ProductContent = require('ProductContent'),
+var FileUploadView = require('admin/FileUploadView'),
+    Formatter = require('admin/Formatter'),
+    ProductContent = require('admin/ProductContent'),
 
     ModalView = require('mvc/ModalView'),
     View = require('mvc/View'),

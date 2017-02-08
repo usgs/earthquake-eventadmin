@@ -1,7 +1,7 @@
 'use strict';
 
-var Formatter = require('Formatter'),
-    ProductContentEditView = require('ProductContentEditView'),
+var Formatter = require('admin/Formatter'),
+    ProductContentEditView = require('admin/ProductContentEditView'),
 
     View = require('mvc/View'),
 

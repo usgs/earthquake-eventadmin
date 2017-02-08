@@ -1,7 +1,7 @@
 'use strict';
 
-var Product = require('Product'),
-    ProductSender = require('ProductSender'),
+var Product = require('admin/Product'),
+    ProductSender = require('admin/ProductSender'),
 
     Accordion = require('accordion/Accordion'),
 

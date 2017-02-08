@@ -4,7 +4,7 @@ var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
     View = require('mvc/View'),
 
-    CatalogEvent = require('CatalogEvent');
+    CatalogEvent = require('admin/CatalogEvent');
 
 
 var ProductHistoryView = function (options) {

@@ -1,11 +1,11 @@
 'use strict';
 
 var EventComparisonView = require('admin/EventComparisonView'),
-    CatalogEvent = require('CatalogEvent'),
+    CatalogEvent = require('admin/CatalogEvent'),
     Collection = require('mvc/Collection'),
     Util = require('util/Util'),
     View = require('mvc/View'),
-    Product = require('Product'),
+    Product = require('admin/Product'),
     ProductFactory = require('admin/ProductFactory'),
     SendProductView = require('admin/SendProductView');
 

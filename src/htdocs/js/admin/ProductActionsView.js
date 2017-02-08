@@ -1,6 +1,6 @@
 'use strict';
 
-var Product = require('Product'),
+var Product = require('admin/Product'),
 
     EditProductView = require('admin/EditProductView'),
     ProductDetailsView = require('admin/ProductDetailsView'),

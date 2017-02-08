@@ -1,7 +1,7 @@
 'use strict';
 
 var CollectionTable = require('mvc/CollectionTable'),
-    Formatter = require('Formatter'),
+    Formatter = require('admin/Formatter'),
     Util = require('util/Util');
 
 var DEFAULTS = {

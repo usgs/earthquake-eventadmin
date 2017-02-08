@@ -1,6 +1,6 @@
 'use strict';
 
-var ProductContent = require('ProductContent'),
+var ProductContent = require('admin/ProductContent'),
 
     Collection = require('mvc/Collection'),
     Model = require('mvc/Model'),

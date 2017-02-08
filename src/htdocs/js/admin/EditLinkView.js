@@ -1,7 +1,7 @@
 'use strict';
 
 var ModalView = require('mvc/ModalView'),
-    Product = require('Product'),
+    Product = require('admin/Product'),
     Util = require('util/Util'),
     View = require('mvc/View'),
 

@@ -1,9 +1,9 @@
 'use strict';
 
 
-var FileUploadView = require('FileUploadView'),
-    ProductContent = require('ProductContent'),
-    ProductContentView = require('ProductContentView'),
+var FileUploadView = require('admin/FileUploadView'),
+    ProductContent = require('admin/ProductContent'),
+    ProductContentView = require('admin/ProductContentView'),
 
     Collection = require('mvc/Collection'),
     CollectionView = require('mvc/CollectionView'),

@@ -1,10 +1,10 @@
 'use strict';
 
 
-var CatalogEvent = require('CatalogEvent'),
+var CatalogEvent = require('admin/CatalogEvent'),
     EditLinkView = require('admin/EditLinkView'),
     EditProductView = require('admin/EditProductView'),
-    Product = require('Product'),
+    Product = require('admin/Product'),
     ProductActionsView = require('admin/ProductActionsView'),
     TextProductView = require('admin/TextProductView'),
     Util = require('util/Util'),

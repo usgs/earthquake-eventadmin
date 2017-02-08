@@ -2,7 +2,7 @@
 
 var AssociateEventView = require('admin/AssociateEventView'),
     EventComparisonView = require('admin/EventComparisonView'),
-    CatalogEvent = require('CatalogEvent'),
+    CatalogEvent = require('admin/CatalogEvent'),
     Collection = require('mvc/Collection'),
     View = require('mvc/View'),
     Util = require('util/Util'),

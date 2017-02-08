@@ -1,9 +1,9 @@
 'use strict';
 
 
-var ContentsManagerView = require('ContentsManagerView'),
-    Product = require('Product'),
-    ProductContent = require('ProductContent'),
+var ContentsManagerView = require('admin/ContentsManagerView'),
+    Product = require('admin/Product'),
+    ProductContent = require('admin/ProductContent'),
 
     SendProductView = require('admin/SendProductView'),
 

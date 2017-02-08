@@ -1,6 +1,6 @@
 'use strict';
 
-var CatalogEvent = require('CatalogEvent'),
+var CatalogEvent = require('admin/CatalogEvent'),
     EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
     InvalidatorView = require('invalidator/InvalidatorView'),

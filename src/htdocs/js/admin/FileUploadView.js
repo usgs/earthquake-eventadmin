@@ -3,7 +3,7 @@
 var View = require('mvc/View'),
     Util = require('util/Util'),
 
-    FileUploadStatusView = require('./FileUploadStatusView');
+    FileUploadStatusView = require('admin/FileUploadStatusView');
 
 
 var DEFAULTS = {

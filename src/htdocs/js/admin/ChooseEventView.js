@@ -6,7 +6,7 @@ var Util = require('util/Util'),
 
 
 var DEFAULTS = {
-  url: 'http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
+  url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
 };
 
 
