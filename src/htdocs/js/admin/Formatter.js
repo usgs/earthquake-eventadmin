@@ -1,24 +1,29 @@
 'use strict';
 
+
 var Util = require('util/Util');
 
 
-var DEFAULTS = {
+var _DEFAULTS;
+
+_DEFAULTS = {
   empty: '&ndash;',
   round: null
 };
 
+
 var Formatter = function (options) {
-  var _empty,
+  var _this,
       _initialize,
-      _round,
-      _this;
 
-  // create instance object
-  _this = Object.create({});
+      _empty,
+      _round;
 
-  _initialize = function () {
-    options = Util.extend({}, DEFAULTS, options);
+
+  _this = {};
+
+  _initialize = function (options) {
+    options = Util.extend({}, _DEFAULTS, options);
     _empty = options.empty;
     _round = options.round;
   };
@@ -133,6 +138,15 @@ var Formatter = function (options) {
     return _this.round(size) + suffix[i];
   };
 
+  _this.round = function (value) {
+    var scale;
+    if (_round === null) {
+      return value;
+    }
+    scale = Math.pow(10, _round);
+    return Math.round(value * scale) / scale;
+  };
+
   /**
    * Format a time.
    *
@@ -158,16 +172,9 @@ var Formatter = function (options) {
         (ms < 10 ? '0' : '') + (ms < 100 ? '0' : '') + ms;
   };
 
-  _this.round = function (value) {
-    var scale;
-    if (_round === null) {
-      return value;
-    }
-    scale = Math.pow(10, _round);
-    return Math.round(value * scale) / scale;
-  };
 
-  _initialize();
+  _initialize(options);
+  options = null;
   return _this;
 };
 
