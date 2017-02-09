@@ -117,6 +117,67 @@ $prompts = array(
     'prompt' => 'Hostname(s) to invalidate (comma separated list)',
     'default' => '',
     'secure' => false
+  ),
+
+
+  'SESSION_DB_HOST' => array(
+    'prompt' => 'Session database hostname',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'SESSION_DB_NAME' => array(
+    'prompt' => 'Session database name (database should already exist)',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'SESSION_DB_TABLE' => array(
+    'prompt' => 'Session database table (will be created)',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'SESSION_DB_USER' => array(
+    'prompt' => 'Session database user (must have read/write access)',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'SESSION_DB_PASS' => array(
+    'prompt' => 'Session database user password',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'AD_HOST' => array(
+    'prompt' => 'Active Directory hostname',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'AD_USER' => array(
+    'prompt' => 'Active directory user (service account)',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'AD_PASS' => array(
+    'prompt' => 'Active directory user password',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'AD_BASE_DN' => array(
+    'prompt' => 'Active directory base dn',
+    'default' => '',
+    'secure' => false
+  ),
+
+  'AD_GROUP' => array(
+    'prompt' => 'Active directory group (group to access the application)',
+    'default' => '',
+    'secure' => false
   )
 
 );

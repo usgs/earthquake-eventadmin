@@ -75,3 +75,7 @@ if (!file_exists($CONFIG['PDL_JAR_FILE'])) {
         $CONFIG['PDL_JAR_FILE']);
   }
 }
+
+if (promptYesNo('Would you like to setup the database or load data', true)) {
+  include_once 'setup_database.php';
+}
