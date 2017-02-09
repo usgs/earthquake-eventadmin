@@ -212,8 +212,7 @@ var EventsAssociatedView = function (options) {
       'type': 'origin'
     });
 
-    trumpText = 'The following TRUMP product(s) will be sent. ' +
-        'Click a product below for more details.';
+    trumpText = 'This will make the following product authoritative.';
     trumpTitle = 'Trump Product(s)';
 
     _sendProduct([trumpProduct], trumpTitle, trumpText);
