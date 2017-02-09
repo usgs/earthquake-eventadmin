@@ -1,7 +1,8 @@
 'use strict';
 
 
-var Util = require('util/Util'),
+var ModalView = require('mvc/ModalView'),
+    Util = require('util/Util'),
     View = require('mvc/View');
 
 
@@ -58,12 +59,38 @@ var AddEditPage = function (options) {
    */
   _createViewSkeleton = function () {
     _this.el.innerHTML = [
-      // TODO :: Create layout containers
-    ];
+      /* eslint-disable indent */
+      '<ul class="addeditpage_pins no-style">',
+        // Create a pin item for each ...
+        _this.createPinItem('add-widget', 'Widget Product',
+            'Use this feature to add a widget product to the page. ' +
+            'This is meant as an example for development purposes only.'),
+      '</ul>'
+      /* eslint-enable indent */
+    ].join('');
 
-    // TODO :: Create sub-views for each UI component
+    // Create sub-views for each UI component, note the selector
+    // matches the className from the createPinItem function call
+    _this.addWidgetButton = _this.el.querySelector('.add-widget button');
+    _this.addWidgetButton.addEventListener('click', _this.onAddWidgetClick);
   };
 
+
+  _this.createPinItem = function (className, title, content) {
+    return [
+      /* eslint-disable indent */
+      '<li class="addeditpage_pin ', className, '">',
+        '<article class="addeditpage_pin-wrapper">',
+          '<header class="addeditpage_pin-header">', title, '</header>',
+          '<section class="addeditpage_pin-content">', content, '</section>',
+          '<footer class="addeditpage_pin-footer">',
+            '<button class="addeditpage_pin-action">Add</button>',
+          '</footer>',
+        '</article>',
+      '</li>'
+      /* eslint-enable indent */
+    ].join('');
+  };
 
   /**
    * Frees resources associated with this instance.
@@ -74,11 +101,32 @@ var AddEditPage = function (options) {
       return;
     }
 
+    // Unbind all click handlers
+    _this.addWidgetButton.removeEventListener('click', _this.onAddWidgetClick);
+
+    // Set all member variables to null
+    _this.addWidgetButton = null;
+
+    // Set all private functions to null
     _createViewSkeleton = null;
 
     _initialize = null;
     _this = null;
   }, _this.destroy);
+
+  _this.onAddWidgetClick = function (/*evt*/) {
+    ModalView('<p class="alert info">You&rsquo;re Awesome!</p>', {
+      title: 'Add Widget Product Interface',
+      buttons: [
+        {
+          text: 'Done',
+          callback: function (evt, dialog) {
+            dialog.hide();
+          }
+        }
+      ]
+    }).show();
+  };
 
 
   _initialize(options);
