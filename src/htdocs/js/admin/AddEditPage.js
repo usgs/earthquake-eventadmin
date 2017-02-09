@@ -71,7 +71,7 @@ var AddEditPage = function (options) {
             'Use this feature to add a widget product to the page. ' +
             'This is meant as an example for development purposes only.'),
         _this.createPinItem('add-link', 'Add Link',
-            'Use this feature to add a link to the page. Links can be to '),
+            'Use this feature to add a link to the page.'),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
