@@ -18,8 +18,8 @@ if (isset($IS_LOGGED_IN) && $IS_LOGGED_IN) {
             'Add/Edit Content') .
         navItem($CONFIG['MOUNT_PATH'] . '/products.php?eventid=' . $eventid,
             'All Products') .
-        navItem('https://earthquake.usgs.gov/earthquakes/eventpage/' . $eventid,
-            'View Event Page')
+        navItem('https://earthquake.usgs.gov/earthquakes/eventpage/' .
+            $eventid . '" target="_blank', 'View Event Page')
         );
 
   } else {
