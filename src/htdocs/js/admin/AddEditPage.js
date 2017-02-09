@@ -3,7 +3,9 @@
 
 var ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
-    View = require('mvc/View');
+    View = require('mvc/View'),
+
+    EditLinkView = require('admin/EditLinkView');
 
 
 var _DEFAULTS;
@@ -68,6 +70,8 @@ var AddEditPage = function (options) {
         _this.createPinItem('add-widget', 'Widget Product',
             'Use this feature to add a widget product to the page. ' +
             'This is meant as an example for development purposes only.'),
+        _this.createPinItem('add-link', 'Add Link',
+            'Use this feature to add a link to the page. Links can be to '),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
@@ -76,6 +80,9 @@ var AddEditPage = function (options) {
     // matches the className from the createPinItem function call
     _this.addWidgetButton = _this.el.querySelector('.add-widget button');
     _this.addWidgetButton.addEventListener('click', _this.onAddWidgetClick);
+
+    _this.addLinkButton = _this.el.querySelector('.add-link button');
+    _this.addLinkButton.addEventListener('click', _this.onAddLinkClick, _this);
   };
 
 
@@ -124,9 +131,11 @@ var AddEditPage = function (options) {
 
     // Unbind all click handlers
     _this.addWidgetButton.removeEventListener('click', _this.onAddWidgetClick);
+    _this.addLinkButton.removeEventListener('click', _this.onAddWidgetClick);
 
     // Set all member variables to null
     _this.addWidgetButton = null;
+    _this.addLinkButton = null;
 
     // Set all private functions to null
     _createViewSkeleton = null;
@@ -134,6 +143,25 @@ var AddEditPage = function (options) {
     _initialize = null;
     _this = null;
   }, _this.destroy);
+
+  _this.onAddLinkClick = function () {
+    var eventDetails,
+        properties;
+
+    eventDetails = _this._eventDetails;
+
+    if (eventDetails) {
+      properties = eventDetails.properties;
+
+      EditLinkView({
+        'type': 'general-link',
+        'source': 'admin',
+        'code': eventDetails.id + '-' + new Date().getTime(),
+        'eventSource': properties.net,
+        'eventSourceCode': properties.code
+      }).show();
+    }
+  };
 
   /**
    * Fake event handler executed when the example widget action is selected.
