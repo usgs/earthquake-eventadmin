@@ -25,20 +25,20 @@ if (!isset($TEMPLATE)) {
   $TITLE = $PROPERTIES['title'];
   $NAVIGATION = true;
 
-  $HEAD = '<link rel="stylesheet" href="css/event.css"/>';
+  $HEAD = '<link rel="stylesheet" href="css/addedit.css"/>';
   $FOOT = '
       <script>
         var EventConfig = ' . json_encode($EVENT_CONFIG) . ';
         var EventDetails = ' . json_encode($EVENT) . ';
       </script>
-      <script src="js/event.js"></script>
+      <script src="js/addedit.js"></script>
     ';
 
   include 'template.inc.php';
 }
 
 if ($httpCode != 409) {
-  echo '<div class="eventadmin-event"></div>';
+  echo '<div class="eventadmin-addedit"></div>';
 } else {
   print '<p class="alert error">The requested event has been deleted.</p>';
 }

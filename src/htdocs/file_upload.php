@@ -1,7 +1,7 @@
 <?php
 
 // upload directory is session specific
-session_start();
+include_once '../lib/session.inc.php';
 
 // session specific data directory
 $uploadDir = sys_get_temp_dir() . 'file_upload_' . session_id();
