@@ -192,8 +192,6 @@ var EventsAssociatedView = function (options) {
    *
    * @param eventSummary {Object}
    *        Product
-   * @param referenceEvent {Object}
-   *        Product
    */
   _this.trumpCallback = function (eventSummary) {
     var trumpProduct,
