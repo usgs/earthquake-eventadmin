@@ -6,6 +6,7 @@ mocha.setup('bdd');
 
 // Add each test class here as they are implemented
 require('./spec/AddEditPageTest');
+require('./spec/EventsAssociatedViewTest');
 require('./spec/ProductTest');
 require('./spec/TextProductViewTest');
 require('./spec/EditLinkViewTest');
