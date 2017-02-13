@@ -73,7 +73,7 @@ var AddEditPage = function (options) {
         _this.createPinItem('add-link', 'Add Link',
             'Use this feature to add a link near the bottom of the event ' +
             'page. Links can be to any web-addressable content such as news ' +
-            'articles, images, videos, etc.'),
+            'articles, images, and videos.'),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
