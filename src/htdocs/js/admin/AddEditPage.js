@@ -146,6 +146,12 @@ var AddEditPage = function (options) {
     _this = null;
   }, _this.destroy);
 
+  /**
+   * Callback function executed when the user clicks the "Add" button on the
+   * "Add Link Product" pin. This callback shows a dialog for creating a
+   * new general-link product for the current event.
+   *
+   */
   _this.onAddLinkClick = function () {
     var eventDetails,
         properties;
