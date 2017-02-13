@@ -648,6 +648,7 @@ var CatalogEvent = function (eventDetails) {
     _summary.isDeleted = _this.isDeleted();
 
     eventIdProduct = _this.getEventIdProduct();
+    _summary.eventIdProduct = eventIdProduct;
     if (eventIdProduct !== null) {
       props = eventIdProduct.properties;
       _summary.id = props.eventsource + props.eventsourcecode;
@@ -656,6 +657,7 @@ var CatalogEvent = function (eventDetails) {
     }
 
     originProduct = _this.getProductWithOriginProperties();
+    _summary.originProduct = originProduct;
     if (originProduct !== null) {
       props = originProduct.properties;
       _summary.depth = Number(props.depth);
@@ -665,6 +667,7 @@ var CatalogEvent = function (eventDetails) {
     }
 
     magnitudeProduct = _this.getPreferredMagnitudeProduct();
+    _summary.magnitudeProduct = magnitudeProduct;
     if (magnitudeProduct !== null) {
       _summary.magnitude = Number(magnitudeProduct.properties.magnitude);
     }

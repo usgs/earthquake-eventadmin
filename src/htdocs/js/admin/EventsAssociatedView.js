@@ -26,9 +26,7 @@ var EventsAssociatedView = function (options) {
       // methods
       _createView,
       _deleteCallback,
-      _disassociateCallback,
-      _sendProduct,
-      _trumpCallback;
+      _disassociateCallback;
 
 
   options = Util.extend({}, options);
@@ -84,7 +82,7 @@ var EventsAssociatedView = function (options) {
         {
           title: 'Make Authoritative',
           className: 'trump',
-          callback: _trumpCallback
+          callback: _this.trumpCallback
         }
       ]
     });
@@ -109,7 +107,7 @@ var EventsAssociatedView = function (options) {
     // create delete products
     products = products.map(_productFactory.getDelete);
     // send products
-    _sendProduct(products, 'Delete Event ' + eventSummary.id,
+    _this.sendProduct(products, 'Delete Event ' + eventSummary.id,
         '<h4>These products will be deleted</h4>');
   };
 
@@ -142,7 +140,7 @@ var EventsAssociatedView = function (options) {
     products = CatalogEvent.productMapToList(subEvent.getProducts());
 
     // send product
-    _sendProduct([product], 'Disassociate Event ' + eventSummary.id,
+    _this.sendProduct([product], 'Disassociate Event ' + eventSummary.id,
         '<h4>These products will be disassociated</h4>' +
         '<ul>' +
           products.map(function (p) {
@@ -155,7 +153,7 @@ var EventsAssociatedView = function (options) {
    * Reference to EventModulePage sendProduct.
    * TODO :: Consolidate this with other sendProduct methods...
    */
-  _sendProduct = function (products, title, text) {
+  _this.sendProduct = function (products, title, text) {
     // send product
     var sendProductView,
         productSent;
@@ -197,25 +195,17 @@ var EventsAssociatedView = function (options) {
    * @param referenceEvent {Object}
    *        Product
    */
-  _trumpCallback = function (eventSummary, referenceEvent) {
+  _this.trumpCallback = function (eventSummary) {
     var trumpProduct,
         trumpText,
         trumpTitle;
 
-    trumpProduct = _productFactory.getTrump({
-      'code': referenceEvent.sourceCode,
-      'properties': {
-        'eventsource': eventSummary.source,
-        'eventsourcecode': eventSummary.sourceCode
-      },
-      'source': referenceEvent.source,
-      'type': 'origin'
-    });
+    trumpProduct = _productFactory.getTrump(eventSummary.originProduct);
 
     trumpText = 'This will make the following product authoritative.';
     trumpTitle = 'Trump Product(s)';
 
-    _sendProduct([trumpProduct], trumpTitle, trumpText);
+    _this.sendProduct([trumpProduct], trumpTitle, trumpText);
   };
 
   /**
@@ -224,7 +214,6 @@ var EventsAssociatedView = function (options) {
   _this.destroy = Util.compose(function () {
 
     // methods
-    _trumpCallback = null;
     _disassociateCallback = null;
     _deleteCallback = null;
     _createView = null;
