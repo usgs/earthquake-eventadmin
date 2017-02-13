@@ -1,7 +1,8 @@
 <?php
 
-include_once '../conf/config.inc.php';
+include_once dirname(__FILE__) . '/../conf/config.inc.php';
 include_once dirname(__FILE__) . '/PdoSessionHandler.php';
+include_once dirname(__FILE__) . '/functions.ad.php';
 
 $session_dsn = $CONFIG['SESSION_DB_DRIVER'] . ':' .
     'host=' . $CONFIG['SESSION_DB_HOST'] . ';' .
@@ -27,11 +28,6 @@ session_start();
 $_SESSION['IS_LOGGED_IN'] = (isset($_SESSION['IS_LOGGED_IN'])) ?
     $_SESSION['IS_LOGGED_IN'] : false;
 
-// TODO :: Implement AD authentication
-function authenticate ($username = null, $password = null) {
-  return !(!$username || !$password);
-}
-
 if (isset($_POST['username']) || isset($_POST['password'])) {
   // login credentials sent, attempt to authenticate
   if (authenticate($_POST['username'], $_POST['password'])) {
@@ -41,7 +37,8 @@ if (isset($_POST['username']) || isset($_POST['password'])) {
   } else {
     $LOGIN_ERROR = 'Invalid username/password combination';
   }
-} else if ($_SERVER['REQUEST_URI'] != $CONFIG['MOUNT_PATH'] . '/index.php' &&
+} else if (!$_SESSION['IS_LOGGED_IN'] &&
+    $_SERVER['REQUEST_URI'] != $CONFIG['MOUNT_PATH'] . '/index.php' &&
     $_SERVER['REQUEST_URI'] != $CONFIG['MOUNT_PATH'] . '/logout.php') {
   // Not logged in and requesting protected page
   header('HTTP/1.1 403 Forbidden');
@@ -50,7 +47,7 @@ if (isset($_POST['username']) || isset($_POST['password'])) {
 }
 
 if (!$_SESSION['IS_LOGGED_IN']) {
-  // Re
+  // "Redirect" to login page if not logged in
   $loginPage = realpath(dirname(__FILE__) . '/../htdocs/index.php');
 
   $_SERVER['SCRIPT_FILENAME'] = $loginPage;
