@@ -1,11 +1,11 @@
 'use strict';
 
 
-var ModalView = require('mvc/ModalView'),
+var EditLinkView = require('admin/EditLinkView'),
+    ModalView = require('mvc/ModalView'),
     Util = require('util/Util'),
-    View = require('mvc/View'),
+    View = require('mvc/View');
 
-    EditLinkView = require('admin/EditLinkView');
 
 
 var _DEFAULTS;
