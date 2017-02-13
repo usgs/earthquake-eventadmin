@@ -187,7 +187,7 @@ var EventComparisonView = function (options) {
       eventid = element.getAttribute('data-id');
       title = element.innerHTML;
       // execute callback for the button with the matching classname
-      _callbackMap[title](_collection.get(eventid), _referenceEvent);
+      _callbackMap[title](_collection.get(eventid));
     }
   };
 
