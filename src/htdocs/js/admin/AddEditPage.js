@@ -84,7 +84,7 @@ var AddEditPage = function (options) {
     _this.addWidgetButton.addEventListener('click', _this.onAddWidgetClick);
 
     _this.addLinkButton = _this.el.querySelector('.add-link button');
-    _this.addLinkButton.addEventListener('click', _this.onAddLinkClick, _this);
+    _this.addLinkButton.addEventListener('click', _this.onAddLinkClick);
   };
 
 
