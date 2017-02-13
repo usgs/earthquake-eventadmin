@@ -20,7 +20,10 @@ include_once 'install/DatabaseInstaller.class.php';
 include_once '../conf/config.inc.php';
 
 
-$DB_DSN = 'mysql:host=' . $CONFIG['SESSION_DB_HOST'] . ';port=3306;dbname=' . $CONFIG['SESSION_DB_NAME'];
+$DB_DSN = $CONFIG['SESSION_DB_DRIVER'] . ':' .
+  'host=' . $CONFIG['SESSION_DB_HOST'] . ';' .
+  'port=' . $CONFIG['SESSION_DB_PORT'] . ';' .
+  'dbname=' . $CONFIG['SESSION_DB_NAME'];
 
 
 
@@ -39,9 +42,10 @@ echo 'Creating table for session management ... ';
 $dbInstaller->run('DROP TABLE IF EXISTS ' . $CONFIG['SESSION_DB_TABLE']);
 $dbInstaller->run('
   CREATE TABLE ' . $CONFIG['SESSION_DB_TABLE'] . ' (
-    id         INT PRIMARY KEY,
-    user       VARCHAR(100),
-    session    VARCHAR(100)
+    id                 INT PRIMARY KEY AUTO_INCREMENT,
+    session_id         VARCHAR(32) UNIQUE KEY,
+    session_data       TEXT,
+    session_expiration INT NOT NULL
   )
 ');
 

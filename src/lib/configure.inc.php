@@ -120,9 +120,21 @@ $prompts = array(
   ),
 
 
+  'SESSION_DB_DRIVER' => array(
+    'prompt' => 'Session database driver',
+    'default' => 'mysql',
+    'secure' => false
+  ),
+
   'SESSION_DB_HOST' => array(
     'prompt' => 'Session database hostname',
     'default' => '',
+    'secure' => false
+  ),
+
+  'SESSION_DB_PORT' => array(
+    'prompt' => 'Session database port',
+    'default' => '3306',
     'secure' => false
   ),
 
@@ -149,6 +161,7 @@ $prompts = array(
     'default' => '',
     'secure' => false
   ),
+
 
   'AD_HOST' => array(
     'prompt' => 'Active Directory hostname',

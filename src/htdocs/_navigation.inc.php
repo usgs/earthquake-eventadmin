@@ -3,7 +3,7 @@
 include_once 'functions.inc.php';
 include_once '../conf/config.inc.php';
 
-if (isset($IS_LOGGED_IN) && $IS_LOGGED_IN) {
+if ($_SESSION['IS_LOGGED_IN']) {
   // User is logged in
 
   if (isset($eventid) && $eventid != null && $eventid != '') {
