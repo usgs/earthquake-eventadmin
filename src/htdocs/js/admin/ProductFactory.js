@@ -79,7 +79,7 @@ var ProductFactory = function (/*options*/) {
     product = _getProduct(product);
     code = product.get('code');
     properties = product.get('properties');
-    source = product.get('source');
+    source = 'admin';
     type = product.get('type');
 
     return Product({
