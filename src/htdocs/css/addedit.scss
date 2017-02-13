@@ -1,7 +1,9 @@
 /* Library dependencies */
+@import 'hazdev-accordion/src/accordion/Accordion.scss';
 @import 'hazdev-webutils/src/mvc/ModalView.scss';
 
 /* Project dependencies */
 @import '_AddEditPage.scss';
+@import '_SendProductView.scss';
 
 /* Top-level page specific in-line styles (likely none) */
