@@ -1,4 +1,4 @@
-/* global chai, describe, it, sinon */
+/* global chai, describe, it */
 'use strict';
 
 
@@ -27,36 +27,6 @@ describe('AddEditPage', function () {
       expect(page.destroy).to.not.throw(Error);
 
       page.destroy();
-    });
-  });
-
-  describe('onAddLinkClick', function () {
-    it.skip('calls EditLinkView', function () {
-      var options,
-          stub,
-          view;
-
-      options = {
-        eventDetails: {
-          id: '12345',
-          properties: {
-            net: 'US',
-            code: '54321'
-          }
-        }
-      };
-
-      view = AddEditPage(options);
-
-      stub = sinon.stub(view.editLinkView, 'show', function () {
-        return null;
-      });
-
-      view.onAddLinkClick();
-      expect(stub.callCount).to.equal(1);
-
-      stub.restore();
-      view.destroy();
     });
   });
 });
