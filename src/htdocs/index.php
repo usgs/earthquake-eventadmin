@@ -21,8 +21,12 @@ if (param('error')) {
 <form class="login-form" action="search.php" method="post">
   <h3>Please Login</h3>
   <label for="username-input">Username</label>
-  <input type="text" id="username-input" placeholder="Username" required="" autofocus="">
+  <input type="text" id="username-input" name="username"
+      placeholder="Username" required="" autofocus="">
+
   <label for="password-input">Password</label>
-  <input type="password" id="password-input" placeholder="Password" required="">
+  <input type="password" id="password-input" name="password"
+      placeholder="Password" required="">
+
   <button type="submit">Login</button>
 </form>
