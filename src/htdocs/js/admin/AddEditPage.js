@@ -133,7 +133,7 @@ var AddEditPage = function (options) {
 
     // Unbind all click handlers
     _this.addWidgetButton.removeEventListener('click', _this.onAddWidgetClick);
-    _this.addLinkButton.removeEventListener('click', _this.onAddWidgetClick);
+    _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
 
     // Set all member variables to null
     _this.addWidgetButton = null;
