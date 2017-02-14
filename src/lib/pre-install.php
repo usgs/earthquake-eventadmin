@@ -69,13 +69,13 @@ file_put_contents($HTTPD_CONF, '
 
 include_once './functions.inc.php';
 if (!file_exists($CONFIG['PDL_JAR_FILE'])) {
-  if (NON_INTERACTIVE || promptYesNo('Download PDL Jar File?')) {
+  if (promptYesNo('Download PDL Jar File?')) {
     downloadURL(
-        'http://ehppdl1.cr.usgs.gov/ProductClient/ProductClient.jar',
+        'https://ehppdl1.cr.usgs.gov/ProductClient/ProductClient.jar',
         $CONFIG['PDL_JAR_FILE']);
   }
 }
 
-if (promptYesNo('Would you like to setup the database or load data', true)) {
-  include_once 'setup_database.php';
+if (promptYesNo('Would you like to setup the database or load data')) {
+  include_once './setup_database.php';
 }

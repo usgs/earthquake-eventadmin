@@ -1,5 +1,35 @@
 <?php
 
+function configure ($prompt, $default = null, $secure = false) {
+  echo $prompt;
+  if ($default != null) {
+    echo ' [' . $default . ']';
+  }
+  echo ': ';
+
+  if (NON_INTERACTIVE) {
+    // non-interactive
+    echo '(Non-interactive, using default)' . PHP_EOL;
+    return $default;
+  }
+
+  if ($secure) {
+    system('stty -echo');
+  }
+
+  $answer = trim(fgets(STDIN));
+
+  if ($answer == '') {
+    $answer = $default;
+  }
+
+  if ($secure) {
+    system('stty echo');
+    echo "\n";
+  }
+
+  return $answer;
+}
 
 /**
  * Prompt user with a yes or no question.
@@ -12,14 +42,23 @@
  *        default answer is used when user presses enter with no other input.
  * @return {Boolean} true if user entered yes, false if user entered no.
  */
-function promptYesNo ($prompt='Yes or no?', $default=null) {
+function promptYesNo ($prompt='Yes or no?', $default=false) {
 	$question = $prompt . ' [' .
-			($default === true ? 'Y' : 'y') . '/' .
-			($default === false ? 'N' : 'n') . ']: ';
+			($default == true ? 'Y' : 'y') . '|' .
+			($default == false ? 'N' : 'n') . ']: ';
+
 	$answer = null;
+
 	while ($answer === null) {
 		echo $question;
-		$answer = strtoupper(trim(fgets(STDIN)));
+
+    if (NON_INTERACTIVE) {
+      echo '(Non-interactive, using default)' . PHP_EOL;
+      $answer = ($default) ? 'Y' : 'N';
+    } else {
+		  $answer = strtoupper(trim(fgets(STDIN)));
+    }
+
 		if ($answer === '') {
 			if ($default === true) {
 				$answer = 'Y';
@@ -27,6 +66,7 @@ function promptYesNo ($prompt='Yes or no?', $default=null) {
 				$answer = 'N';
 			}
 		}
+
 		if ($answer !== 'Y' && $answer !== 'N') {
 			$answer = null;
 			echo PHP_EOL;
