@@ -5,9 +5,10 @@ var config = require('./config');
 var watch = {
   static: {
     files: [
-      config.src + '/htdocs/**/*.php',
-      config.src + '/htdocs/img/**/*.{png,jpg,jpeg,gif}',
-      config.src + '/' + config.lib + '/inc/**/*.php'
+      config.src + '/**/*',
+      '!' + config.src + '/**/*.js',
+      '!' + config.src + '/**/*.scss',
+      '!' + config.src + '/**/*.orig'
     ],
     tasks: [
       'copy:build'
