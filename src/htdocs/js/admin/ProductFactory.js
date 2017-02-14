@@ -79,11 +79,11 @@ var ProductFactory = function (/*options*/) {
     product = _getProduct(product);
     code = product.get('code');
     properties = product.get('properties');
-    source = 'admin';
+    source = product.get('source');
     type = product.get('type');
 
     return Product({
-      source: source,
+      source: 'admin',
       type: 'trump-' + type,
       status: Product.STATUS_UPDATE,
       code: code,
