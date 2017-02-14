@@ -159,7 +159,7 @@ $prompts = array(
   'SESSION_DB_PASS' => array(
     'prompt' => 'Session database user password',
     'default' => '',
-    'secure' => false
+    'secure' => true
   ),
 
 
@@ -178,7 +178,7 @@ $prompts = array(
   'AD_PASS' => array(
     'prompt' => 'Active directory user password',
     'default' => '',
-    'secure' => false
+    'secure' => true
   ),
 
   'AD_BASE_DN' => array(
