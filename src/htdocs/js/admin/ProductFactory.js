@@ -83,7 +83,7 @@ var ProductFactory = function (/*options*/) {
     type = product.get('type');
 
     return Product({
-      source: source,
+      source: 'admin',
       type: 'trump-' + type,
       status: Product.STATUS_UPDATE,
       code: code,
