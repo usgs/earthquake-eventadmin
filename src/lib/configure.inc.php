@@ -1,38 +1,6 @@
 <?php
 
-if (!function_exists('configure')) {
-  function configure ($prompt, $default = null, $secure = false) {
-
-    echo $prompt;
-    if ($default != null) {
-      echo ' [' . $default . ']';
-    }
-    echo ': ';
-
-    if (NON_INTERACTIVE) {
-      // non-interactive
-      echo '(Non-interactive, using default)' . PHP_EOL;
-      return $default;
-    }
-
-    if ($secure) {
-      system('stty -echo');
-    }
-
-    $answer = trim(fgets(STDIN));
-
-    if ($answer == '') {
-      $answer = $default;
-    }
-
-    if ($secure) {
-      system('stty echo');
-      echo "\n";
-    }
-
-    return $answer;
-  }
-}
+include_once './functions.inc.php';
 
 // This script should only be included by the pre-install.php script. The
 // calling script is responsible for defining the $CONFIG_FILE_INI and calling
@@ -40,18 +8,14 @@ if (!function_exists('configure')) {
 
 $CONFIG = array();
 if (file_exists($CONFIG_FILE_INI)) {
-  $answer = configure('A previous configuration exists. ' .
-      'Would you like to use it as defaults?', 'Y|n', false);
-
-  if (strtoupper(substr($answer, 0, 1)) == 'Y') {
+  if (promptYesNo('A previous configuration exists. ' .
+      'Would you like to use it as defaults?', true)) {
     $CONFIG = parse_ini_file($CONFIG_FILE_INI);
     print_r($CONFIG);
   }
 
-  $answer = configure('Would you like to save the old configuration file?',
-      'Y|n', false);
-
-  if (strtoupper(substr($answer, 0, 1)) == 'Y') {
+  if (promptYesNo('Would you like to save the old configuration file?',
+      false)) {
     $BAK_CONFIG_FILE = $CONFIG_FILE_INI . '.' . date('YmdHis');
     rename($CONFIG_FILE_INI, $BAK_CONFIG_FILE);
     echo 'Old configuration saved to file: ' . basename($BAK_CONFIG_FILE) .
@@ -159,7 +123,7 @@ $prompts = array(
   'SESSION_DB_PASS' => array(
     'prompt' => 'Session database user password',
     'default' => '',
-    'secure' => false
+    'secure' => true
   ),
 
 
@@ -178,7 +142,7 @@ $prompts = array(
   'AD_PASS' => array(
     'prompt' => 'Active directory user password',
     'default' => '',
-    'secure' => false
+    'secure' => true
   ),
 
   'AD_BASE_DN' => array(
