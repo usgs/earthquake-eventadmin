@@ -45,16 +45,17 @@ var AdminSummaryPage = function (options) {
     _this.el.innerHTML =
         '<div class="actions">' +
           '<button class="viewevent">View Event Page</button>' +
-          '<button class="invalidate">Invalidate Cache</button>' +
+          //'<button class="invalidate">Invalidate Cache</button>' +
           '<button class="deleteevent">Delete Event</button>' +
         '</div>' +
         '<div class="events-associated"></div>' +
         '<div class="events-nearby"></div>';
 
-    button = _this.el.querySelector('.invalidate');
-    button._clickHandler = _this._onInvalidateClick.bind(_this);
-    button.addEventListener('click', button._clickHandler);
-    _this._buttons.push(button);
+    // Invalidate button will be used at a later date
+    //button = _this.el.querySelector('.invalidate');
+    //button._clickHandler = _this._onInvalidateClick.bind(_this);
+    //button.addEventListener('click', button._clickHandler);
+    //_this._buttons.push(button);
 
     button = _this.el.querySelector('.viewevent');
     button._clickHandler = _this._onViewEventClick.bind(_this);
