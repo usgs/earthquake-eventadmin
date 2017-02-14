@@ -32,7 +32,6 @@ var ContentsManagerView = function (options) {
       _createSubViews,
       _createViewSkeleton,
       _onFileUpload,
-      _onInlineEditChange,
       _onToggleClick,
       _replaceRelativePaths;
 
@@ -103,7 +102,7 @@ var ContentsManagerView = function (options) {
 
     _inlineEditEl = _this.el.querySelector(
         '.contents-manager-view-inline-content-edit');
-    _inlineEditEl.addEventListener('change', _onInlineEditChange);
+    _inlineEditEl.addEventListener('change', _this.onInlineEditChange);
     inline = _collection.get('');
     if (inline) {
       inline.on('change', 'render', _this);
@@ -181,7 +180,7 @@ var ContentsManagerView = function (options) {
     };
 
     if (document.activeElement === _inlineEditEl) {
-      _onInlineEditChange();
+      _this.onInlineEditChange();
     }
 
     if (file.hasOwnProperty('url') && file.url !== null) {
@@ -193,7 +192,7 @@ var ContentsManagerView = function (options) {
     _addContent(ProductContent(params));
   };
 
-  _onInlineEditChange = function () {
+  _this.onInlineEditChange = function () {
     var attributes,
         text,
         inline;
@@ -305,7 +304,6 @@ var ContentsManagerView = function (options) {
     _createSubViews = null;
     _createViewSkeleton = null;
     _onFileUpload = null;
-    _onInlineEditChange = null;
     _onToggleClick = null;
 
     _initialize = null;
@@ -390,7 +388,7 @@ var ContentsManagerView = function (options) {
     if (e && e.target && e.target.nodeName === 'INPUT') {
       _inlineEditEl.value = _this.getAlertLevelMarkup();
       // The above changes do not trigger a "change" event
-      _onInlineEditChange();
+      _this.onInlineEditChange();
     }
   };
 
