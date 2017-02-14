@@ -4,5 +4,6 @@
 dist
 node_modules
 src/conf/config.ini*
+!src/conf/config.ini.orig
 src/conf/httpd.conf
 src/lib/ProductClient.jar
