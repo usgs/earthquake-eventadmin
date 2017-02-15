@@ -19,17 +19,21 @@ if ($_SESSION['IS_LOGGED_IN']) {
         navItem($CONFIG['MOUNT_PATH'] . '/products.php?eventid=' . $eventid,
             'All Products') .
         navItem('https://earthquake.usgs.gov/earthquakes/eventpage/' .
-            $eventid . '" target="_blank', 'View Event Page') .
-        navItem('https://earthquake.usgs.gov/earthquakes/map/',
-            'Latest Earthquakes')
+            $eventid . '" target="_blank', 'View Event Page')
       );
 
   } else {
+    // Searching for an event
     echo
       navItem($CONFIG['MOUNT_PATH'] . '/search.php', 'Search Events');
   }
 
-  echo navItem($CONFIG['MOUNT_PATH'] . '/logout.php', 'Log Out');
+  // Always include these links when logged in
+  echo
+      navItem('https://earthquake.usgs.gov/earthquakes/map/',
+          'Latest Earthquakes') .
+      navItem($CONFIG['MOUNT_PATH'] . '/logout.php', 'Log Out');
+
 } else {
   echo navItem($CONFIG['MOUNT_PATH'] . '/index.php', 'Log In');
 }
