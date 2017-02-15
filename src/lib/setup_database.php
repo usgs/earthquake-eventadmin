@@ -20,19 +20,26 @@ include_once 'install/DatabaseInstaller.class.php';
 include_once '../conf/config.inc.php';
 
 
-$DB_DSN = $CONFIG['SESSION_DB_DRIVER'] . ':' .
-  'host=' . $CONFIG['SESSION_DB_HOST'] . ';' .
-  'port=' . $CONFIG['SESSION_DB_PORT'] . ';' .
-  'dbname=' . $CONFIG['SESSION_DB_NAME'];
+echo "\n";
+echo 'Using the following connection (' . 'mysql:host=' . $CONFIG['SESSION_DB_HOST'] . ';port=' . $CONFIG['SESSION_DB_PORT'] . ';dbname=' . $CONFIG['SESSION_DB_NAME'] . ')';
+echo "\n";
 
+$USERNAME = configure('Database adminitrator user', 'root', false);
+$PASSWORD = configure('Database adminitrator password', null, true);
 
 
 // ----------------------------------------------------------------------
 // Schema loading configuration
 // ----------------------------------------------------------------------
 
-$dbInstaller = DatabaseInstaller::getInstaller($DB_DSN,
-    $CONFIG['SESSION_DB_USER'], $CONFIG['SESSION_DB_PASS']);
+// Use admin user to create session table
+
+$DB_DSN = $CONFIG['SESSION_DB_DRIVER'] . ':' .
+  'host=' . $CONFIG['SESSION_DB_HOST'] . ';' .
+  'port=' . $CONFIG['SESSION_DB_PORT'] . ';' .
+  'dbname=' . $CONFIG['SESSION_DB_NAME'];
+
+$dbInstaller = DatabaseInstaller::getInstaller($DB_DSN, $USERNAME, $PASSWORD);
 
 
 // Session table
