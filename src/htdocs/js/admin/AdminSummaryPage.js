@@ -45,7 +45,7 @@ var AdminSummaryPage = function (options) {
     _this.el.innerHTML =
         '<div class="actions">' +
           //'<button class="invalidate">Invalidate Cache</button>' +
-          '<button class="deleteevent">Delete Event</button>' +
+          '<button class="deleteevent red">Delete Event</button>' +
         '</div>' +
         '<div class="events-associated"></div>' +
         '<div class="events-nearby"></div>';
