@@ -2,7 +2,6 @@
 
 
 var EditLinkView = require('admin/EditLinkView'),
-    ModalView = require('mvc/ModalView'),
     TextProductView = require('admin/TextProductView'),
     Util = require('util/Util'),
     View = require('mvc/View');
@@ -67,26 +66,18 @@ var AddEditPage = function (options) {
     _this.el.innerHTML = [
       /* eslint-disable indent */
       '<ul class="addeditpage_pins no-style">',
-        // Create a pin item for each ...
-        _this.createPinItem('add-widget', 'Widget Product',
-            'Use this feature to add a widget product to the page. ' +
-            'This is meant as an example for development purposes only.'),
-        _this.createPinItem('add-link', 'Add Link',
-            'Use this feature to add a link near the bottom of the event ' +
-            'page. Links can be to any web-addressable content such as news ' +
-            'articles, images, or videos.'),
         // General Header pin
         _this.createPinItem('add-header', 'General Header',
             'Use this feature to add a header that will be displayed ' +
             'above all content on the event page.'),
+        // Add Link pin
+        _this.createPinItem('add-link', 'Add Link',
+            'Use this feature to add a link near the bottom of the event ' +
+            'page. Links can be to any web-addressable content such as news ' +
+            'articles, images, or videos.'),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
-
-    // Create sub-views for each UI component, note the selector
-    // matches the className from the createPinItem function call
-    _this.addWidgetButton = _this.el.querySelector('.add-widget button');
-    _this.addWidgetButton.addEventListener('click', _this.onAddWidgetClick);
 
     _this.addLinkButton = _this.el.querySelector('.add-link button');
     _this.addLinkButton.addEventListener('click', _this.onAddLinkClick);
@@ -141,11 +132,9 @@ var AddEditPage = function (options) {
     }
 
     // Unbind all click handlers
-    _this.addWidgetButton.removeEventListener('click', _this.onAddWidgetClick);
     _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
 
     // Set all member variables to null
-    _this.addWidgetButton = null;
     _this.addLinkButton = null;
 
     // Set all private functions to null
@@ -179,25 +168,6 @@ var AddEditPage = function (options) {
       }).show();
     }
   };
-
-  /**
-   * Fake event handler executed when the example widget action is selected.
-   * Should be removed before production.
-   */
-  _this.onAddWidgetClick = function (/*evt*/) {
-    ModalView('<p class="alert info">You&rsquo;re Awesome!</p>', {
-      title: 'Add Widget Product Interface',
-      buttons: [
-        {
-          text: 'Done',
-          callback: function (evt, dialog) {
-            dialog.hide();
-          }
-        }
-      ]
-    }).show();
-  };
-
 
   _this.onAddGeneralHeader = function () {
     var eventDetails,
