@@ -81,6 +81,48 @@ var MakeSignificantView = function (options) {
     });
   };
 
+
+  _this.checkSignificance = function () {
+    var properties,
+        significance;
+
+    properties = _this.product.get('properties');
+    if (properties) {
+      significance = properties.significance;
+      (significance >= 600 ?
+          _this.isSignificant(significance) : _this.sig.value = 600);
+    }
+  };
+
+  /**
+   * Destroy all the things.
+   */
+  _this.destroy = Util.compose(function () {
+    _this = null;
+    _initialize = null;
+  }, _this.destroy);
+
+  /**
+   * Hides the modal dialog box
+   */
+  _this.hide = function () {
+    _this.modal.hide();
+  };
+
+  /**
+   * @param significance (Number)
+   *        significance value
+   */
+  _this.isSignificant = function (significance) {
+    _this.significantWarning.classList.add('alert', 'warning');
+    _this.significantWarning.innerHTML = [
+      'This event is already considered significant. Sending a value ',
+      'of less than 600 will make the event insignificant.'
+    ].join('');
+
+    _this.sig.value = significance;
+  };
+
   /**
    * Hides modal view and calls destroy.
    */
@@ -106,49 +148,8 @@ var MakeSignificantView = function (options) {
     _this.sendProductView.show();
   };
 
-  /**
-   * Destroy all the things.
-   */
-  _this.destroy = Util.compose(function () {
-    _this = null;
-    _initialize = null;
-  }, _this.destroy);
-
-  /**
-   * Hides the modal dialog box
-   */
-  _this.hide = function () {
-    _this.modal.hide();
-  };
-
   _this.render = function () {
     _this.checkSignificance();
-  };
-
-  _this.checkSignificance = function () {
-    var properties,
-        significance;
-
-    properties = _this.product.get('properties');
-    if (properties) {
-      significance = properties.significance;
-      (significance >= 600 ?
-          _this.isSignificant(significance) : _this.sig.value = 600);
-    }
-  };
-
-  /**
-   * @param significance (Number)
-   *        significance value
-   */
-  _this.isSignificant = function (significance) {
-    _this.significantWarning.classList.add('alert', 'warning');
-    _this.significantWarning.innerHTML = [
-      'This event is already considered significant. Sending a value ',
-      'of less than 600 will make the event insignificant.'
-    ].join('');
-
-    _this.sig.value = significance;
   };
 
   /**
