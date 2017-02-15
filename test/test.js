@@ -6,10 +6,11 @@ mocha.setup('bdd');
 
 // Add each test class here as they are implemented
 require('./spec/AddEditPageTest');
+require('./spec/ContentsManagerViewTest');
+require('./spec/EditLinkViewTest');
 require('./spec/EventsAssociatedViewTest');
 require('./spec/ProductTest');
 require('./spec/TextProductViewTest');
-require('./spec/EditLinkViewTest');
 
 if (window.mochaPhantomJS) {
   window.mochaPhantomJS.run();

@@ -3,6 +3,7 @@
 
 var EditLinkView = require('admin/EditLinkView'),
     ModalView = require('mvc/ModalView'),
+    TextProductView = require('admin/TextProductView'),
     Util = require('util/Util'),
     View = require('mvc/View');
 
@@ -74,6 +75,10 @@ var AddEditPage = function (options) {
             'Use this feature to add a link near the bottom of the event ' +
             'page. Links can be to any web-addressable content such as news ' +
             'articles, images, or videos.'),
+        // General Header pin
+        _this.createPinItem('add-header', 'General Header',
+            'Use this feature to add a header that will be displayed ' +
+            'above all content on the event page.'),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
@@ -85,6 +90,10 @@ var AddEditPage = function (options) {
 
     _this.addLinkButton = _this.el.querySelector('.add-link button');
     _this.addLinkButton.addEventListener('click', _this.onAddLinkClick);
+
+    // Create general-header modal binding
+    _this.addGeneralHeaderButton = _this.el.querySelector('.add-header button');
+    _this.addGeneralHeaderButton.addEventListener('click', _this.onAddGeneralHeader);
   };
 
 
@@ -187,6 +196,27 @@ var AddEditPage = function (options) {
         }
       ]
     }).show();
+  };
+
+
+  _this.onAddGeneralHeader = function () {
+    var eventDetails,
+        properties;
+
+    eventDetails = _this._eventDetails;
+
+    if (eventDetails) {
+      properties = eventDetails.properties;
+
+      TextProductView({
+        type: 'general-header',
+        source: 'admin',
+        code: eventDetails.id + '-' + new Date().getTime(),
+        eventSource: properties.net,
+        eventSourceCode: properties.code,
+        modalTitle: 'General Header'
+      }).show();
+    }
   };
 
 

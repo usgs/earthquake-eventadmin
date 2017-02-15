@@ -21,16 +21,17 @@ var ContentsManagerView = function (options) {
       _errorsEl,
       _fileUploadView,
       _inlineEditEl,
+      _inlineEnhanceEl,
       _inlinePreviewEl,
       _toggleEditModeEl,
       _toggleEl,
       _togglePreviewModeEl,
+      _type,
 
       _addContent,
       _createSubViews,
       _createViewSkeleton,
       _onFileUpload,
-      _onInlineEditChange,
       _onToggleClick,
       _replaceRelativePaths;
 
@@ -39,6 +40,8 @@ var ContentsManagerView = function (options) {
 
   _initialize = function (/*options*/) {
     var inline;
+
+    _type = _this.model.get('type') || '';
 
     _collection = _this.model.get('contents');
 
@@ -99,7 +102,7 @@ var ContentsManagerView = function (options) {
 
     _inlineEditEl = _this.el.querySelector(
         '.contents-manager-view-inline-content-edit');
-    _inlineEditEl.addEventListener('change', _onInlineEditChange);
+    _inlineEditEl.addEventListener('change', _this.onInlineEditChange);
     inline = _collection.get('');
     if (inline) {
       inline.on('change', 'render', _this);
@@ -107,6 +110,10 @@ var ContentsManagerView = function (options) {
 
     _inlinePreviewEl = _this.el.querySelector(
         '.contents-manager-view-inline-content-preview');
+
+    _inlineEnhanceEl = _this.el.querySelector(
+        '.contents-manager-view-inline-content-enhance');
+    _this.enhanceTextProductMarkup(_type, _inlineEnhanceEl);
 
     _errorsEl = _this.el.querySelector('.contents-manager-view-errors');
 
@@ -153,6 +160,7 @@ var ContentsManagerView = function (options) {
             'aria-label="Inline content text"></textarea>',
         '<div class="hidden contents-manager-view-inline-content-preview">',
             '</div>',
+        '<div class="contents-manager-view-inline-content-enhance"></div>',
       '</div>',
       '<button class="confirm contents-manager-view-attach">Add File</button>',
       '<div class="contents-manager-view-errors"></div>',
@@ -172,7 +180,7 @@ var ContentsManagerView = function (options) {
     };
 
     if (document.activeElement === _inlineEditEl) {
-      _onInlineEditChange();
+      _this.onInlineEditChange();
     }
 
     if (file.hasOwnProperty('url') && file.url !== null) {
@@ -184,7 +192,7 @@ var ContentsManagerView = function (options) {
     _addContent(ProductContent(params));
   };
 
-  _onInlineEditChange = function () {
+  _this.onInlineEditChange = function () {
     var attributes,
         text,
         inline;
@@ -210,7 +218,7 @@ var ContentsManagerView = function (options) {
         inline.set(attributes);
       }
     } else {
-      // We do not have contentm remove the '' ProductContent from collection
+      // We do not have content, remove the '' ProductContent from collection
       if (inline) {
         inline.off('change', 'render', _this);
         _collection.remove(inline);
@@ -285,21 +293,144 @@ var ContentsManagerView = function (options) {
     _errorsEl = null;
     _fileUploadView = null;
     _inlineEditEl = null;
+    _inlineEnhanceEl = null;
     _inlinePreviewEl = null;
     _toggleEditModeEl = null;
     _toggleEl = null;
     _togglePreviewModeEl = null;
+    _type = null;
 
     _addContent = null;
     _createSubViews = null;
     _createViewSkeleton = null;
     _onFileUpload = null;
-    _onInlineEditChange = null;
     _onToggleClick = null;
 
     _initialize = null;
     _this = null;
   }, _this.destroy);
+
+
+  /**
+   * Add enhancements to the ContentsManagerView for text-like products
+   *
+   * @param type {String}
+   *        This is the product type (_this.model.get('type'))
+   * @param el {HTMLDom}
+   *        HTML element that will append additional markup which
+   *        enhances the ContentsManagerView.
+   */
+  _this.enhanceTextProductMarkup = function (type, el) {
+    var markup;
+
+    if (!el) {
+      el = _inlineEnhanceEl;
+    }
+
+    if (type === 'general-header') {
+      markup = document.createElement('div');
+      /* eslint-disable indent */
+      markup.innerHTML = [
+        '<h4>Add an alert level:</h4>',
+        '<p class="disclaimer">',
+            'Please finish adding content for the header above ',
+            'before selecting an alert level. Click &ldquo;View ',
+            'Preview&rdquo; to preview the header with the selected ',
+            'alert style.',
+        '</p>',
+        '<ul class="radio-list-alert-level no-style">',
+          '<li class="alert">',
+            '<input type="radio" name="alert" id="alert-none" ',
+                'value="none" checked="checked" />',
+            '<label for="alert-none">none</label>',
+          '</li>',
+          '<li class="alert info">',
+            '<input type="radio" name="alert" id="alert-info" ',
+                'value="info" />',
+            '<label for="alert-info">info</label>',
+          '</li>',
+          '<li class="alert success">',
+            '<input type="radio" name="alert" id="alert-success" ',
+                'value="success" />',
+            '<label for="alert-success">success</label>',
+          '</li>',
+          '<li class="alert warning">',
+            '<input type="radio" name="alert" id="alert-warning" ',
+                'value="warning" />',
+            '<label for="alert-warning">warning</label>',
+          '</li>',
+          '<li class="alert error">',
+            '<input type="radio" name="alert" id="alert-error" ',
+                'value="error" />',
+            '<label for="alert-error">error</label>',
+          '</li>',
+        '</ul>'
+      ].join('');
+      /* eslint-enable indent */
+
+      // bind to alert level change
+      markup.addEventListener('click', _this.addAlertLevelWrapper);
+    }
+
+    // append enhanced markup
+    if (markup) {
+      el.appendChild(markup);
+    }
+  };
+
+  /**
+   * Update text content by adding a div wrapper with an alert style
+   *
+   * @param e {Event}
+   *        Click event, targeted toward the alert level inputs
+   */
+  _this.addAlertLevelWrapper = function (e) {
+    if (e && e.target && e.target.nodeName === 'INPUT') {
+      _inlineEditEl.value = _this.getAlertLevelMarkup();
+      // The above changes do not trigger a "change" event
+      _this.onInlineEditChange();
+    }
+  };
+
+  /**
+   * Build the HTML markup wrapped in an alert level style
+   * (When a style has been selected)
+   *
+   * @return {String}
+   *         HTML markup with the alert wrapper applied
+   */
+  _this.getAlertLevelMarkup = function () {
+    var alertEl,
+        markupEl,
+        selected,
+        text;
+
+    // selected input
+    selected = _this.el.querySelector('.radio-list-alert-level input:checked');
+
+    // create wrapper element for input text
+    markupEl = document.createElement('div');
+    markupEl.innerHTML = _inlineEditEl.value;
+
+    // get currently selected alert element
+    alertEl = markupEl.querySelector('.alert');
+
+    // if an alert wrapper already exists, remove the wrapper element
+    if (alertEl) {
+      text = alertEl.innerHTML;
+    } else {
+      text = _inlineEditEl.value;
+    }
+
+    // use the selected alert style
+    if (selected.value === 'none') {
+      // no styles to be applied, only return the text
+      return text;
+    } else {
+      // apply the selected style, return the text wrapped in an alert element
+      return '<div class="alert ' + selected.value + '">' + text + '</div>';
+    }
+  };
 
   _this.render = function () {
     var bytes,
