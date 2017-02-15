@@ -79,6 +79,19 @@ var AdminSummaryPage = function (options) {
     });
   };
 
+
+  _this._onContinueClick = function (products) {
+    // origin products, TODO: other products too?
+    products = CatalogEvent.getWithoutDeleted(
+        CatalogEvent.getWithoutSuperseded(
+          _this._event.properties.products.origin));
+    // create delete products
+    products = products.map(_this._productFactory.getDelete);
+    // send products
+    _this._sendProduct(products, 'Delete Event',
+        '<h4>The following products will be deleted</h4>');
+  };
+
   /**
    * Delete Event button click handler.
    */
@@ -89,15 +102,27 @@ var AdminSummaryPage = function (options) {
       return;
     }
 
-    // origin products, TODO: other products too?
-    products = CatalogEvent.getWithoutDeleted(
-        CatalogEvent.getWithoutSuperseded(
-          _this._event.properties.products.origin));
-    // create delete products
-    products = products.map(_this._productFactory.getDelete);
-    // send products
-    _this._sendProduct(products, 'Delete Event',
-        '<h4>The following products will be deleted</h4>');
+    /* eslint-disable */
+    ModalView('<p class="alert warning">If this event is real, associate ' +
+        'this event, do not delete.</p>', {
+      title: 'Delete Event Warning',
+      buttons: [
+        {
+          text: 'Continue',
+          callback: function (evt, dialog) {
+            dialog.hide();
+            _this._onContinueClick(products);
+          }
+        },
+        {
+          text: 'Cancel',
+          callback: function (evt, dialog) {
+            dialog.hide();
+          }
+        }
+      ]
+    }).show();
+    /* eslint-enable */
   };
 
   /**
