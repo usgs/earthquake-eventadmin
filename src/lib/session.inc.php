@@ -2,7 +2,6 @@
 
 include_once dirname(__FILE__) . '/../conf/config.inc.php';
 include_once dirname(__FILE__) . '/PdoSessionHandler.php';
-// include_once dirname(__FILE__) . '/functions.ad.php';
 include_once dirname(__FILE__) . '/LDAPAuth.class.php';
 
 $session_dsn = $CONFIG['SESSION_DB_DRIVER'] . ':' .
