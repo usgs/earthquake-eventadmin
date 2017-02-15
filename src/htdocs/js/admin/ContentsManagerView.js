@@ -378,8 +378,7 @@ var ContentsManagerView = function (options) {
     } else if (type === 'tectonic-summary') {
 
       // disable input until xhr request returns
-      _inlineEditEl.value = 'Loading ...';
-      _inlineEditEl.setAttribute('disabled', true);
+      _this.updateInlineEditEl('Loading ...', true);
 
       try {
         // tectonic-summary contents
@@ -389,27 +388,22 @@ var ContentsManagerView = function (options) {
 
         if (bytes !== null) {
           // load content from bytes
-          _inlineEditEl.value = bytes;
-          _inlineEditEl.removeAttribute('disabled');
+          _this.updateInlineEditEl(bytes);
         } else if (url !== null) {
           // load content from url
           Xhr.ajax({
             url: url,
             success: function (data) {
-              _inlineEditEl.value = data;
-              _inlineEditEl.removeAttribute('disabled');
-              _this.onInlineEditChange();
+              _this.updateInlineEditEl(data);
             },
             error: function () {
-              _inlineEditEl.value = '';
-              _inlineEditEl.removeAttribute('disabled');
+              _this.updateInlineEditEl('');
               throw new Error ('Error fetching tectonic-summary');
             }
           });
         }
       } catch (e) {
-        _inlineEditEl.value = '';
-        _inlineEditEl.removeAttribute('disabled');
+        _this.updateInlineEditEl('');
         throw new Error ('Error fetching tectonic-summary');
       }
     }
@@ -418,6 +412,25 @@ var ContentsManagerView = function (options) {
     if (markup) {
       el.appendChild(markup);
     }
+  };
+
+  /**
+   * Upddate the textarea _inlineEditEl and the corresponding _inlinePreviewEl
+   *
+   * @param text {String}
+   *        The text to display inside the textarea
+   */
+  _this.updateInlineEditEl = function (text, disabled) {
+    // update text on textarea
+    _inlineEditEl.value = text || '';
+    // remove/add disabled style from textarea (if it exists)
+    if (disabled) {
+      _inlineEditEl.setAttribute('disabled', true);
+    } else {
+      _inlineEditEl.removeAttribute('disabled');
+    }
+    // ensure inline preview is also updated
+    _this.onInlineEditChange();
   };
 
   /**
