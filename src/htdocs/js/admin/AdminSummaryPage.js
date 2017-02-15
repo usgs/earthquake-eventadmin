@@ -5,6 +5,7 @@ var CatalogEvent = require('admin/CatalogEvent'),
     EventsAssociatedView = require('admin/EventsAssociatedView'),
     EventsNearbyView = require('admin/EventsNearbyView'),
     InvalidatorView = require('invalidator/InvalidatorView'),
+    MakeSignificantView = require('admin/MakeSignificantView'),
     ModalView = require('mvc/ModalView'),
     ProductFactory = require('admin/ProductFactory'),
     SendProductView = require('admin/SendProductView'),
@@ -45,6 +46,7 @@ var AdminSummaryPage = function (options) {
     _this.el.innerHTML =
         '<div class="actions">' +
           //'<button class="invalidate">Invalidate Cache</button>' +
+          '<button class="make-significant">Make Significant</button>' +
           '<button class="deleteevent red">Delete Event</button>' +
         '</div>' +
         '<div class="events-associated"></div>' +
@@ -55,6 +57,11 @@ var AdminSummaryPage = function (options) {
     //button._clickHandler = _this._onInvalidateClick.bind(_this);
     //button.addEventListener('click', button._clickHandler);
     //_this._buttons.push(button);
+
+    button = _this.el.querySelector('.make-significant');
+    button._clickHandler = _this._onMakeSignificantClick.bind(_this);
+    button.addEventListener('click', button._clickHandler);
+    _this._buttons.push(button);
 
     button = _this.el.querySelector('.deleteevent');
     button._clickHandler = _this._onDeleteEventClick.bind(_this);
@@ -149,6 +156,26 @@ var AdminSummaryPage = function (options) {
     });
 
     modal.show();
+  };
+
+  _this._onMakeSignificantClick = function () {
+    var eventDetails,
+        properties;
+
+    eventDetails = _this._event;
+
+    if (eventDetails) {
+      properties = eventDetails.properties;
+
+      MakeSignificantView({
+        'type': 'significant',
+        'source': 'admin',
+        'code': eventDetails.id + '-' + new Date().getTime(),
+        'eventSource': properties.net,
+        'eventSourceCode': properties.code,
+        'significance': properties.sig
+      }).show();
+    }
   };
 
   _this._sendProduct = function (products, title, text) {
