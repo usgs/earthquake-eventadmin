@@ -134,3 +134,8 @@
   color: #666;
   font-size: 0.88em;
 }
+
+textarea.contents-manager-view-inline-content-edit[disabled] {
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+}

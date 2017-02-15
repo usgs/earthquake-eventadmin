@@ -8,7 +8,8 @@ var Collection = require('mvc/Collection'),
     ProductContent = require('admin/ProductContent'),
     ProductContentView = require('admin/ProductContentView'),
     Util = require('util/Util'),
-    View = require('mvc/View');
+    View = require('mvc/View'),
+    Xhr = require('util/Xhr');
 
 
 var ContentsManagerView = function (options) {
@@ -321,7 +322,10 @@ var ContentsManagerView = function (options) {
    *        enhances the ContentsManagerView.
    */
   _this.enhanceTextProductMarkup = function (type, el) {
-    var markup;
+    var bytes,
+        content,
+        markup,
+        url;
 
     if (!el) {
       el = _inlineEnhanceEl;
@@ -370,6 +374,44 @@ var ContentsManagerView = function (options) {
 
       // bind to alert level change
       markup.addEventListener('click', _this.addAlertLevelWrapper);
+
+    } else if (type === 'tectonic-summary') {
+
+      // disable input until xhr request returns
+      _inlineEditEl.value = 'Loading ...';
+      _inlineEditEl.setAttribute('disabled', true);
+
+      try {
+        // tectonic-summary contents
+        content = _this.model.get('contents').data()[0];
+        bytes = content.get('bytes');
+        url = content.get('url');
+
+        if (bytes !== null) {
+          // load content from bytes
+          _inlineEditEl.value = bytes;
+          _inlineEditEl.removeAttribute('disabled');
+        } else if (url !== null) {
+          // load content from url
+          Xhr.ajax({
+            url: url,
+            success: function (data) {
+              _inlineEditEl.value = data;
+              _inlineEditEl.removeAttribute('disabled');
+              _this.onInlineEditChange();
+            },
+            error: function () {
+              _inlineEditEl.value = '';
+              _inlineEditEl.removeAttribute('disabled');
+              throw new Error ('Error fetching tectonic-summary');
+            }
+          });
+        }
+      } catch (e) {
+        _inlineEditEl.value = '';
+        _inlineEditEl.removeAttribute('disabled');
+        throw new Error ('Error fetching tectonic-summary');
+      }
     }
 
     // append enhanced markup
