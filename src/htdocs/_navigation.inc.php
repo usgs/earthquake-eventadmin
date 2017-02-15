@@ -19,8 +19,10 @@ if ($_SESSION['IS_LOGGED_IN']) {
         navItem($CONFIG['MOUNT_PATH'] . '/products.php?eventid=' . $eventid,
             'All Products') .
         navItem('https://earthquake.usgs.gov/earthquakes/eventpage/' .
-            $eventid . '" target="_blank', 'View Event Page')
-        );
+            $eventid . '" target="_blank', 'View Event Page') .
+        navItem('https://earthquake.usgs.gov/earthquakes/map/',
+            'Latest Earthquakes')
+      );
 
   } else {
     echo
