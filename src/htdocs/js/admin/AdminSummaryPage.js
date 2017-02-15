@@ -44,7 +44,6 @@ var AdminSummaryPage = function (options) {
 
     _this.el.innerHTML =
         '<div class="actions">' +
-          '<button class="viewevent">View Event Page</button>' +
           //'<button class="invalidate">Invalidate Cache</button>' +
           '<button class="deleteevent">Delete Event</button>' +
         '</div>' +
@@ -56,11 +55,6 @@ var AdminSummaryPage = function (options) {
     //button._clickHandler = _this._onInvalidateClick.bind(_this);
     //button.addEventListener('click', button._clickHandler);
     //_this._buttons.push(button);
-
-    button = _this.el.querySelector('.viewevent');
-    button._clickHandler = _this._onViewEventClick.bind(_this);
-    button.addEventListener('click', button._clickHandler);
-    _this._buttons.push(button);
 
     button = _this.el.querySelector('.deleteevent');
     button._clickHandler = _this._onDeleteEventClick.bind(_this);
@@ -130,16 +124,6 @@ var AdminSummaryPage = function (options) {
     });
 
     modal.show();
-  };
-
-  /**
-   * View Event button click handler.
-   */
-  _this._onViewEventClick = function () {
-    var url = 'http://' + _this._eventConfig.OFFSITE_HOST +
-        '/earthquakes/eventpage/' +
-        _this._event.id;
-    window.open(url);
   };
 
   _this._sendProduct = function (products, title, text) {
