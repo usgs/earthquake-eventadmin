@@ -82,16 +82,19 @@ var MakeSignificantView = function (options) {
   };
 
 
+  /**
+   * checks significance value and either calls isSignificant or sets
+   * sig value to 600.
+   */
   _this.checkSignificance = function () {
     var properties,
         significance;
 
     properties = _this.product.get('properties');
-    if (properties) {
-      significance = properties.significance;
-      (significance >= 600 ?
-          _this.isSignificant(significance) : _this.sig.value = 600);
-    }
+    significance = properties.significance;
+
+    (significance >= 600 ?
+        _this.isSignificant(significance) : _this.sig.value = 600);
   };
 
   /**
