@@ -415,25 +415,6 @@ var ContentsManagerView = function (options) {
   };
 
   /**
-   * Upddate the textarea _inlineEditEl and the corresponding _inlinePreviewEl
-   *
-   * @param text {String}
-   *        The text to display inside the textarea
-   */
-  _this.updateInlineEditEl = function (text, disabled) {
-    // update text on textarea
-    _inlineEditEl.value = text || '';
-    // remove/add disabled style from textarea (if it exists)
-    if (disabled) {
-      _inlineEditEl.setAttribute('disabled', true);
-    } else {
-      _inlineEditEl.removeAttribute('disabled');
-    }
-    // ensure inline preview is also updated
-    _this.onInlineEditChange();
-  };
-
-  /**
    * Update text content by adding a div wrapper with an alert style
    *
    * @param e {Event}
@@ -502,6 +483,25 @@ var ContentsManagerView = function (options) {
       _inlineEditEl.value = '';
       _inlinePreviewEl.innerHTML = '';
     }
+  };
+
+  /**
+   * Upddate the textarea _inlineEditEl and the corresponding _inlinePreviewEl
+   *
+   * @param text {String}
+   *        The text to display inside the textarea
+   */
+  _this.updateInlineEditEl = function (text, disabled) {
+    // update text on textarea
+    _inlineEditEl.value = text || '';
+    // remove/add disabled style from textarea (if it exists)
+    if (disabled) {
+      _inlineEditEl.setAttribute('disabled', true);
+    } else {
+      _inlineEditEl.removeAttribute('disabled');
+    }
+    // ensure inline preview is also updated
+    _this.onInlineEditChange();
   };
 
 

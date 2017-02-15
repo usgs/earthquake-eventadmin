@@ -121,4 +121,51 @@ describe('ContentsManagerView', function () {
     });
   });
 
+  describe('updateInlineEditEl', function () {
+    var el,
+        stub,
+        view;
+
+    before(function () {
+      view = ContentsManagerView({
+        model: product
+      });
+
+      stub = sinon.stub(view, 'onInlineEditChange', function () {
+        return;
+      });
+
+      el = view.el.querySelector('.contents-manager-view-inline-content-edit');
+    });
+
+    after(function () {
+      view.destroy();
+    });
+
+    it('calls onInlineEditChange', function () {
+      view.updateInlineEditEl();
+      expect(stub.callCount).to.equal(1);
+    });
+
+    it ('updates the textarea text value', function () {
+      var input;
+
+      input = 'TEST';
+      view.updateInlineEditEl(input);
+
+      expect(el.value).to.equal(input);
+    });
+
+    it ('updates the disabled attrubte on the textarea', function () {
+      var disabled;
+
+      disabled = 'true';
+      view.updateInlineEditEl('', disabled);
+
+      expect(el.getAttribute('disabled')).to.equal(disabled);
+    });
+  });
+
+
+
 });
