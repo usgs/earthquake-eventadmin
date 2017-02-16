@@ -8,8 +8,7 @@ var Collection = require('mvc/Collection'),
     ProductContent = require('admin/ProductContent'),
     ProductContentView = require('admin/ProductContentView'),
     Util = require('util/Util'),
-    View = require('mvc/View'),
-    Xhr = require('util/Xhr');
+    View = require('mvc/View');
 
 
 var ContentsManagerView = function (options) {
@@ -322,10 +321,7 @@ var ContentsManagerView = function (options) {
    *        enhances the ContentsManagerView.
    */
   _this.enhanceTextProductMarkup = function (type, el) {
-    var bytes,
-        content,
-        markup,
-        url;
+    var markup;
 
     if (!el) {
       el = _inlineEnhanceEl;
@@ -374,39 +370,6 @@ var ContentsManagerView = function (options) {
 
       // bind to alert level change
       markup.addEventListener('click', _this.addAlertLevelWrapper);
-
-    } else if (type === 'general-text') {
-
-      // disable input until xhr request returns
-      _inlineEditEl.value = 'Loading ...';
-      _inlineEditEl.setAttribute('disabled', true);
-
-      try {
-        // general-text contents
-        content = _this.model.get('contents').data()[0];
-        bytes = content.get('bytes');
-        url = content.get('url');
-
-        if (bytes !== null) {
-          // load content from bytes
-          _this.updateInlineEditEl(bytes);
-        } else if (url !== null) {
-          // load content from url
-          Xhr.ajax({
-            url: url,
-            success: function (data) {
-              _this.updateInlineEditEl(data);
-            },
-            error: function () {
-              _this.updateInlineEditEl('');
-              throw new Error ('Error fetching general-text');
-            }
-          });
-        }
-      } catch (e) {
-        _this.updateInlineEditEl('');
-        throw new Error ('Error fetching general-text');
-      }
     }
 
     // append enhanced markup
@@ -484,25 +447,6 @@ var ContentsManagerView = function (options) {
       _inlineEditEl.value = '';
       _inlinePreviewEl.innerHTML = '';
     }
-  };
-
-  /**
-   * Upddate the textarea _inlineEditEl and the corresponding _inlinePreviewEl
-   *
-   * @param text {String}
-   *        The text to display inside the textarea
-   */
-  _this.updateInlineEditEl = function (text, disabled) {
-    // update text on textarea
-    _inlineEditEl.value = text || '';
-    // remove/add disabled style from textarea (if it exists)
-    if (disabled) {
-      _inlineEditEl.setAttribute('disabled', true);
-    } else {
-      _inlineEditEl.removeAttribute('disabled');
-    }
-    // ensure inline preview is also updated
-    _this.onInlineEditChange();
   };
 
 
