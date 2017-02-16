@@ -23,7 +23,7 @@ var MakeSignificantView = function (options) {
     _this.product = options.product;
     title = 'Make Event Significant';
 
-    if(!_this.product) {
+    if (!_this.product) {
       if (!options.type || !options.source || !options.code ||
           !options.eventSource || !options.eventSourceCode) {
         throw new Error('Must receive either a product or type/source/code ' +
@@ -101,6 +101,18 @@ var MakeSignificantView = function (options) {
    * Destroy all the things.
    */
   _this.destroy = Util.compose(function () {
+    if (_this === null) {
+      return;
+    }
+
+    if (_this.modal !== null) {
+      _this.modal.destroy();
+    }
+
+    if (_this.sendProductView !== null) {
+      _this.sendProductView.destroy();
+    }
+
     _this = null;
     _initialize = null;
   }, _this.destroy);
