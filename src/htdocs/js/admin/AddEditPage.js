@@ -133,9 +133,11 @@ var AddEditPage = function (options) {
 
     // Unbind all click handlers
     _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
+    _this.addGeneralHeaderButton.removeEventListener('click', _this.onAddGeneralHeader);
 
     // Set all member variables to null
     _this.addLinkButton = null;
+    _this.addGeneralHeaderButton = null;
 
     // Set all private functions to null
     _createViewSkeleton = null;
