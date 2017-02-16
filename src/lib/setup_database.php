@@ -24,10 +24,11 @@ echo "\n";
 echo "Add connection information for database setup:";
 echo "\n";
 
-$DB_DSN = configure('Database connection DSN string',
-    'mysql:host=' . $CONFIG['SESSION_DB_HOST'] .
-    ';port='      . $CONFIG['SESSION_DB_PORT'] .
-    ';dbname='    . $CONFIG['SESSION_DB_NAME'],
+$DB_DSN = configure('Database administrator connection DSN',
+    $CONFIG['SESSION_DB_DRIVER'] .
+    ':host='   . $CONFIG['SESSION_DB_HOST'] .
+    ';port='   . $CONFIG['SESSION_DB_PORT'] .
+    ';dbname=' . $CONFIG['SESSION_DB_NAME'],
     false);
 $USERNAME = configure('Database adminitrator user', 'root', false);
 $PASSWORD = configure('Database adminitrator password', null, true);
