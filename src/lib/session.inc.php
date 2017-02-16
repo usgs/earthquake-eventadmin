@@ -2,7 +2,7 @@
 
 include_once dirname(__FILE__) . '/../conf/config.inc.php';
 include_once dirname(__FILE__) . '/PdoSessionHandler.php';
-include_once dirname(__FILE__) . '/functions.ad.php';
+include_once dirname(__FILE__) . '/LDAPAuth.class.php';
 
 $session_dsn = $CONFIG['SESSION_DB_DRIVER'] . ':' .
     'host=' . $CONFIG['SESSION_DB_HOST'] . ';' .
@@ -30,7 +30,13 @@ $_SESSION['IS_LOGGED_IN'] = (isset($_SESSION['IS_LOGGED_IN'])) ?
 
 if (isset($_POST['username']) || isset($_POST['password'])) {
   // login credentials sent, attempt to authenticate
-  if (authenticate($_POST['username'], $_POST['password'])) {
+  $authenticator = new LDAPAuth($CONFIG['AD_HOST'], $CONFIG['AD_BASE_DN'],
+        $CONFIG['AD_USER'], $CONFIG['AD_PASS']);
+  $authorized = $authenticator->isAuthorized($_POST['username'],
+        $_POST['password'], $CONFIG['AD_GROUP']);
+  $authenticator = null;
+
+  if ($authorized) {
     session_regenerate_id();
     $_SESSION['IS_LOGGED_IN'] = true;
     $_SESSION['username'] = $_POST['username'];
