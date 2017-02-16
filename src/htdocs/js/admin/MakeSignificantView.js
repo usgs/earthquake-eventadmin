@@ -55,7 +55,7 @@ var MakeSignificantView = function (options) {
           'equal to 600 makes an event significant.' +
         '</p>' +
         '<label for="significant-value">Significant Value: </label>' +
-        '<input id="significant-value" type="text" />' +
+        '<input id="significant-value" type="number" />' +
         '<div class="significant-warning"></div>' +
 
       '</div>';
