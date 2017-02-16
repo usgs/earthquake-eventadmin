@@ -168,7 +168,7 @@ var AdminSummaryPage = function (options) {
       properties = eventDetails.properties;
 
       MakeSignificantView({
-        'type': 'significant',
+        'type': 'significance',
         'source': 'admin',
         'code': eventDetails.id + '-' + new Date().getTime(),
         'eventSource': properties.net,
