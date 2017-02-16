@@ -375,13 +375,14 @@ var ContentsManagerView = function (options) {
       // bind to alert level change
       markup.addEventListener('click', _this.addAlertLevelWrapper);
 
-    } else if (type === 'tectonic-summary') {
+    } else if (type === 'general-text') {
 
       // disable input until xhr request returns
-      _this.updateInlineEditEl('Loading ...', true);
+      _inlineEditEl.value = 'Loading ...';
+      _inlineEditEl.setAttribute('disabled', true);
 
       try {
-        // tectonic-summary contents
+        // general-text contents
         content = _this.model.get('contents').data()[0];
         bytes = content.get('bytes');
         url = content.get('url');
@@ -398,13 +399,13 @@ var ContentsManagerView = function (options) {
             },
             error: function () {
               _this.updateInlineEditEl('');
-              throw new Error ('Error fetching tectonic-summary');
+              throw new Error ('Error fetching general-text');
             }
           });
         }
       } catch (e) {
         _this.updateInlineEditEl('');
-        throw new Error ('Error fetching tectonic-summary');
+        throw new Error ('Error fetching general-text');
       }
     }
 

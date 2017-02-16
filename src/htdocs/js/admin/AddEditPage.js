@@ -90,7 +90,7 @@ var AddEditPage = function (options) {
     _this.addGeneralHeaderButton = _this.el.querySelector('.add-header button');
     _this.addGeneralHeaderButton.addEventListener('click', _this.onAddGeneralHeader);
 
-    // Create tectonic-summary modal binding
+    // Create tectonic summary modal binding
     _this.addTectonicSummaryButton = _this.el.querySelector('.add-tectonic button');
     _this.addTectonicSummaryButton.addEventListener('click', _this.onAddTectonicSummary);
   };
@@ -214,21 +214,20 @@ var AddEditPage = function (options) {
     properties = eventDetails.properties;
     products = properties.products;
 
-    if (products && products['tectonic-summary']) {
-      tectonicSummary = properties.products['tectonic-summary'][0];
+    if (products && products['general-text']) {
+      tectonicSummary = properties.products['general-text'][0];
     }
 
     if (tectonicSummary) {
-      // request tectonic-summary and create modal to edit
-    
+      // request tectonic summary and create modal to edit
       product = new Product(tectonicSummary);
       TextProductView({
         product: product
       }).show();
     } else {
-      // open a modal to create a new tectonic-summary
+      // open a modal to create a new tectonic summary
       TextProductView({
-        type: 'tectonic-summary',
+        type: 'general-text',
         source: 'admin',
         code: eventDetails.id + '-' + new Date().getTime(),
         eventSource: properties.net,
