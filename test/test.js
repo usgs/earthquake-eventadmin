@@ -9,6 +9,7 @@ require('./spec/AddEditPageTest');
 require('./spec/ContentsManagerViewTest');
 require('./spec/EditLinkViewTest');
 require('./spec/EventsAssociatedViewTest');
+require('./spec/MakeSignificantViewTest');
 require('./spec/ProductTest');
 require('./spec/TextProductViewTest');
 
