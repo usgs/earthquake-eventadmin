@@ -42,11 +42,6 @@ var ProductContent = function (options) {
       throw new Error('Invalid product contents. Must have one of bytes or ' +
           'url.');
     }
-
-    if (bytes !== null && bytes.length !== _this.get('length')) {
-      throw new Error('Invalid product contents. Actual length and claimed ' +
-          'length differ.');
-    }
   };
 
 
