@@ -74,7 +74,9 @@ var AdminSummaryPage = function (options) {
   };
 
 
-  _this._onContinueClick = function (products) {
+  _this._onContinueClick = function () {
+    var products;
+
     // origin products, TODO: other products too?
     products = CatalogEvent.getWithoutDeleted(
         CatalogEvent.getWithoutSuperseded(
@@ -90,8 +92,6 @@ var AdminSummaryPage = function (options) {
    * Delete Event button click handler.
    */
   _this._onDeleteEventClick = function () {
-    var products;
-
     if (!_this._event.properties.products.origin) {
       return;
     }
@@ -105,7 +105,7 @@ var AdminSummaryPage = function (options) {
           text: 'Continue',
           callback: function (evt, dialog) {
             dialog.hide();
-            _this._onContinueClick(products);
+            _this._onContinueClick();
           }
         },
         {
