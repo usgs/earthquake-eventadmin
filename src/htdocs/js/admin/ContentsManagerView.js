@@ -370,6 +370,12 @@ var ContentsManagerView = function (options) {
 
       // bind to alert level change
       markup.addEventListener('click', _this.addAlertLevelWrapper);
+    } else if (type === 'general-text') {
+      markup = document.createElement('p');
+      markup.classList.add('disclaimer');
+      markup.innerHTML = 'For help writing HTML please ' +
+          '<a target="_blank" href="http://earthquake.usgs.gov/theme/">' +
+          'view our template styles</a>.';
     }
 
     // append enhanced markup
