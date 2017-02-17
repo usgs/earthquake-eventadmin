@@ -2,6 +2,7 @@
 
 
 var EditLinkView = require('admin/EditLinkView'),
+    Product = require('admin/Product'),
     TextProductView = require('admin/TextProductView'),
     Util = require('util/Util'),
     View = require('mvc/View');
@@ -173,13 +174,28 @@ var AddEditPage = function (options) {
 
   _this.onAddGeneralHeader = function () {
     var eventDetails,
-        properties;
+        header,
+        properties,
+        product,
+        products;
+
 
     eventDetails = _this._eventDetails;
+    properties = eventDetails.properties;
+    products = properties.products;
 
-    if (eventDetails) {
-      properties = eventDetails.properties;
+    if (products && products['general-header']) {
+      header = properties.products['general-header'][0];
+    }
 
+    if (header) {
+      // request tectonic summary and create modal to edit
+      product = new Product(header);
+      TextProductView({
+        product: product,
+        modalTitle: 'General Header'
+      }).show();
+    } else {
       TextProductView({
         type: 'general-header',
         source: 'admin',
