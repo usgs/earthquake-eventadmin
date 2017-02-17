@@ -2,6 +2,7 @@
 
 
 var EditLinkView = require('admin/EditLinkView'),
+    Product = require('admin/Product'),
     TextProductView = require('admin/TextProductView'),
     Util = require('util/Util'),
     View = require('mvc/View');
@@ -70,6 +71,9 @@ var AddEditPage = function (options) {
         _this.createPinItem('add-header', 'General Header',
             'Use this feature to add a header that will be displayed ' +
             'above all content on the event page.'),
+        // Tectonic Summary pin
+        _this.createPinItem('add-tectonic', 'Tectonic Summary',
+            'Use this feature to add a tectonic summary.'),
         // Add Link pin
         _this.createPinItem('add-link', 'Add Link',
             'Use this feature to add a link near the bottom of the event ' +
@@ -85,6 +89,10 @@ var AddEditPage = function (options) {
     // Create general-header modal binding
     _this.addGeneralHeaderButton = _this.el.querySelector('.add-header button');
     _this.addGeneralHeaderButton.addEventListener('click', _this.onAddGeneralHeader);
+
+    // Create tectonic summary modal binding
+    _this.addTectonicSummaryButton = _this.el.querySelector('.add-tectonic button');
+    _this.addTectonicSummaryButton.addEventListener('click', _this.onAddTectonicSummary);
   };
 
 
@@ -134,10 +142,12 @@ var AddEditPage = function (options) {
     // Unbind all click handlers
     _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
     _this.addGeneralHeaderButton.removeEventListener('click', _this.onAddGeneralHeader);
+    _this.addTectonicSummaryButton.removeEventListener('click', _this.onAddTectonicSummary);
 
     // Set all member variables to null
     _this.addLinkButton = null;
     _this.addGeneralHeaderButton = null;
+    _this.addTectonicSummaryButton = null;
 
     // Set all private functions to null
     _createViewSkeleton = null;
@@ -187,6 +197,42 @@ var AddEditPage = function (options) {
         eventSource: properties.net,
         eventSourceCode: properties.code,
         modalTitle: 'General Header'
+      }).show();
+    }
+  };
+
+
+  _this.onAddTectonicSummary = function () {
+    var eventDetails,
+        properties,
+        product,
+        products,
+        tectonicSummary;
+
+
+    eventDetails = _this._eventDetails;
+    properties = eventDetails.properties;
+    products = properties.products;
+
+    if (products && products['general-text']) {
+      tectonicSummary = properties.products['general-text'][0];
+    }
+
+    if (tectonicSummary) {
+      // request tectonic summary and create modal to edit
+      product = new Product(tectonicSummary);
+      TextProductView({
+        product: product
+      }).show();
+    } else {
+      // open a modal to create a new tectonic summary
+      TextProductView({
+        type: 'general-text',
+        source: 'admin',
+        code: eventDetails.id + '-' + new Date().getTime(),
+        eventSource: properties.net,
+        eventSourceCode: properties.code,
+        modalTitle: 'Tectonic Summary'
       }).show();
     }
   };
