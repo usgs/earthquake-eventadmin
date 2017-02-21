@@ -4,8 +4,8 @@
 include_once '../lib/session.inc.php';
 
 // session specific data directory
-$uploadDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'file_upload_' .
-    session_id();
+$uploadDir = realpath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR .
+    'file_upload_' . session_id();
 
 if (!is_dir($uploadDir)) {
   mkdir($uploadDir);
