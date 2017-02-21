@@ -37,7 +37,9 @@ var AssociateEventView = function (options) {
       _generateAssociateProducts,
       _getContent,
       _onCancel,
-      _onConfirm;
+      _onConfirm,
+      _onSendProductDone,
+      _sendProductView;
 
 
   _this = View(options);
@@ -102,15 +104,16 @@ var AssociateEventView = function (options) {
    * Display associate products in SendProductView
    */
   _createSendProductView = function () {
-    var sendProductView = SendProductView({
+    _sendProductView = SendProductView({
       modalTitle: 'Associate Product(s)',
       products: _associateProducts,
       formatProduct: function (products) {
         // format product being sent
-        return sendProductView.formatProduct(products);
+        return _sendProductView.formatProduct(products);
       }
     });
-    sendProductView.show();
+    _sendProductView.on('done', _onSendProductDone);
+    _sendProductView.show();
   };
 
   /**
@@ -266,6 +269,16 @@ var AssociateEventView = function (options) {
     _createSendProductView();
   };
 
+  /**
+   * Called after user attempts to send product and acknowledges the success
+   * and/or error message from the sender view. In this case, we're done, so
+   * clean up after ourself.
+   *
+   */
+  _onSendProductDone = function () {
+    _this.hide();
+    _this.destroy();
+  };
 
   /**
    * Clean up private variables, methods, and remove event listeners.
@@ -273,6 +286,11 @@ var AssociateEventView = function (options) {
   _this.destroy = Util.compose(function () {
     if (_this === null) {
       return;
+    }
+
+    if (_sendProductView) {
+      _sendProductView.off('done', _onSendProductDone);
+      _sendProductView = null;
     }
 
     // methods
@@ -283,6 +301,7 @@ var AssociateEventView = function (options) {
     _getContent = null;
     _onCancel = null;
     _onConfirm = null;
+    _onSendProductDone = null;
 
     // variables
     if (_dialog !== null) {
@@ -300,6 +319,14 @@ var AssociateEventView = function (options) {
     _initialize = null;
     _this = null;
   }, _this.destroy);
+
+  /**
+   * Hides this view. State is preserved so it can be re-shown if desired.
+   *
+   */
+  _this.hide = function () {
+    _dialog.hide();
+  };
 
 
   _initialize(options);
