@@ -9,7 +9,9 @@ var Util = require('util/Util'),
 var _DEFAULTS;
 
 _DEFAULTS = {
-  url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
+  url: '/earthquakes/feed/v1.0/summary/significant_month.geojson',
+  OFFSITE_HOST: window.location.host, // includes host:port if applicable
+  SEARCH_STUB: '/fdsnws/event/1/query?format=geojson'
 };
 
 
@@ -18,6 +20,7 @@ var ChooseEventView = function (options) {
       _initialize,
 
       _eventTime,
+      _searchAction,
       _searchForm,
       _searchList,
       _url,
@@ -34,7 +37,8 @@ var ChooseEventView = function (options) {
     var el;
 
     options = Util.extend({}, _DEFAULTS, options);
-    _url = options.url;
+    _url = '//' + options.OFFSITE_HOST + options.url;
+    _searchAction = '//' + options.OFFSITE_HOST + options.SEARCH_STUB;
 
     el = _this.el;
     el.innerHTML = '<section class="row choose-event">' +
@@ -46,11 +50,11 @@ var ChooseEventView = function (options) {
           '<header><h2>Find an Event</h2></header>' +
           '<p>' +
             '<a target="_blank" ' +
-                'href="http://earthquake.usgs.gov/earthquakes/map"' +
+                'href="https://earthquake.usgs.gov/earthquakes/map"' +
                 '>Latest Earthquakes</a>' +
             '<br/>' +
             '<a target="_blank" ' +
-                'href="http://earthquake.usgs.gov/earthquakes/search"' +
+                'href="https://earthquake.usgs.gov/earthquakes/search"' +
                 '>Search Earthquake Archives</a>' +
           '</p>' +
           '<div class="eventId"></div>' +
@@ -144,7 +148,7 @@ var ChooseEventView = function (options) {
       startTime = new Date(searchTime.getTime() - 900000);
       endTime = new Date(searchTime.getTime() + 900000);
 
-      url = 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson' +
+      url = _searchAction +
           '&starttime=' + startTime.toISOString() +
           '&endtime=' + endTime.toISOString();
 
