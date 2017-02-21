@@ -30,7 +30,7 @@ if ($_SESSION['IS_LOGGED_IN']) {
 
   // Always include these links when logged in
   echo
-      navItem('https://earthquake.usgs.gov/earthquakes/map/',
+      navItem('https://earthquake.usgs.gov/earthquakes/map/" target="_blank',
           'Latest Earthquakes') .
       navItem($CONFIG['MOUNT_PATH'] . '/logout.php', 'Log Out');
 

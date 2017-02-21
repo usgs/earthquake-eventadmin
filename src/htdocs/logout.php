@@ -1,15 +1,16 @@
 <?php
-  if (!isset($TEMPLATE)) {
-    include_once '../lib/session.inc.php';
+if (!isset($TEMPLATE)) {
+  include_once '../lib/session.inc.php';
 
-    $_SESSION = array('IS_LOGGED_IN' => false);
-    session_destroy();
+  $_SESSION = array('IS_LOGGED_IN' => false);
+  session_destroy();
 
-    $TITLE = 'Log Out - Event Admin';
-    $NAVIGATION = true;
+  $TITLE = 'Log Out - Event Admin';
+  $NAVIGATION = true;
+  $HEAD = '<link rel="stylesheet" href="css/index.css"/>';
 
-    include_once 'template.inc.php';
-  }
+  include_once 'template.inc.php';
+}
 ?>
 
 <p class="alert info">
