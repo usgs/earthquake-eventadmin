@@ -23,6 +23,7 @@ class ProductSender {
 
 	private $command;
 	private $workingDir;
+	private $configFile;
 
 	private $servers;
 
@@ -101,7 +102,7 @@ class ProductSender {
 		$command = $this->command;
 		$args = array();
 
-		if ($this->configFile) {
+		if (isset($this->configFile)) {
 			$args[] = escapeshellarg('--configFile=' . $this->configFile);
 		}
 

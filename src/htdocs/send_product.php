@@ -14,12 +14,17 @@ include_once '../conf/config.inc.php';
 include_once '../lib/ProductSender.class.php';
 include_once '../lib/functions.inc.php';
 
-$uploadDir = realpath(sys_get_temp_dir() . 'file_upload_' . session_id());
+$scratchDir = realpath(sys_get_temp_dir());
+
+$uploadDir = $scratchDir . DIRECTORY_SEPARATOR .
+    'file_upload_' . session_id();
 $uploadPrefix = $CONFIG['MOUNT_PATH'] . '/file_upload.php?file=';
 
 try {
   // session specific data directory
-  $workingDir = sys_get_temp_dir() . 'send_product_' . session_id();
+  $workingDir = $scratchDir . DIRECTORY_SEPARATOR .
+      'send_product_' . session_id();
+
   if (!is_dir($workingDir)) {
     mkdir($workingDir);
   }
@@ -52,7 +57,9 @@ try {
 
 
   // make product specific directory
-  $workingDir = $workingDir . '/' . $source . '_' . $type . '_' . $code;
+  $workingDir = $workingDir . DIRECTORY_SEPARATOR . $source . '_' . $type .
+      '_' . $code;
+
   if (is_dir($workingDir)) {
     // remove existing directory
     rrmdir($workingDir);

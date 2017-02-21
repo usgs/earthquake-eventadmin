@@ -4,7 +4,9 @@
 include_once '../lib/session.inc.php';
 
 // session specific data directory
-$uploadDir = sys_get_temp_dir() . 'file_upload_' . session_id();
+$uploadDir = realpath(sys_get_temp_dir()) . DIRECTORY_SEPARATOR .
+    'file_upload_' . session_id();
+
 if (!is_dir($uploadDir)) {
   mkdir($uploadDir);
 }
@@ -27,7 +29,7 @@ if (isset($_GET['file'])) {
     '\\' => '_',
     '..' => '_'
   ));
-  $path = $uploadDir . '/' . $name;
+  $path = $uploadDir . DIRECTORY_SEPARATOR . $name;
   if (!file_exists($path)) {
     header('HTTP/1.0 404 File Not Found');
     exit();
@@ -84,7 +86,7 @@ $length = $file['size'];
 $url = $CONFIG['MOUNT_PATH'] . '/file_upload.php?file=' . urlencode($name);
 
 // move to upload folder
-$path = $uploadDir . '/' . $name;
+$path = $uploadDir . DIRECTORY_SEPARATOR . $name;
 move_uploaded_file($file['tmp_name'], $path);
 // preserve last modified
 touch($path, $lastModified/1000);
