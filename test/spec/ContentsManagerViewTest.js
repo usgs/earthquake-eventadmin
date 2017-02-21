@@ -116,8 +116,8 @@ describe('ContentsManagerView', function () {
 
       markup = view.getAlertLevelMarkup();
 
-      expect(markup).to.equal('<div class="alert info">' + textareaInput.value +
-          '</div>');
+      expect(markup).to.equal('<p class="alert info">' + textareaInput.value +
+          '</p>');
     });
   });
 

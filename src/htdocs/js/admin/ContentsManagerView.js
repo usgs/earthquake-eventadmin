@@ -428,7 +428,7 @@ var ContentsManagerView = function (options) {
       return text;
     } else {
       // apply the selected style, return the text wrapped in an alert element
-      return '<div class="alert ' + selected.value + '">' + text + '</div>';
+      return '<p class="alert ' + selected.value + '">' + text + '</p>';
     }
   };
 
