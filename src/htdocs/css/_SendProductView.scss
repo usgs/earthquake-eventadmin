@@ -23,14 +23,18 @@
   margin-top: 1em;
 }
 
-.send-complete:after,
-.send-error:after {
-  color: #58A973;
-  content: '\2713';
-  display: block;
-  position: absolute;
-  right: 1.5rem;
-  top: .75rem;
+.send-complete,
+.send-error {
+  position: relative;
+
+  &:after {
+    color: #58A973;
+    content: '\2713';
+    display: block;
+    position: absolute;
+    right: 1.5rem;
+    top: .75rem;
+  }
 }
 
 .send-error:after {
