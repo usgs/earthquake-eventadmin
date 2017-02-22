@@ -49,13 +49,11 @@ var ChooseEventView = function (options) {
         '<section class="one-of-two column">' +
           '<header><h2>Find an Event</h2></header>' +
           '<p>' +
-            '<a target="_blank" ' +
-                'href="https://earthquake.usgs.gov/earthquakes/map"' +
-                '>Latest Earthquakes</a>' +
+            '<a target="_blank" href="/earthquakes/map">' +
+                'Latest Earthquakes</a>' +
             '<br/>' +
-            '<a target="_blank" ' +
-                'href="https://earthquake.usgs.gov/earthquakes/search"' +
-                '>Search Earthquake Archives</a>' +
+            '<a target="_blank" href="/earthquakes/search">' +
+                'Search Earthquake Archives</a>' +
           '</p>' +
           '<div class="eventId"></div>' +
           '<div class="eventTime"></div>' +

@@ -37,16 +37,18 @@ var connect = {
       }
     },
     {
-      context: '/realtime/',
+      context: [
+        '/archive/',
+        '/earthquakes/',
+        '/lib/leaflet-0.7.7/',
+        '/realtime/'
+      ],
+      headers: {
+        'accept-encoding': 'identity',
+        host: OFFSITE_HOST
+      },
       host: OFFSITE_HOST,
-      port: 80,
-      changeOrigin: true
-    },
-    {
-      context: '/archive/',
-      host: OFFSITE_HOST,
-      port: 80,
-      changeOrigin: true
+      port: 80
     }
   ],
 
