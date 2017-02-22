@@ -156,11 +156,11 @@ var EventComparisonView = function (options) {
         format: function (data) {
           var buf;
 
-          if (_referenceEvent.id === data.id) {
-            return '<button disabled>This Event</button>';
-          }
-
           buf = [];
+
+          if (_referenceEvent.id === data.id) {
+            buf.push('<button disabled>This Event</button>');
+          }
 
           for (var i = 0; i < _buttons.length; i++) {
             buf.push('<button class="' + _buttons[i].className +
