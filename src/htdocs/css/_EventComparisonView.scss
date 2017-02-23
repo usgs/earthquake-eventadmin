@@ -1,0 +1,13 @@
+
+.reference-event {
+  background-color: #fcfcfc;
+
+  > .actions {
+
+    > .associate,
+    > .disassociate,
+    > .delete {
+      display: none;
+    }
+  }
+}
