@@ -39,6 +39,7 @@ try {
   $sender->setCommand('java -jar ' . escapeshellarg($CONFIG['PDL_JAR_FILE']));
   $sender->setServers($CONFIG['PDL_SERVERS']);
   $sender->setWorkingDir($workingDir);
+  $sender->setSentByEmail($_SESSION['username']);
   if (file_exists($CONFIG['PDL_PRIVATE_KEY'])) {
     $sender->setPrivateKeyFile($CONFIG['PDL_PRIVATE_KEY']);
   }
