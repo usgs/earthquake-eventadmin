@@ -69,22 +69,33 @@ var AddEditPage = function (options) {
       '<ul class="addeditpage_pins no-style">',
         // General Header pin
         _this.createPinItem('add-header', 'General Header',
-            'Use this feature to add a header that will be displayed ' +
-            'above all content on the event page.'),
+            'Use this feature to add a header that will be displayed '
+                + 'above all content on the event page.',
+            _this.getProduct('general-header') !== null ? 'Edit' : 'Add'),
         // Tectonic Summary pin
         _this.createPinItem('add-tectonic', 'Tectonic Summary',
-            'Use this feature to add a tectonic summary.'),
+            'Use this feature to add a tectonic summary.',
+            _this.getProduct('general-text') !== null ? 'Edit' : 'Add'),
         // Add Link pin
         _this.createPinItem('add-link', 'Add Link',
-            'Use this feature to add a link near the bottom of the event ' +
-            'page. Links can be to any web-addressable content such as news ' +
-            'articles, images, or videos.'),
+            'Use this feature to add a link near the bottom of the event '
+                + 'page. Links can be to any web-addressable content such as news '
+                + 'articles, images, or videos.',
+            'Add'),
+        // Deleted text pin
+        _this.createPinItem('add-deleted', 'Deleted Text',
+            'Use this feature to describe why an event was deleted.',
+            _this.getProduct('deleted-text') !== null ? 'Edit' : 'Add'),
       '</ul>'
       /* eslint-enable indent */
     ].join('');
 
     _this.addLinkButton = _this.el.querySelector('.add-link button');
     _this.addLinkButton.addEventListener('click', _this.onAddLinkClick);
+
+    // Create deleted-text modal binding
+    _this.addDeletedTextButton = _this.el.querySelector('.add-deleted button');
+    _this.addDeletedTextButton.addEventListener('click', _this.onAddDeletedText);
 
     // Create general-header modal binding
     _this.addGeneralHeaderButton = _this.el.querySelector('.add-header button');
@@ -114,15 +125,15 @@ var AddEditPage = function (options) {
    *     (<ul> or <ol>) container as the top-level element in the returned
    *     markup is a list item.
    */
-  _this.createPinItem = function (className, title, content) {
-    return [
+  _this.createPinItem = function (className, title, content, action) {
+    return ['',
       /* eslint-disable indent */
       '<li class="addeditpage_pin ', className, '">',
         '<article class="addeditpage_pin-wrapper">',
           '<header class="addeditpage_pin-header">', title, '</header>',
           '<section class="addeditpage_pin-content">', content, '</section>',
           '<footer class="addeditpage_pin-footer">',
-            '<button class="addeditpage_pin-action">Add</button>',
+            '<button class="addeditpage_pin-action ', action, '">', action, '</button>',
           '</footer>',
         '</article>',
       '</li>'
@@ -140,13 +151,15 @@ var AddEditPage = function (options) {
     }
 
     // Unbind all click handlers
-    _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
+    _this.addDeletedTextButton.removeEventListener('click', _this.onAddDeletedText);
     _this.addGeneralHeaderButton.removeEventListener('click', _this.onAddGeneralHeader);
+    _this.addLinkButton.removeEventListener('click', _this.onAddLinkClick);
     _this.addTectonicSummaryButton.removeEventListener('click', _this.onAddTectonicSummary);
 
     // Set all member variables to null
-    _this.addLinkButton = null;
+    _this.addDeletedTextButton = null;
     _this.addGeneralHeaderButton = null;
+    _this.addLinkButton = null;
     _this.addTectonicSummaryButton = null;
 
     // Set all private functions to null
@@ -181,75 +194,62 @@ var AddEditPage = function (options) {
     }
   };
 
+  _this.onAddDeletedText = function () {
+    _this.onAddEditTextProduct('deleted-text', 'Deleted Text');
+  };
+
   _this.onAddGeneralHeader = function () {
+    _this.onAddEditTextProduct('general-header', 'General Header');
+  };
+
+  _this.onAddTectonicSummary = function () {
+    _this.onAddEditTextProduct('general-text', 'Tectonic Summary');
+  };
+
+
+  _this.onAddEditTextProduct = function (productType, modalTitle) {
     var eventDetails,
-        header,
-        properties,
-        product,
-        products;
+        existingProduct,
+        properties;
 
+    existingProduct = _this.getProduct(productType);
 
-    eventDetails = _this._eventDetails;
-    properties = eventDetails.properties;
-    products = properties.products;
-
-    if (products && products['general-header']) {
-      header = properties.products['general-header'][0];
-    }
-
-    if (header) {
-      // request tectonic summary and create modal to edit
-      product = new Product(header);
+    if (existingProduct) {
+      // create modal to edit
       TextProductView({
-        product: product,
-        modalTitle: 'General Header'
+        product: existingProduct,
+        modalTitle: modalTitle
       }).show();
     } else {
+      eventDetails = _this._eventDetails;
+      properties = eventDetails.properties;
+        // open a modal to create a new product
       TextProductView({
-        type: 'general-header',
+        type: productType,
         source: 'admin',
         code: eventDetails.id + '-' + new Date().getTime(),
         eventSource: properties.net,
         eventSourceCode: properties.code,
-        modalTitle: 'General Header'
+        modalTitle: modalTitle
       }).show();
     }
   };
 
-
-  _this.onAddTectonicSummary = function () {
+  _this.getProduct = function(productType) {
     var eventDetails,
+        existingProduct,
         properties,
-        product,
-        products,
-        tectonicSummary;
-
+        products;
 
     eventDetails = _this._eventDetails;
     properties = eventDetails.properties;
-    products = properties.products;
+    products = properties ? properties.products : null;
 
-    if (products && products['general-text']) {
-      tectonicSummary = properties.products['general-text'][0];
+    if (products && products[productType]) {
+      existingProduct = properties.products[productType][0];
+      return new Product(existingProduct);
     }
-
-    if (tectonicSummary) {
-      // request tectonic summary and create modal to edit
-      product = new Product(tectonicSummary);
-      TextProductView({
-        product: product
-      }).show();
-    } else {
-      // open a modal to create a new tectonic summary
-      TextProductView({
-        type: 'general-text',
-        source: 'admin',
-        code: eventDetails.id + '-' + new Date().getTime(),
-        eventSource: properties.net,
-        eventSourceCode: properties.code,
-        modalTitle: 'Tectonic Summary'
-      }).show();
-    }
+    return null;
   };
 
 
