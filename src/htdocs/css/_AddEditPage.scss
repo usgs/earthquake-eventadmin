@@ -89,4 +89,9 @@
     text-align: center;
     top: 0;
   }
+
+  &.Edit:after {
+    background: orange;
+    content: 'edit';
+  }
 }

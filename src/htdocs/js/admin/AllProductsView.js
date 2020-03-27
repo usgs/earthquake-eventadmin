@@ -99,6 +99,7 @@ var AllProductsView = function (options) {
       'text' : {
         factory: TextProductView,
         types: [
+          'deleted-text',
           'general-text',
           'impact-text',
           'scitech-text',
